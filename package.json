@@ -2,12 +2,15 @@
   "name": "clinica",
   "scripts": {
     "start": "bun ./src/server.ts",
-    "dev": "bun run --hot src/server.ts"
+    "dev": "bun run --hot src/server.ts",
+    "generate": "drizzle-kit generate",
+    "migrate": "drizzle-kit migrate"
   },
   "dependencies": {
     "@neondatabase/serverless": "^0.9.4",
     "drizzle-orm": "^0.31.2",
-    "hono": "^4.4.8"
+    "hono": "^4.4.8",
+    "zod": "^3.23.8"
   },
   "devDependencies": {
     "@types/bun": "latest",
