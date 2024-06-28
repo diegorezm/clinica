@@ -1,8 +1,8 @@
 {
   "name": "clinica",
   "scripts": {
-    "start": "bun ./server/index.ts",
-    "dev": "bun run --hot server/index.ts",
+    "start": "NODE_ENV=production bun ./server/index.ts",
+    "dev": "NODE_ENV=dev bun run --hot server/index.ts",
     "generate": "drizzle-kit generate",
     "migrate": "drizzle-kit migrate",
     "drop": "drizzle-kit drop"
@@ -10,6 +10,7 @@
   "dependencies": {
     "@neondatabase/serverless": "^0.9.4",
     "drizzle-orm": "^0.31.2",
+    "drizzle-zod": "^0.5.1",
     "hono": "^4.4.8",
     "pg": "^8.12.0",
     "postgres": "^3.4.4",
