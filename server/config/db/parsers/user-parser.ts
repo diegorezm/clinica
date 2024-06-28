@@ -2,7 +2,7 @@ import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 import { userRolesSchema, usersSchema } from "../schemas/user-schema";
 import { z } from "zod";
 
-const User = {
+const userParser = {
   insertSchema: createInsertSchema(usersSchema, {
     name: z
       .string()
@@ -29,13 +29,13 @@ const User = {
       .max(255, {
         message: "Muitos caracteres.",
       }),
-  }).omit({ id: true }),
+  }).omit({ id: true, createdAt: true, updatedAt: true }),
   selectSchema: createSelectSchema(usersSchema).omit({ password: true }),
 };
 
-export const UserRole = {
+export const userRoleParser = {
   insertSchema: createInsertSchema(userRolesSchema),
   selectSchema: createSelectSchema(userRolesSchema),
 };
 
-export default User;
+export default userParser;

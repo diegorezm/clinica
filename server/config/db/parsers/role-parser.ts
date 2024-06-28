@@ -2,7 +2,7 @@ import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 import { rolesSchema } from "../schemas/user-schema";
 import { z } from "zod";
 
-const Role = {
+const roleParser = {
   insertSchema: createInsertSchema(rolesSchema, {
     name: z
       .string()
@@ -12,9 +12,15 @@ const Role = {
       .max(20, {
         message: "Muitos caracteres.",
       }),
-    permissions: z.string().array(),
-  }).omit({ id: true }),
-  selectSchema: createSelectSchema(rolesSchema),
+    permissions: z.array(z.string(), {
+      message: "Permissões devem ser uma lista de strings.",
+    }),
+  }).omit({ id: true, createdAt: true, updatedAt: true }),
+  selectSchema: createSelectSchema(rolesSchema, {
+    permissions: z.array(z.string(), {
+      message: "Permissões devem ser uma lista de strings.",
+    }),
+  }),
 };
 
-export default Role;
+export default roleParser;
