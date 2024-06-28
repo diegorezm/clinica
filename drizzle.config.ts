@@ -6,7 +6,7 @@ const NODE_ENV = process.env.NODE_ENV || "dev";
 const CONN_STR = NODE_ENV === "dev" ? TEST_DB_URL : DB_URL;
 
 export default defineConfig({
-  schema: "./server/db/schemas/*",
+  schema: "./server/config/db/schemas/*",
   out: "./drizzle",
   dialect: "postgresql", // 'postgresql' | 'mysql' | 'sqlite'
   dbCredentials: {
