@@ -5,10 +5,12 @@ import {
   varchar,
   integer,
   timestamp,
+  index,
+  primaryKey,
 } from "drizzle-orm/pg-core";
 import { atendimentosSchema } from "./atendimentos-schema";
 
-export const paciente = pgTable("paciente", {
+export const pacientesSchema = pgTable("paciente", {
   id: serial("id").primaryKey(),
   nome: varchar("nome", { length: 255 }).notNull(),
   telefone: varchar("telefone", { length: 14 }).notNull(),
@@ -22,15 +24,24 @@ export const paciente = pgTable("paciente", {
     .$onUpdate(() => new Date()),
 });
 
-export const encaminhamentos = pgTable("encaminhamentos", {
-  crm: varchar("crm", { length: 9 }).notNull(),
-  cid: varchar("cid", { length: 12 }).notNull(),
-  funcao: varchar("funcao", { length: 255 }).notNull(),
-  pacienteId: integer("paciente_id")
-    .references(() => paciente.id)
-    .notNull(),
-});
+export const encaminhamentosSchema = pgTable(
+  "encaminhamentos",
+  {
+    crm: varchar("crm", { length: 9 }).notNull(),
+    cid: varchar("cid", { length: 12 }).notNull(),
+    funcao: varchar("funcao", { length: 255 }).notNull(),
+    pacienteId: integer("paciente_id")
+      .references(() => pacientesSchema.id)
+      .notNull(),
+  },
+  (table) => {
+    return {
+      pk: primaryKey({ columns: [table.pacienteId, table.crm] }),
+      encaminhamentosIdx: index("encaminhamento_idx").on(table.pacienteId),
+    };
+  },
+);
 
-export const pacienteRelations = relations(paciente, ({ many }) => ({
+export const pacienteRelations = relations(pacientesSchema, ({ many }) => ({
   atendimentos: many(atendimentosSchema),
 }));

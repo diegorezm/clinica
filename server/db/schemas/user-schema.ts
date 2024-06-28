@@ -6,9 +6,10 @@ import {
   serial,
   integer,
   primaryKey,
+  text,
 } from "drizzle-orm/pg-core";
 
-export const users = pgTable("users", {
+export const usersSchema = pgTable("users", {
   id: uuid("id").defaultRandom().primaryKey(),
   name: varchar("name", { length: 128 }).notNull(),
   email: varchar("email", { length: 255 }).notNull().unique(),
@@ -22,9 +23,10 @@ export const users = pgTable("users", {
     .$onUpdate(() => new Date()),
 });
 
-export const roles = pgTable("roles", {
+export const rolesSchema = pgTable("roles", {
   id: serial("id").primaryKey(),
   name: varchar("name", { length: 20 }).notNull(),
+  permissions: text("permissions").array().$type<string[]>().notNull(),
   createdAt: timestamp("created_at", { mode: "date", precision: 3 })
     .notNull()
     .defaultNow(),
@@ -34,14 +36,14 @@ export const roles = pgTable("roles", {
     .$onUpdate(() => new Date()),
 });
 
-export const userRoles = pgTable(
+export const userRolesSchema = pgTable(
   "user_roles",
   {
     userId: uuid("user_id")
-      .references(() => users.id, { onDelete: "cascade" })
+      .references(() => usersSchema.id, { onDelete: "cascade" })
       .notNull(),
     roleId: integer("role_id")
-      .references(() => roles.id, { onDelete: "cascade" })
+      .references(() => rolesSchema.id, { onDelete: "cascade" })
       .notNull(),
   },
   (table) => {
