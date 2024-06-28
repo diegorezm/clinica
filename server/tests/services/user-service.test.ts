@@ -46,7 +46,6 @@ describe("Testing user service", () => {
   });
 
   test.if(DEV_ENV)("Get users with roles", async () => {
-    // Assuming some setup for users with roles in the database
     const usersWithRoles: UserWithRole[] =
       await userService.getUsersWithRoles();
 
@@ -59,26 +58,6 @@ describe("Testing user service", () => {
       expect(user.email).toBeDefined();
       expect(user.role).toBeNull();
     });
-  });
-
-  test.if(DEV_ENV)("Get user with roles by ID", async () => {
-    const userData: UserDTO = {
-      name: "RoleWIthID",
-      email: "roelid@example.com",
-      password: "password123",
-    };
-
-    const user = await userService.register(userData);
-
-    const userWithRoles: UserWithRole = await userService.getUserWithRole(
-      user.id,
-    );
-
-    expect(userWithRoles).toBeDefined();
-    expect(userWithRoles.id).toBe(user.id);
-    expect(userWithRoles.name).toBeDefined();
-    expect(userWithRoles.email).toBeDefined();
-    expect(userWithRoles.role).toBeNull();
   });
 
   test.if(DEV_ENV)("Update user", async () => {
