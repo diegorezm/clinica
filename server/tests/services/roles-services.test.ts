@@ -3,6 +3,7 @@ import db from "../../config/db";
 import { RoleDTO } from "../../http/domain/Role";
 import rolesService from "../../http/services/roles-service";
 import { rolesSchema } from "../../config/db/schemas/roles-schema";
+import { RoleNotFoundException } from "../../http/domain/Role/exceptions/role-not-found";
 
 const NODE_ENV = process.env.NODE_ENV || "dev";
 const DEV_ENV = NODE_ENV === "dev";
@@ -54,7 +55,7 @@ describe("Testing role service", () => {
     try {
       deletedRole = await rolesService.getById(newRole.id);
     } catch (error: any) {
-      expect(error).toBeDefined();
+      expect(error).toBeInstanceOf(RoleNotFoundException);
     }
     expect(deletedRole).toBeUndefined();
   });

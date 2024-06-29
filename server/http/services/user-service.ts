@@ -70,6 +70,10 @@ class UserService {
       .orderBy(asc(usersSchema.name))
 
       .execute();
+
+    if (userWithRoles.length === 0) {
+      throw new UserNotFoundException();
+    }
     return userWithRoles;
   }
 
@@ -91,6 +95,9 @@ class UserService {
       .orderBy(asc(usersSchema.name))
       .limit(1)
       .execute();
+    if (userWithRoles.length === 0) {
+      throw new UserNotFoundException();
+    }
     return userWithRoles[0];
   }
 
@@ -101,13 +108,15 @@ class UserService {
       .where(eq(usersSchema.id, userId))
       .returning();
     if (!user) {
-      throw new Error("User not found");
+      throw new UserNotFoundException();
     }
     return user;
   }
 
   async remove(userId: string): Promise<void> {
-    await db.delete(usersSchema).where(eq(usersSchema.id, userId));
+    // if user does not exists, getById throws
+    const user = await this.getById(userId);
+    await db.delete(usersSchema).where(eq(usersSchema.id, user.id));
   }
 }
 

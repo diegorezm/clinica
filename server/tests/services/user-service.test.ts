@@ -5,6 +5,7 @@ import { UserDTO } from "../../http/domain/User";
 import userService from "../../http/services/user-service";
 import { UserWithRole } from "../../http/domain/User/user-role";
 import { UserAlreadyExistsException } from "../../http/domain/User/exceptions/user-already-exists";
+import { UserNotFoundException } from "../../http/domain/User/exceptions/user-not-found";
 
 const NODE_ENV = process.env.NODE_ENV || "dev";
 const DEV_ENV = NODE_ENV === "dev";
@@ -115,7 +116,7 @@ describe("Testing user service", () => {
     try {
       deletedUser = await userService.getById(newUser.id);
     } catch (error: any) {
-      expect(error.message).toBeDefined();
+      expect(error).toBeInstanceOf(UserNotFoundException);
     }
     expect(deletedUser).toBeUndefined();
   });

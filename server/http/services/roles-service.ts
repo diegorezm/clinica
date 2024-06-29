@@ -15,7 +15,9 @@ class RoleService {
   }
 
   async remove(roleId: number): Promise<void> {
-    await db.delete(rolesSchema).where(eq(rolesSchema.id, roleId));
+    // if role does not exists, getById throws
+    const role = await this.getById(roleId);
+    await db.delete(rolesSchema).where(eq(rolesSchema.id, role.id));
   }
 
   async getById(roleId: number): Promise<Role> {
