@@ -11,10 +11,23 @@ const apiRoutes = app.basePath("/api");
 
 app.onError((err, c) => {
   if (err instanceof HTTPException) {
-    return err.getResponse();
+    return c.json(
+      {
+        message: err.message,
+      },
+      err.status,
+    );
   }
   if (err instanceof DrizzleError) {
     throw new HTTPException(500, { message: err.message, cause: err });
+  }
+  if (err instanceof Error) {
+    return c.json(
+      {
+        messsage: err.message,
+      },
+      500,
+    );
   }
   return c.json(
     {
