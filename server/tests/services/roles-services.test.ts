@@ -1,8 +1,8 @@
 import { describe, expect, test, afterAll } from "bun:test";
 import db from "../../config/db";
-import { rolesSchema } from "../../config/db/schemas/user-schema";
 import { RoleDTO } from "../../http/domain/Role";
 import rolesService from "../../http/services/roles-service";
+import { rolesSchema } from "../../config/db/schemas/roles-schema";
 
 const NODE_ENV = process.env.NODE_ENV || "dev";
 const DEV_ENV = NODE_ENV === "dev";

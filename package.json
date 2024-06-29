@@ -9,6 +9,7 @@
     "drop": "drizzle-kit drop"
   },
   "dependencies": {
+    "@hono/zod-validator": "^0.2.2",
     "@neondatabase/serverless": "^0.9.4",
     "drizzle-orm": "^0.31.2",
     "drizzle-zod": "^0.5.1",

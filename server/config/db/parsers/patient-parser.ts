@@ -1,12 +1,9 @@
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
-import {
-  encaminhamentosSchema,
-  pacientesSchema,
-} from "../schemas/paciente-schema";
+import { patientsSchema } from "../schemas/patient-schema";
 import { z } from "zod";
 
 const pacienteParser = {
-  insertSchema: createInsertSchema(pacientesSchema, {
+  insertSchema: createInsertSchema(patientsSchema, {
     rg: z
       .string()
       .min(8, {
@@ -15,7 +12,7 @@ const pacienteParser = {
       .max(8, {
         message: "Insira um rg válido.",
       }),
-    nome: z
+    name: z
       .string()
       .min(4, {
         message: "Minimo de 4 caracteres.",
@@ -23,7 +20,7 @@ const pacienteParser = {
       .max(255, {
         message: "Muitos caracteres.",
       }),
-    convenio: z
+    insurance: z
       .string()
       .min(1, {
         message: "Insira um convenio válido.",
@@ -31,7 +28,7 @@ const pacienteParser = {
       .max(30, {
         message: "Insira um convenio válido.",
       }),
-    telefone: z
+    phone: z
       .string()
       .min(7, {
         message: "Insira um telefone válido.",
@@ -39,7 +36,7 @@ const pacienteParser = {
       .max(9, {
         message: "Insira um telefone válido.",
       }),
-    carteirinha: z
+    insuranceNumber: z
       .string()
       .min(1, {
         message: "Insira uma carteirinha válida.",
@@ -47,13 +44,8 @@ const pacienteParser = {
       .max(30, {
         message: "Insira uma carteirinha válida.",
       }),
-  }).omit({ id: true }),
-  selectSchema: createSelectSchema(pacientesSchema),
-};
-
-export const encaminhamentoParser = {
-  insertSchema: createInsertSchema(encaminhamentosSchema),
-  selectSchema: createSelectSchema(encaminhamentosSchema),
+  }).omit({ id: true, createdAt: true, updatedAt: true }),
+  selectSchema: createSelectSchema(patientsSchema),
 };
 
 export default pacienteParser;

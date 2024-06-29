@@ -4,6 +4,7 @@ import { usersSchema } from "../../config/db/schemas/user-schema";
 import { UserDTO } from "../../http/domain/User";
 import userService from "../../http/services/user-service";
 import { UserWithRole } from "../../http/domain/User/user-role";
+import { UserAlreadyExistsException } from "../../http/domain/User/exceptions/user-already-exists";
 
 const NODE_ENV = process.env.NODE_ENV || "dev";
 const DEV_ENV = NODE_ENV === "dev";
@@ -27,6 +28,24 @@ describe("Testing user service", () => {
     expect(user.id).toBeDefined();
     expect(user.name).toBe(userData.name);
     expect(user.email).toBe(userData.email);
+  });
+  test.if(DEV_ENV)("Test user already exists exception", async () => {
+    const userData: UserDTO = {
+      name: "John Doe",
+      email: "john.doe@example.com",
+      password: "password123",
+    };
+    const userData2: UserDTO = {
+      name: "Joa doe",
+      email: "john.doe@example.com",
+      password: "password123",
+    };
+    try {
+      await userService.register(userData);
+      await userService.register(userData2);
+    } catch (error: any) {
+      expect(error).toBeInstanceOf(UserAlreadyExistsException);
+    }
   });
 
   test.if(DEV_ENV)("Get user by ID", async () => {

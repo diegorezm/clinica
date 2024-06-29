@@ -2,7 +2,6 @@ import { describe, expect, test, afterAll } from "bun:test";
 import db from "../../config/db";
 import {
   usersSchema,
-  rolesSchema,
   userRolesSchema,
 } from "../../config/db/schemas/user-schema";
 import userService from "../../http/services/user-service";
@@ -11,6 +10,7 @@ import { UserRole, UserWithRole } from "../../http/domain/User/user-role";
 import rolesService from "../../http/services/roles-service";
 import { eq } from "drizzle-orm";
 import { UserDTO } from "../../http/domain/User";
+import { rolesSchema } from "../../config/db/schemas/roles-schema";
 
 const NODE_ENV = process.env.NODE_ENV || "dev";
 const DEV_ENV = NODE_ENV === "dev";

@@ -7,24 +7,24 @@ import {
   serial,
   timestamp,
 } from "drizzle-orm/pg-core";
-import { medicosSchema } from "./medico-schema";
-import { pacientesSchema } from "./paciente-schema";
+import { doctorSchema } from "./doctor-schema";
+import { patientsSchema } from "./patient-schema";
 import { relations } from "drizzle-orm";
 
 // falta,falta justificada, falta do medico, ok
 export const statusEnum = pgEnum("status", ["f", "fj", "fm", "ok"]);
 
-export const atendimentosSchema = pgTable(
-  "atendimentos",
+export const attendancesSchema = pgTable(
+  "attendences",
   {
     id: serial("id").primaryKey(),
-    medicoId: integer("medico_id")
-      .references(() => medicosSchema.id)
+    doctorId: integer("doctor_id")
+      .references(() => doctorSchema.id)
       .notNull(),
-    pacienteId: integer("paciente_id")
-      .references(() => pacientesSchema.id)
+    patientId: integer("patient_id")
+      .references(() => patientsSchema.id)
       .notNull(),
-    data: date("data").notNull(),
+    appointmentDate: date("data").notNull(),
     status: statusEnum("status"),
     createdAt: timestamp("created_at", { mode: "date", precision: 3 })
       .notNull()
@@ -36,24 +36,24 @@ export const atendimentosSchema = pgTable(
   },
   (table) => {
     return {
-      compositeIndex: index("paciente_medico_idx").on(
-        table.pacienteId,
-        table.medicoId,
+      compositeIndex: index("patient_doctor_index").on(
+        table.patientId,
+        table.doctorId,
       ),
     };
   },
 );
 
 export const atendimentosRelations = relations(
-  atendimentosSchema,
+  attendancesSchema,
   ({ one }) => ({
-    medico: one(medicosSchema, {
-      fields: [atendimentosSchema.medicoId],
-      references: [medicosSchema.id],
+    medico: one(doctorSchema, {
+      fields: [attendancesSchema.doctorId],
+      references: [doctorSchema.id],
     }),
-    paciente: one(pacientesSchema, {
-      fields: [atendimentosSchema.pacienteId],
-      references: [pacientesSchema.id],
+    paciente: one(patientsSchema, {
+      fields: [attendancesSchema.patientId],
+      references: [patientsSchema.id],
     }),
   }),
 );

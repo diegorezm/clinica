@@ -1,6 +1,6 @@
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
-import { rolesSchema } from "../schemas/user-schema";
 import { z } from "zod";
+import { rolesSchema } from "../schemas/roles-schema";
 
 const roleParser = {
   insertSchema: createInsertSchema(rolesSchema, {
