@@ -2,7 +2,7 @@ import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 import { patientsSchema } from "../schemas/patient-schema";
 import { z } from "zod";
 
-const pacienteParser = {
+export const patientParser = {
   insertSchema: createInsertSchema(patientsSchema, {
     rg: z
       .string()
@@ -47,5 +47,3 @@ const pacienteParser = {
   }).omit({ id: true, createdAt: true, updatedAt: true }),
   selectSchema: createSelectSchema(patientsSchema),
 };
-
-export default pacienteParser;
