@@ -27,7 +27,6 @@ export const userRolesSchema = pgTable(
   {
     userId: uuid("user_id")
       .references(() => usersSchema.id, { onDelete: "cascade" })
-      .unique()
       .notNull(),
     roleId: integer("role_id")
       .references(() => rolesSchema.id, { onDelete: "cascade" })

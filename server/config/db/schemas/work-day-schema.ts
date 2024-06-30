@@ -1,16 +1,27 @@
-import { integer, pgEnum, pgTable } from "drizzle-orm/pg-core";
+import { integer, pgEnum, pgTable, primaryKey } from "drizzle-orm/pg-core";
+import { doctorSchema } from "./doctor-schema";
 
 export const weekDaysEnum = pgEnum("week_days_enum", [
-  "Domingo",
-  "Segunda",
-  "Terça",
-  "Quarta",
-  "Quinta",
-  "Sexta",
-  "Sábado",
+  "Sunday",
+  "Monday",
+  "Tuesday",
+  "Wednesday",
+  "Thursday",
+  "Friday",
+  "Saturday",
 ]);
 
-export const workDaysSchema = pgTable("work_days", {
-  medicoId: integer("doctor_id").notNull(),
-  dia: weekDaysEnum("week_days_enum").notNull(),
-});
+export const workDaysSchema = pgTable(
+  "work_days",
+  {
+    doctorId: integer("doctor_id")
+      .references(() => doctorSchema.id, { onDelete: "cascade" })
+      .notNull(),
+    day: weekDaysEnum("week_days_enum").notNull(),
+  },
+  (table) => {
+    return {
+      cpk: primaryKey({ columns: [table.doctorId, table.day] }),
+    };
+  },
+);
