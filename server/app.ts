@@ -3,11 +3,14 @@ import { logger } from "hono/logger";
 import { serveStatic } from "hono/bun";
 import { HTTPException } from "hono/http-exception";
 import { DrizzleError } from "drizzle-orm";
+import { userRoute } from "./http/routes/user-route";
+import { ZodError } from "zod";
 
 const app = new Hono();
 app.use("*", logger());
 
 const apiRoutes = app.basePath("/api");
+apiRoutes.route("/users", userRoute);
 
 app.onError((err, c) => {
   if (err instanceof HTTPException) {
@@ -17,6 +20,9 @@ app.onError((err, c) => {
       },
       err.status,
     );
+  }
+  if (err instanceof ZodError) {
+    throw new HTTPException(400, { message: err.message });
   }
   if (err instanceof DrizzleError) {
     throw new HTTPException(500, { message: err.message, cause: err });

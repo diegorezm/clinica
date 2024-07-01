@@ -23,4 +23,6 @@ bun run dev
 
 ## Services:
 
+    - [] login
+    - [] jwt auth
     - [] Create updates
