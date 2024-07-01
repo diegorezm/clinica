@@ -46,7 +46,8 @@ class UserService {
     const [user] = await db
       .select()
       .from(usersSchema)
-      .where(eq(usersSchema.email, email));
+      .where(eq(usersSchema.email, email))
+      .limit(1);
     if (!user) {
       throw new UserNotFoundException();
     }

@@ -4,7 +4,7 @@ import { workDaysSchema } from "../../config/db/schemas/work-day-schema";
 import { WorkDay, WorkDayDTO } from "../domain/WorkDay";
 
 class WorkDayService {
-  async getDoctorWorkDays(doctorId: number) {
+  async getDoctorWorkDays(doctorId: number): Promise<WorkDay[]> {
     return await db
       .select()
       .from(workDaysSchema)
