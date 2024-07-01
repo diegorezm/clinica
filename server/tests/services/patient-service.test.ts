@@ -4,7 +4,7 @@ import { patientsSchema } from "../../config/db/schemas/patient-schema";
 import patientService from "../../http/services/patient-service";
 import { PatientDTO } from "../../http/domain/Patient";
 import { PatientNotFoundException } from "../../http/domain/Patient/exceptions/patient-not-found";
-import { createPatientDTO } from "./test-helpers"; // Import the helper function
+import { createPatientDTO } from "../helpers";
 
 const NODE_ENV = process.env.NODE_ENV || "dev";
 const DEV_ENV = NODE_ENV === "dev";

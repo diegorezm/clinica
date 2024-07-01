@@ -6,7 +6,7 @@ import userService from "../../http/services/user-service";
 import { UserWithRole } from "../../http/domain/User/user-role";
 import { UserAlreadyExistsException } from "../../http/domain/User/exceptions/user-already-exists";
 import { UserNotFoundException } from "../../http/domain/User/exceptions/user-not-found";
-import { createUserDTO } from "./test-helpers"; // Import the helper function
+import { createUserDTO } from "../helpers";
 
 const NODE_ENV = process.env.NODE_ENV || "dev";
 const DEV_ENV = NODE_ENV === "dev";

@@ -9,11 +9,7 @@ import { UserDTO } from "../../http/domain/User";
 import { workDaysSchema } from "../../config/db/schemas/work-day-schema";
 import { WorkDayDTO } from "../../http/domain/WorkDay";
 import workDayService from "../../http/services/work-day-service";
-import {
-  createDoctorDTO,
-  createUserDTO,
-  createWorkDayDTO,
-} from "./test-helpers";
+import { createDoctorDTO, createUserDTO, createWorkDayDTO } from "../helpers";
 
 const NODE_ENV = process.env.NODE_ENV || "dev";
 const DEV_ENV = NODE_ENV === "dev";

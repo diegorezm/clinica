@@ -12,7 +12,7 @@ import { eq } from "drizzle-orm";
 import { UserDTO } from "../../http/domain/User";
 import { RoleDTO } from "../../http/domain/Role";
 import { rolesSchema } from "../../config/db/schemas/roles-schema";
-import { createUserDTO, createRoleDTO } from "./test-helpers"; // Import the helper functions
+import { createUserDTO, createRoleDTO } from "../helpers";
 
 const NODE_ENV = process.env.NODE_ENV || "dev";
 const DEV_ENV = NODE_ENV === "dev";

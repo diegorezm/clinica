@@ -4,7 +4,7 @@ import { RoleDTO } from "../../http/domain/Role";
 import rolesService from "../../http/services/roles-service";
 import { rolesSchema } from "../../config/db/schemas/roles-schema";
 import { RoleNotFoundException } from "../../http/domain/Role/exceptions/role-not-found";
-import { createRoleDTO } from "./test-helpers"; // Import the helper function
+import { createRoleDTO } from "../helpers"; // Import the helper function
 
 const NODE_ENV = process.env.NODE_ENV || "dev";
 const DEV_ENV = NODE_ENV === "dev";

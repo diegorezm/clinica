@@ -4,11 +4,9 @@ import { usersSchema } from "../../config/db/schemas/user-schema";
 import { doctorSchema } from "../../config/db/schemas/doctor-schema";
 import doctorService from "../../http/services/doctor-service";
 import userService from "../../http/services/user-service";
-import { DoctorDTO } from "../../http/domain/Doctor";
-import { UserDTO } from "../../http/domain/User";
 import { DoctorAlreadyExistsException } from "../../http/domain/Doctor/exceptions/doctor-already-exists";
 import { DoctorNotFoundException } from "../../http/domain/Doctor/exceptions/doctor-not-found";
-import { createUserDTO, createDoctorDTO } from "./test-helpers";
+import { createUserDTO, createDoctorDTO } from "../helpers";
 
 const NODE_ENV = process.env.NODE_ENV || "dev";
 const DEV_ENV = NODE_ENV === "dev";
