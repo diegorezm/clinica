@@ -12,6 +12,7 @@
     "@faker-js/faker": "^8.4.1",
     "@hono/zod-validator": "^0.2.2",
     "@neondatabase/serverless": "^0.9.4",
+    "date-fns": "^3.6.0",
     "drizzle-orm": "^0.31.2",
     "drizzle-zod": "^0.5.1",
     "hono": "^4.4.8",
