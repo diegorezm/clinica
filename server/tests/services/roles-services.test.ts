@@ -4,6 +4,7 @@ import { RoleDTO } from "../../http/domain/Role";
 import rolesService from "../../http/services/roles-service";
 import { rolesSchema } from "../../config/db/schemas/roles-schema";
 import { RoleNotFoundException } from "../../http/domain/Role/exceptions/role-not-found";
+import { createRoleDTO } from "./test-helpers"; // Import the helper function
 
 const NODE_ENV = process.env.NODE_ENV || "dev";
 const DEV_ENV = NODE_ENV === "dev";
@@ -15,10 +16,7 @@ describe("Testing role service", () => {
   });
 
   test.if(DEV_ENV)("Create a role", async () => {
-    const roleData: RoleDTO = {
-      name: "Admin",
-      permissions: ["read", "write"],
-    };
+    const roleData: RoleDTO = createRoleDTO(); // Use helper function to create role data
 
     const role = await rolesService.create(roleData);
 
@@ -29,10 +27,7 @@ describe("Testing role service", () => {
   });
 
   test.if(DEV_ENV)("Get role by ID", async () => {
-    const roleData: RoleDTO = {
-      name: "Manager",
-      permissions: ["read"],
-    };
+    const roleData: RoleDTO = createRoleDTO(); // Use helper function to create role data
 
     const newRole = await rolesService.create(roleData);
     const fetchedRole = await rolesService.getById(newRole.id);
@@ -44,13 +39,11 @@ describe("Testing role service", () => {
   });
 
   test.if(DEV_ENV)("Remove role", async () => {
-    const roleData: RoleDTO = {
-      name: "ToDelete Role",
-      permissions: ["delete"],
-    };
+    const roleData: RoleDTO = createRoleDTO(); // Use helper function to create role data
 
     const newRole = await rolesService.create(roleData);
     await rolesService.remove(newRole.id);
+
     let deletedRole;
     try {
       deletedRole = await rolesService.getById(newRole.id);

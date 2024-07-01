@@ -6,6 +6,7 @@ import userService from "../../http/services/user-service";
 import { UserWithRole } from "../../http/domain/User/user-role";
 import { UserAlreadyExistsException } from "../../http/domain/User/exceptions/user-already-exists";
 import { UserNotFoundException } from "../../http/domain/User/exceptions/user-not-found";
+import { createUserDTO } from "./test-helpers"; // Import the helper function
 
 const NODE_ENV = process.env.NODE_ENV || "dev";
 const DEV_ENV = NODE_ENV === "dev";
@@ -17,11 +18,7 @@ describe("Testing user service", () => {
   });
 
   test.if(DEV_ENV)("Register a user and delete", async () => {
-    const userData: UserDTO = {
-      name: "John Doe",
-      email: "john.doe@example.com",
-      password: "password123",
-    };
+    const userData: UserDTO = createUserDTO(); // Use helper function to create user data
 
     const user = await userService.register(userData);
 
@@ -30,17 +27,11 @@ describe("Testing user service", () => {
     expect(user.name).toBe(userData.name);
     expect(user.email).toBe(userData.email);
   });
+
   test.if(DEV_ENV)("Test user already exists exception", async () => {
-    const userData: UserDTO = {
-      name: "John Doe",
-      email: "john.doe@example.com",
-      password: "password123",
-    };
-    const userData2: UserDTO = {
-      name: "Joa doe",
-      email: "john.doe@example.com",
-      password: "password123",
-    };
+    const userData: UserDTO = createUserDTO();
+    const userData2: UserDTO = createUserDTO(); // Creating a duplicate email intentionally
+
     try {
       await userService.register(userData);
       await userService.register(userData2);
@@ -50,11 +41,7 @@ describe("Testing user service", () => {
   });
 
   test.if(DEV_ENV)("Get user by ID", async () => {
-    const userData: UserDTO = {
-      name: "Jane Smith",
-      email: "jane.smith@example.com",
-      password: "password456",
-    };
+    const userData: UserDTO = createUserDTO();
 
     const newUser = await userService.register(userData);
     const fetchedUser = await userService.getById(newUser.id);
@@ -81,32 +68,21 @@ describe("Testing user service", () => {
   });
 
   test.if(DEV_ENV)("Update user", async () => {
-    const userData: UserDTO = {
-      name: "Updated Name",
-      email: "updated.email@example.com",
-      password: "",
-    };
+    const userData: UserDTO = createUserDTO();
+    const updatedUserData: UserDTO = createUserDTO(); // New data for update
 
-    const newUser = await userService.register({
-      name: "Original Name",
-      email: "original.email@example.com",
-      password: "password789",
-    });
+    const newUser = await userService.register(userData);
 
-    const updatedUser = await userService.update(newUser.id, userData);
+    const updatedUser = await userService.update(newUser.id, updatedUserData);
 
     expect(updatedUser).toBeDefined();
     expect(updatedUser.id).toBe(newUser.id);
-    expect(updatedUser.name).toBe(userData.name);
-    expect(updatedUser.email).toBe(userData.email);
+    expect(updatedUser.name).toBe(updatedUserData.name);
+    expect(updatedUser.email).toBe(updatedUserData.email);
   });
 
   test.if(DEV_ENV)("Remove user", async () => {
-    const userData: UserDTO = {
-      name: "ToDelete User",
-      email: "todelete.user@example.com",
-      password: "password999",
-    };
+    const userData: UserDTO = createUserDTO();
 
     const newUser = await userService.register(userData);
     await userService.remove(newUser.id);

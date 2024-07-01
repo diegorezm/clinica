@@ -8,6 +8,7 @@ import { DoctorDTO } from "../../http/domain/Doctor";
 import { UserDTO } from "../../http/domain/User";
 import { DoctorAlreadyExistsException } from "../../http/domain/Doctor/exceptions/doctor-already-exists";
 import { DoctorNotFoundException } from "../../http/domain/Doctor/exceptions/doctor-not-found";
+import { createUserDTO, createDoctorDTO } from "./test-helpers";
 
 const NODE_ENV = process.env.NODE_ENV || "dev";
 const DEV_ENV = NODE_ENV === "dev";
@@ -20,18 +21,10 @@ describe("Testing doctor service", () => {
   });
 
   test.if(DEV_ENV)("Create a doctor", async () => {
-    const userData: UserDTO = {
-      name: "Dr. House",
-      email: "dr.house@example.com",
-      password: "password123",
-    };
+    const userData = createUserDTO();
     const user = await userService.register(userData);
 
-    const doctorData: DoctorDTO = {
-      userId: user.id,
-      crm: "123456",
-      jobFunction: "General Practitioner",
-    };
+    const doctorData = createDoctorDTO(user.id);
     const doctor = await doctorService.create(doctorData);
 
     expect(doctor).toBeDefined();
@@ -42,18 +35,10 @@ describe("Testing doctor service", () => {
 
   test.if(DEV_ENV)("Get doctor by ID", async () => {
     // Create a user first
-    const userData: UserDTO = {
-      name: "Dr. John Watson",
-      email: "dr.watson@example.com",
-      password: "password123",
-    };
+    const userData = createUserDTO();
     const user = await userService.register(userData);
 
-    const doctorData: DoctorDTO = {
-      userId: user.id,
-      crm: "654321",
-      jobFunction: "Surgeon",
-    };
+    const doctorData = createDoctorDTO(user.id);
     const doctor = await doctorService.create(doctorData);
 
     const fetcheddoctor = await doctorService.getById(doctor.id);
@@ -65,18 +50,10 @@ describe("Testing doctor service", () => {
   });
 
   test.if(DEV_ENV)("Get doctor by name", async () => {
-    const userData: UserDTO = {
-      name: "Dr. Greg House",
-      email: "dr.greg.house@example.com",
-      password: "password123",
-    };
+    const userData = createUserDTO();
     const user = await userService.register(userData);
 
-    const doctorData: DoctorDTO = {
-      userId: user.id,
-      crm: "112233",
-      jobFunction: "Diagnostician",
-    };
+    const doctorData = createDoctorDTO(user.id);
     const doctor = await doctorService.create(doctorData);
 
     // Get the doctor by name
@@ -89,18 +66,10 @@ describe("Testing doctor service", () => {
   });
 
   test.if(DEV_ENV)("Get doctor by CRM", async () => {
-    const userData: UserDTO = {
-      name: "Dr. Meredith Grey",
-      email: "dr.grey@example.com",
-      password: "password123",
-    };
+    const userData = createUserDTO();
     const user = await userService.register(userData);
 
-    const doctorData: DoctorDTO = {
-      userId: user.id,
-      crm: "445566",
-      jobFunction: "Surgeon",
-    };
+    const doctorData = createDoctorDTO(user.id);
     const doctor = await doctorService.create(doctorData);
 
     const fetcheddoctor = await doctorService.getByCRM(doctor.crm);
@@ -112,18 +81,10 @@ describe("Testing doctor service", () => {
   });
 
   test.if(DEV_ENV)("Remove doctor", async () => {
-    const userData: UserDTO = {
-      name: "Dr. Christina Yang",
-      email: "dr.yang@example.com",
-      password: "password123",
-    };
+    const userData = createUserDTO();
     const user = await userService.register(userData);
 
-    const doctorData: DoctorDTO = {
-      userId: user.id,
-      crm: "778899",
-      jobFunction: "Cardiothoracic Surgeon",
-    };
+    const doctorData = createDoctorDTO(user.id);
     const doctor = await doctorService.create(doctorData);
 
     // Remove the doctor
@@ -141,32 +102,16 @@ describe("Testing doctor service", () => {
   test.if(DEV_ENV)(
     "Should not be able to insert a doctor if their crm is already in the db.",
     async () => {
-      const userData: UserDTO = {
-        name: "Dr Yang",
-        email: "yang@example.com",
-        password: "password123",
-      };
+      const userData = createUserDTO();
       const user = await userService.register(userData);
 
-      const doctorData: DoctorDTO = {
-        userId: user.id,
-        crm: "778899",
-        jobFunction: "Cardiothoracic Surgeon",
-      };
+      const doctorData = createDoctorDTO(user.id);
 
-      const userData2: UserDTO = {
-        name: "Dr",
-        email: "ya@example.com",
-        password: "password123",
-      };
+      const userData2 = createUserDTO();
 
       const user2 = await userService.register(userData2);
 
-      const doctorData2: DoctorDTO = {
-        userId: user2.id,
-        crm: "778899",
-        jobFunction: "Cardiothoracic Surgeon",
-      };
+      const doctorData2 = createDoctorDTO(user2.id);
 
       try {
         await doctorService.create(doctorData);
