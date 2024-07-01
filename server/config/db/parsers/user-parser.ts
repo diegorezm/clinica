@@ -30,7 +30,10 @@ const userParser = {
         message: "Muitos caracteres.",
       }),
   }).omit({ id: true, createdAt: true, updatedAt: true }),
-  selectSchema: createSelectSchema(usersSchema).omit({ password: true }),
+  selectSchema: createSelectSchema(usersSchema, {
+    createdAt: z.string().transform((val) => new Date(val)),
+    updatedAt: z.string().transform((val) => new Date(val)),
+  }).omit({ password: true }),
 };
 
 export const userRoleParser = {
