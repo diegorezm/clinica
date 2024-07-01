@@ -24,8 +24,8 @@ export const attendancesSchema = pgTable(
     patientId: integer("patient_id")
       .references(() => patientsSchema.id)
       .notNull(),
-    appointmentDate: date("data").notNull(),
-    status: statusEnum("status"),
+    appointmentDate: timestamp("appointment_date").notNull(),
+    status: statusEnum("status").default("f"),
     createdAt: timestamp("created_at", { mode: "date", precision: 3 })
       .notNull()
       .defaultNow(),
