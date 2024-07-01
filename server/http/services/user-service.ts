@@ -10,6 +10,7 @@ import { UserWithRole } from "../domain/User/user-role";
 import { UserNotFoundException } from "../domain/User/exceptions/user-not-found";
 import { UserAlreadyExistsException } from "../domain/User/exceptions/user-already-exists";
 import { rolesSchema } from "../../config/db/schemas/roles-schema";
+import userParser from "../../config/db/parsers/user-parser";
 
 class UserService {
   async register(payload: UserDTO): Promise<User> {
@@ -32,7 +33,13 @@ class UserService {
 
   async getById(userId: string): Promise<User> {
     const [user] = await db
-      .select()
+      .select({
+        id: usersSchema.id,
+        name: usersSchema.name,
+        email: usersSchema.email,
+        createdAt: usersSchema.createdAt,
+        updatedAt: usersSchema.updatedAt,
+      })
       .from(usersSchema)
       .where(eq(usersSchema.id, userId))
       .limit(1);
@@ -44,7 +51,13 @@ class UserService {
 
   async getByEmail(email: string): Promise<User> {
     const [user] = await db
-      .select()
+      .select({
+        id: usersSchema.id,
+        name: usersSchema.name,
+        email: usersSchema.email,
+        createdAt: usersSchema.createdAt,
+        updatedAt: usersSchema.updatedAt,
+      })
       .from(usersSchema)
       .where(eq(usersSchema.email, email))
       .limit(1);
@@ -111,7 +124,7 @@ class UserService {
     if (!user) {
       throw new UserNotFoundException();
     }
-    return user;
+    return userParser.selectSchema.parse(user);
   }
 
   async remove(userId: string): Promise<void> {

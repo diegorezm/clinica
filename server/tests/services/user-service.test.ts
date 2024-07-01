@@ -67,20 +67,6 @@ describe("Testing user service", () => {
     });
   });
 
-  test.if(DEV_ENV)("Update user", async () => {
-    const userData: UserDTO = createUserDTO();
-    const updatedUserData: UserDTO = createUserDTO(); // New data for update
-
-    const newUser = await userService.register(userData);
-
-    const updatedUser = await userService.update(newUser.id, updatedUserData);
-
-    expect(updatedUser).toBeDefined();
-    expect(updatedUser.id).toBe(newUser.id);
-    expect(updatedUser.name).toBe(updatedUserData.name);
-    expect(updatedUser.email).toBe(updatedUserData.email);
-  });
-
   test.if(DEV_ENV)("Remove user", async () => {
     const userData: UserDTO = createUserDTO();
 

@@ -21,13 +21,21 @@ userRoute.post("/auth/login", zValidator("json", loginParser), async (c) => {
 userRoute.get("/", async (c) => {
   return c.status(404);
 });
-userRoute.get("/email/search/:email", async (c) => {
+
+userRoute.get("/email/:email", async (c) => {
   const email = c.req.param("email");
   const user = await userService.getByEmail(email);
   return c.json(user, 200);
 });
-userRoute.get("/id/search/:id", async (c) => {
+
+userRoute.get("/id/:id", async (c) => {
   const id = c.req.param("id");
   const user = await userService.getById(id);
   return c.json(user, 200);
+});
+
+userRoute.delete("/id/:id", async (c) => {
+  const id = c.req.param("id");
+  await userService.remove(id);
+  return c.json(null, 200);
 });

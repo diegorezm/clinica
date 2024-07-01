@@ -4,6 +4,7 @@ import app from "../../app";
 import db from "../../config/db";
 import { usersSchema } from "../../config/db/schemas/user-schema";
 import { ZodError } from "zod";
+import userParser from "../../config/db/parsers/user-parser";
 
 const NODE_ENV = process.env.NODE_ENV || "dev";
 const DEV_ENV = NODE_ENV === "dev";
@@ -16,7 +17,8 @@ const createUser = async () => {
     headers: new Headers({ "Content-Type": "application/json" }),
   });
   const json = await res.json();
-  return { res, json };
+  const parsedJson = userParser.selectSchema.parse(json);
+  return { res, json: parsedJson };
 };
 
 describe("Testing /users endpoint", () => {
@@ -38,8 +40,8 @@ describe("Testing /users endpoint", () => {
       id: expect.any(String),
       name: expect.any(String),
       email: expect.any(String),
-      createdAt: expect.any(String),
-      updatedAt: expect.any(String),
+      createdAt: expect.any(Date),
+      updatedAt: expect.any(Date),
     });
   });
 
@@ -62,14 +64,14 @@ describe("Testing /users endpoint", () => {
     expect(postRes.status).toBe(201);
 
     // email
-    let res = await app.request(`/api/users/email/search/${postJson.email}`, {
+    let res = await app.request(`/api/users/email/${postJson.email}`, {
       method: "GET",
       headers: new Headers({ "Content-Type": "application/json" }),
     });
     let json = await res.json();
+    let parsedJson = userParser.selectSchema.parse(json);
     expect(res.status).toBe(200);
-    expect(json).toBeObject();
-    expect(json).toMatchObject({
+    expect(parsedJson).toMatchObject({
       id: postJson.id,
       name: postJson.name,
       email: postJson.email,
@@ -78,14 +80,14 @@ describe("Testing /users endpoint", () => {
     });
 
     // id
-    res = await app.request(`/api/users/id/search/${postJson.id}`, {
+    res = await app.request(`/api/users/id/${postJson.id}`, {
       method: "GET",
       headers: new Headers({ "Content-Type": "application/json" }),
     });
     json = await res.json();
+    parsedJson = userParser.selectSchema.parse(json);
     expect(res.status).toBe(200);
-    expect(json).toBeObject();
-    expect(json).toMatchObject({
+    expect(parsedJson).toMatchObject({
       id: postJson.id,
       name: postJson.name,
       email: postJson.email,
@@ -96,7 +98,7 @@ describe("Testing /users endpoint", () => {
 
   test.if(DEV_ENV)("invalid GET user by email and id", async () => {
     // email
-    let res = await app.request(`/api/users/email/search/myemail@email.com`, {
+    let res = await app.request(`/api/users/email/myemail@email.com`, {
       method: "GET",
       headers: new Headers({ "Content-Type": "application/json" }),
     });
@@ -105,20 +107,39 @@ describe("Testing /users endpoint", () => {
     expect(json).toMatchObject({
       message: expect.any(String),
     });
-
     // id
     res = await app.request(
-      `/api/users/id/search/4e40617e-0998-44ec-a961-ced98469a420`,
+      `/api/users/id/4e40617e-0998-44ec-a961-ced98469a420`,
       {
         method: "GET",
         headers: new Headers({ "Content-Type": "application/json" }),
       },
     );
-    console.log(res);
     json = await res.json();
     expect(res.status).toBe(404);
     expect(json).toMatchObject({
       message: expect.any(String),
     });
+  });
+
+  test.if(DEV_ENV)("valid DELETE user by id", async () => {
+    const { res: postRes, json: postJson } = await createUser();
+    expect(postRes.status).toBe(201);
+    let response = await app.request(`/api/users/id/${postJson.id}`, {
+      method: "DELETE",
+      headers: new Headers({ "Content-Type": "application/json" }),
+    });
+    expect(response.status).toBe(200);
+  });
+
+  test.if(DEV_ENV)("invalid DELETE user by id", async () => {
+    let response = await app.request(
+      `/api/users/id/4e40617e-0998-44ec-a961-ced98469a420`,
+      {
+        method: "DELETE",
+        headers: new Headers({ "Content-Type": "application/json" }),
+      },
+    );
+    expect(response.status).toBe(404);
   });
 });
