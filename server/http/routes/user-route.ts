@@ -1,8 +1,11 @@
 import { zValidator } from "@hono/zod-validator";
 import { Hono } from "hono";
-import userParser from "../../config/db/parsers/user-parser";
+import userParser, {
+  userRoleParser,
+} from "../../config/db/parsers/user-parser";
 import userService from "../services/user-service";
 import { loginParser } from "../domain/User/user-login";
+import userRoleService from "../services/user-role-service";
 
 export const userRoute = new Hono();
 
@@ -14,8 +17,12 @@ userRoute.post("/", zValidator("json", userParser.insertSchema), async (c) => {
 
 // TODO: login
 userRoute.post("/auth/login", zValidator("json", loginParser), async (c) => {
-  const userDTO = c.req.valid("json");
-  return c.json(userDTO, 201);
+  const loginDTO = c.req.valid("json");
+  const login = await userService.login(loginDTO);
+  return c.json(
+    { message: login ? "logged in!" : "Wrong password!" },
+    login ? 200 : 401,
+  );
 });
 
 userRoute.get("/", async (c) => {
@@ -39,3 +46,23 @@ userRoute.delete("/id/:id", async (c) => {
   await userService.remove(id);
   return c.json(null, 200);
 });
+
+userRoute.put(
+  "/roles",
+  zValidator("json", userRoleParser.insertSchema),
+  async (c) => {
+    const body = c.req.valid("json");
+    const role = await userRoleService.assingToUser(body);
+    return c.json(role, 201);
+  },
+);
+
+userRoute.delete(
+  "/roles",
+  zValidator("json", userRoleParser.insertSchema),
+  async (c) => {
+    const body = c.req.valid("json");
+    await userRoleService.removeFromUser(body);
+    return c.json(null, 200);
+  },
+);
