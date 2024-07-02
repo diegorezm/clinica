@@ -45,5 +45,8 @@ export const patientParser = {
         message: "Insira uma carteirinha válida.",
       }),
   }).omit({ id: true, createdAt: true, updatedAt: true }),
-  selectSchema: createSelectSchema(patientsSchema),
+  selectSchema: createSelectSchema(patientsSchema, {
+    createdAt: z.string().transform((val) => new Date(val)),
+    updatedAt: z.string().transform((val) => new Date(val)),
+  }),
 };
