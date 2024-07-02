@@ -1,3 +1,4 @@
+import { sql } from "drizzle-orm";
 import db from "../../config/db";
 import { userRolesSchema } from "../../config/db/schemas/user-schema";
 import { RoleNotFoundException } from "../domain/Role/exceptions/role-not-found";
@@ -7,12 +8,12 @@ import roleService from "./roles-service";
 import userService from "./user-service";
 
 class UserRoleService {
-  async assingToUser(userId: string, roleId: number) {
-    const user = await userService.getById(userId);
+  async assingToUser(payload: UserRole) {
+    const user = await userService.getById(payload.userId);
     if (!user) {
       throw new UserNotFoundException();
     }
-    const role = await roleService.getById(roleId);
+    const role = await roleService.getById(payload.roleId);
     if (!role) {
       throw new RoleNotFoundException();
     }
@@ -22,6 +23,16 @@ class UserRoleService {
     };
     await db.insert(userRolesSchema).values(userRole);
     return userRole;
+  }
+
+  async removeFromUser(payload: UserRole) {
+    const user = await userService.getById(payload.userId);
+    const role = await roleService.getById(payload.roleId);
+    await db
+      .delete(userRolesSchema)
+      .where(
+        sql`${userRolesSchema.roleId} = ${role.id} AND ${userRolesSchema.userId} = ${user.id}`,
+      );
   }
 }
 
