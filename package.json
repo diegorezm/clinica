@@ -12,6 +12,7 @@
     "@faker-js/faker": "^8.4.1",
     "@hono/zod-validator": "^0.2.2",
     "@neondatabase/serverless": "^0.9.4",
+    "bcryptjs": "^2.4.3",
     "date-fns": "^3.6.0",
     "drizzle-orm": "^0.31.2",
     "drizzle-zod": "^0.5.1",
@@ -21,6 +22,7 @@
     "zod": "^3.23.8"
   },
   "devDependencies": {
+    "@types/bcryptjs": "^2.4.6",
     "@types/bun": "latest",
     "@types/pg": "^8.11.6",
     "drizzle-kit": "^0.22.7"
