@@ -32,7 +32,7 @@ describe("Testing user role service", () => {
     const roleData: RoleDTO = createRoleDTO(); // Use helper function to create role data
 
     const role = await rolesService.create(roleData);
-    await userRoleService.assingToUser(user.id, role.id);
+    await userRoleService.assingToUser({ userId: user.id, roleId: role.id });
 
     const userWithRoles: UserWithRole = await userService.getUserWithRole(
       user.id,
@@ -54,10 +54,10 @@ describe("Testing user role service", () => {
 
     const role = await rolesService.create(roleData);
 
-    const userRole: UserRole = await userRoleService.assingToUser(
-      user.id,
-      role.id,
-    );
+    const userRole: UserRole = await userRoleService.assingToUser({
+      userId: user.id,
+      roleId: role.id,
+    });
 
     expect(userRole).toBeDefined();
     expect(userRole.userId).toBe(user.id);
@@ -75,8 +75,8 @@ describe("Testing user role service", () => {
     const role1 = await rolesService.create(roleData1);
     const role2 = await rolesService.create(roleData2);
 
-    await userRoleService.assingToUser(user.id, role1.id);
-    await userRoleService.assingToUser(user.id, role2.id);
+    await userRoleService.assingToUser({ userId: user.id, roleId: role1.id });
+    await userRoleService.assingToUser({ userId: user.id, roleId: role2.id });
 
     const userRoles: UserRole[] = await db
       .select()
@@ -89,5 +89,29 @@ describe("Testing user role service", () => {
     const roleIds = userRoles.map((ur) => ur.roleId);
     expect(roleIds).toContain(role1.id);
     expect(roleIds).toContain(role2.id);
+  });
+
+  test.if(DEV_ENV)("Remove role from user", async () => {
+    const userData: UserDTO = createUserDTO();
+
+    const user = await userService.register(userData);
+
+    const roleData1: RoleDTO = createRoleDTO();
+    const roleData2: RoleDTO = createRoleDTO();
+
+    const role1 = await rolesService.create(roleData1);
+    const role2 = await rolesService.create(roleData2);
+
+    await userRoleService.assingToUser({ userId: user.id, roleId: role1.id });
+    await userRoleService.assingToUser({ userId: user.id, roleId: role2.id });
+
+    await userRoleService.removeFromUser({ userId: user.id, roleId: role1.id });
+
+    const userRoles: UserRole[] = await db
+      .select()
+      .from(userRolesSchema)
+      .where(eq(userRolesSchema.userId, user.id));
+
+    expect(userRoles.length).toBe(1);
   });
 });
