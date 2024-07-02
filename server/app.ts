@@ -5,12 +5,14 @@ import { HTTPException } from "hono/http-exception";
 import { DrizzleError } from "drizzle-orm";
 import { userRoute } from "./http/routes/user-route";
 import { ZodError } from "zod";
+import { patientRoute } from "./http/routes/patient-route";
 
 const app = new Hono();
 app.use("*", logger());
 
 const apiRoutes = app.basePath("/api");
 apiRoutes.route("/users", userRoute);
+apiRoutes.route("/patients", patientRoute);
 
 app.onError((err, c) => {
   if (err instanceof HTTPException) {
