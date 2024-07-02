@@ -11,10 +11,11 @@ import { UserNotFoundException } from "../domain/User/exceptions/user-not-found"
 import { UserAlreadyExistsException } from "../domain/User/exceptions/user-already-exists";
 import { rolesSchema } from "../../config/db/schemas/roles-schema";
 import userParser from "../../config/db/parsers/user-parser";
+import authService from "./auth-service";
 
 class UserService {
   async register(payload: UserDTO): Promise<User> {
-    const userExists = await this.getByEmail(payload.email).catch((error) => {
+    const userExists = await this._getByEmail(payload.email).catch((error) => {
       if (error instanceof UserNotFoundException) {
         return null;
       }
@@ -23,12 +24,22 @@ class UserService {
     if (userExists) {
       throw new UserAlreadyExistsException();
     }
-    const [user] = await db.insert(usersSchema).values(payload).returning();
+    const request: UserDTO = {
+      ...payload,
+      password: await authService.hashPassword(payload.password),
+    };
+
+    const [user] = await db.insert(usersSchema).values(request).returning();
     return user;
   }
 
-  async login(payload: LoginDTO): Promise<LoginDTO> {
-    return payload;
+  async login(payload: LoginDTO) {
+    const user = await this._getByEmail(payload.email);
+    const compare = await authService.comparePassword(
+      payload.password,
+      user.password,
+    );
+    return compare;
   }
 
   async getById(userId: string): Promise<User> {
@@ -49,12 +60,31 @@ class UserService {
     return user;
   }
 
-  async getByEmail(email: string): Promise<User> {
+  async getByEmail(email: string) {
     const [user] = await db
       .select({
         id: usersSchema.id,
         name: usersSchema.name,
         email: usersSchema.email,
+        createdAt: usersSchema.createdAt,
+        updatedAt: usersSchema.updatedAt,
+      })
+      .from(usersSchema)
+      .where(eq(usersSchema.email, email))
+      .limit(1);
+    if (!user) {
+      throw new UserNotFoundException();
+    }
+    return user;
+  }
+
+  private async _getByEmail(email: string) {
+    const [user] = await db
+      .select({
+        id: usersSchema.id,
+        name: usersSchema.name,
+        email: usersSchema.email,
+        password: usersSchema.password,
         createdAt: usersSchema.createdAt,
         updatedAt: usersSchema.updatedAt,
       })
