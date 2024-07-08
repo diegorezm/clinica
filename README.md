@@ -7,6 +7,12 @@ docker-compose -f docker-compose.dev.yml up -d
 
 ```
 
+Run migrations:
+
+```sh
+bun run generate && bun run migrate
+```
+
 To install dependencies:
 
 ```sh
