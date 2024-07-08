@@ -2,5 +2,7 @@
 </script>
 
 <template>
-  <h1>Hey!</h1>
+  <main>
+    <router-view></router-view>
+  </main>
 </template>

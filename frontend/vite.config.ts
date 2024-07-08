@@ -1,10 +1,18 @@
 import path from "path";
 import { defineConfig } from "vite";
 import vue from "@vitejs/plugin-vue";
+import VueRouter from "unplugin-vue-router/vite";
+import tailwind from "tailwindcss";
+import autoprefixer from "autoprefixer";
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [vue()],
+  css: {
+    postcss: {
+      plugins: [tailwind(), autoprefixer()],
+    },
+  },
+  plugins: [VueRouter(), vue()],
   resolve: {
     alias: {
       "@": path.resolve(import.meta.dir, "/src"),
