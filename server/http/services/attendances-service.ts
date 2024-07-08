@@ -60,11 +60,15 @@ class AttendancesService {
     const attendences = await db
       .update(attendancesSchema)
       .set({ status: status })
-      .where(eq(attendancesSchema.id, id));
+      .where(eq(attendancesSchema.id, attendence.id))
+      .returning();
+    return attendences;
   }
   async delete(id: number) {
-    let attendence = await this.getById(id);
-    await db.delete(attendancesSchema).where(eq(attendancesSchema.id, id));
+    let attendance = await this.getById(id);
+    await db
+      .delete(attendancesSchema)
+      .where(eq(attendancesSchema.id, attendance.id));
   }
 }
 export default new AttendancesService();

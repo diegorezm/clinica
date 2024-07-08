@@ -30,7 +30,7 @@ class UserService {
     };
 
     const [user] = await db.insert(usersSchema).values(request).returning();
-    return user;
+    return userParser.selectSchema.parse(user);
   }
 
   async login(payload: LoginDTO) {

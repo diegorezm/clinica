@@ -2,7 +2,7 @@ import { z } from "zod";
 
 export const loginParser = z.object({
   email: z
-    .string()
+    .string({ message: "Insira um email válido." })
     .email({ message: "Insira um email válido." })
     .min(7, {
       message: "Insira um email válido.",
@@ -11,7 +11,7 @@ export const loginParser = z.object({
       message: "Muitos caracteres.",
     }),
   password: z
-    .string()
+    .string({ message: "Insira uma senha válida." })
     .min(6, {
       message: "Senha muito fraca.",
     })
