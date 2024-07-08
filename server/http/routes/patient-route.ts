@@ -2,12 +2,17 @@ import { zValidator } from "@hono/zod-validator";
 import { Hono } from "hono";
 import { patientParser } from "../../config/db/parsers/patient-parser";
 import patientService from "../services/patient-service";
+import { ZodError } from "zod";
 
 export const patientRoute = new Hono();
 
 patientRoute.post(
   "/",
-  zValidator("json", patientParser.insertSchema),
+  zValidator("json", patientParser.insertSchema, (results) => {
+    if (!results.success) {
+      throw new ZodError(results.error.issues);
+    }
+  }),
   async (c) => {
     const body = c.req.valid("json");
     const patient = await patientService.create(body);

@@ -6,24 +6,41 @@ import userParser, {
 import userService from "../services/user-service";
 import { loginParser } from "../domain/User/user-login";
 import userRoleService from "../services/user-role-service";
+import { ZodError } from "zod";
 
 export const userRoute = new Hono();
 
-userRoute.post("/", zValidator("json", userParser.insertSchema), async (c) => {
-  const userDTO = c.req.valid("json");
-  const user = await userService.register(userDTO);
-  return c.json(user, 201);
-});
+userRoute.post(
+  "/",
+  zValidator("json", userParser.insertSchema, (result) => {
+    if (!result.success) {
+      throw new ZodError(result.error.issues);
+    }
+  }),
+  async (c) => {
+    const userDTO = c.req.valid("json");
+    const user = await userService.register(userDTO);
+    return c.json(user, 201);
+  },
+);
 
 // TODO: login
-userRoute.post("/auth/login", zValidator("json", loginParser), async (c) => {
-  const loginDTO = c.req.valid("json");
-  const login = await userService.login(loginDTO);
-  return c.json(
-    { message: login ? "logged in!" : "Wrong password!" },
-    login ? 200 : 401,
-  );
-});
+userRoute.post(
+  "/auth/login",
+  zValidator("json", loginParser, (results) => {
+    if (!results.success) {
+      throw new ZodError(results.error.issues);
+    }
+  }),
+  async (c) => {
+    const loginDTO = c.req.valid("json");
+    const login = await userService.login(loginDTO);
+    return c.json(
+      { message: login ? "logged in!" : "Wrong password!" },
+      login ? 200 : 401,
+    );
+  },
+);
 
 userRoute.get("/", async (c) => {
   return c.status(404);
@@ -49,7 +66,11 @@ userRoute.delete("/id/:id", async (c) => {
 
 userRoute.put(
   "/roles",
-  zValidator("json", userRoleParser.insertSchema),
+  zValidator("json", userRoleParser.insertSchema, (results) => {
+    if (!results.success) {
+      throw new ZodError(results.error.issues);
+    }
+  }),
   async (c) => {
     const body = c.req.valid("json");
     const role = await userRoleService.assingToUser(body);
@@ -59,7 +80,11 @@ userRoute.put(
 
 userRoute.delete(
   "/roles",
-  zValidator("json", userRoleParser.insertSchema),
+  zValidator("json", userRoleParser.insertSchema, (results) => {
+    if (!results.success) {
+      throw new ZodError(results.error.issues);
+    }
+  }),
   async (c) => {
     const body = c.req.valid("json");
     await userRoleService.removeFromUser(body);
