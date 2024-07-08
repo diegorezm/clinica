@@ -17,6 +17,14 @@ const roleParser = {
     }),
   }).omit({ id: true, createdAt: true, updatedAt: true }),
   selectSchema: createSelectSchema(rolesSchema, {
+    createdAt: z.preprocess(
+      (val) => (typeof val === "string" ? new Date(val) : val),
+      z.date(),
+    ),
+    updatedAt: z.preprocess(
+      (val) => (typeof val === "string" ? new Date(val) : val),
+      z.date(),
+    ),
     permissions: z.array(z.string(), {
       message: "Permissões devem ser uma lista de strings.",
     }),

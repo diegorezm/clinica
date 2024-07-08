@@ -1,11 +1,4 @@
-import {
-  index,
-  integer,
-  pgTable,
-  primaryKey,
-  uuid,
-  varchar,
-} from "drizzle-orm/pg-core";
+import { index, integer, pgTable, uuid, varchar } from "drizzle-orm/pg-core";
 import { attendancesSchema } from "./attendances-schema";
 import { relations } from "drizzle-orm";
 import { patientsSchema } from "./patient-schema";

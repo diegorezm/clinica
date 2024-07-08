@@ -14,12 +14,12 @@ export const usersSchema = pgTable("users", {
   email: varchar("email", { length: 255 }).notNull().unique(),
   password: varchar("password", { length: 255 }).notNull(),
   createdAt: timestamp("created_at", { mode: "date", precision: 3 })
-    .notNull()
-    .defaultNow(),
+    .defaultNow()
+    .notNull(),
   updatedAt: timestamp("updated_at", { mode: "date", precision: 3 })
     .defaultNow()
-    .notNull()
-    .$onUpdate(() => new Date()),
+    .$onUpdate(() => new Date())
+    .notNull(),
 });
 
 export const userRolesSchema = pgTable(
