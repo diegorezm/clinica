@@ -6,15 +6,20 @@ import patientReferralService from "@/services/patient-referral-service";
 import { patientReferralsTableInsertSchema } from "@/models/Patient/patient-referral";
 
 const app = new Hono()
-  .get("/info/:id", zValidator(
-    "param",
-    z.object({
-      id: z.coerce.number(),
-    })), async (c) => {
+  .get(
+    "/info/:id",
+    zValidator(
+      "param",
+      z.object({
+        id: z.coerce.number(),
+      }),
+    ),
+    async (c) => {
       const { id } = c.req.valid("param");
-      const data = await patientReferralService.getById(id)
-      return c.json(data)
-    })
+      const data = await patientReferralService.getById(id);
+      return c.json(data);
+    },
+  )
   .get(
     "/:patientId",
     zValidator(
@@ -35,12 +40,17 @@ const app = new Hono()
       });
       return c.json(data);
     },
-  ).put("/:id", zValidator("json", patientReferralsTableInsertSchema), async (c) => {
-    const body = c.req.valid("json");
-    const id = Number(c.req.param("id"))
-    const response = await patientReferralService.update(body, id);
-    return c.json(response);
-  })
+  )
+  .put(
+    "/:id",
+    zValidator("json", patientReferralsTableInsertSchema),
+    async (c) => {
+      const body = c.req.valid("json");
+      const id = Number(c.req.param("id"));
+      const response = await patientReferralService.update(body, id);
+      return c.json(response);
+    },
+  )
   .post(
     "/",
     zValidator("json", patientReferralsTableInsertSchema),

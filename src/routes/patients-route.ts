@@ -1,10 +1,10 @@
-import { patientInsertSchema } from "@/models/Patient";
-import patientService from "@/services/patient-service";
 import { zValidator } from "@hono/zod-validator";
 import { Hono } from "hono";
 import { z } from "zod";
 import { HTTPException } from "hono/http-exception";
 import { paginatedRequestSchema } from "./index";
+import { patientInsertSchema } from "@/models/Patient";
+import patientService from "@/services/patient-service";
 
 const app = new Hono()
   .get(

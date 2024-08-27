@@ -1,16 +1,20 @@
 import { Hono } from "hono";
 import { logger } from "hono/logger";
-import { z, ZodError } from "zod";
-import patientsRoute from "./patients-route";
-import patientsReferralsRoute from "./patients-referrals-route";
 import { NODE_ENV } from "@/env";
+import { ZodError } from "zod";
 import { HTTPException } from "hono/http-exception";
 import { DrizzleError } from "drizzle-orm";
+import patientsRoute from "@/routes/patients-route";
+import patientsReferralsRoute from "@/routes/patients-referrals-route";
 
 const app = new Hono().basePath("/api");
-app.use("*", logger());
+if (NODE_ENV === "development") {
+  app.use("*", logger());
+}
 
-const routes = app.route("/patients", patientsRoute).route("/patients/referrals", patientsReferralsRoute)
+const routes = app
+  .route("/patients", patientsRoute)
+  .route("/patients/referrals", patientsReferralsRoute);
 
 app.onError((err, c) => {
   if (NODE_ENV === "development") {
