@@ -2,8 +2,15 @@ import { and, eq, ne, sql } from "drizzle-orm";
 import { HTTPException } from "hono/http-exception";
 import db from "@/db";
 import { patientsTable } from "@/db/schema";
-import { PatientDTO } from "@/models/Patient";
+import { Patient, PatientDTO } from "@/models/Patient";
 import lower from "@/utils/lower";
+import { TRPCError } from "@trpc/server";
+
+type PaginatedPatientResponse = {
+  data: Patient[];
+  numberOfPages: number;
+  hasNextPage: boolean;
+};
 
 class PatientService {
   async getAll({
@@ -14,7 +21,7 @@ class PatientService {
     q?: string;
     page?: number;
     size?: number;
-  }) {
+  }): Promise<PaginatedPatientResponse> {
     const offset = (page - 1) * size;
     const query = db.select().from(patientsTable);
     if (q) {
@@ -35,26 +42,27 @@ class PatientService {
     return { data, numberOfPages, hasNextPage };
   }
 
-  async getById(id: number) {
+  async getById(id: number): Promise<Patient> {
     const [data] = await db
       .select()
       .from(patientsTable)
       .where(eq(patientsTable.id, id));
 
     if (!data)
-      throw new HTTPException(404, {
-        message: "Paciente não encontrado.",
+      throw new TRPCError({
+        code: "NOT_FOUND",
+        message: "Não encontrado.",
       });
     return data;
   }
 
-  async create(payload: PatientDTO) {
+  async create(payload: PatientDTO): Promise<Patient> {
     const [response] = await db.insert(patientsTable).values(payload);
     const data = await this.getById(response.insertId);
     return data;
   }
 
-  async update(payload: PatientDTO, patientId: number) {
+  async update(payload: PatientDTO, patientId: number): Promise<Patient> {
     if (payload.rg) {
       const existingPatient = await db
         .select()
@@ -79,20 +87,23 @@ class PatientService {
       .where(eq(patientsTable.id, patientId));
 
     if (response.affectedRows === 0) {
-      throw new HTTPException(404, {
-        message: "Paciente não encontrado.",
+      throw new TRPCError({
+        code: "NOT_FOUND",
+        message: "Não encontrado.",
       });
     }
     const data = await this.getById(patientId);
     return data;
   }
 
-  async delete(id: number) {
+  async delete(id: number): Promise<void> {
     await db.delete(patientsTable).where(eq(patientsTable.id, id));
   }
 
-  async bulkDelete(ids: number[]) {
-    ids.map((e) => this.delete(e));
+  async bulkDelete(ids: number[]): Promise<number> {
+    const deletePromises = ids.map((id) => this.delete(id));
+    await Promise.all(deletePromises);
+    return ids.length;
   }
 }
 const patientService = new PatientService();

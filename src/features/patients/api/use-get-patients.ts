@@ -1,45 +1,34 @@
-import { client } from "@/lib/hono";
-import { Patient } from "@/models/Patient";
-import { keepPreviousData, useQuery } from "@tanstack/react-query";
+import { ReactQueryOptions, RouterInputs, trpc } from "@/lib/trpc";
 
-type ResponseType = {
-  data: Patient[];
-  numberOfPages: number;
-  hasNextPage: boolean;
-};
+type Opts = ReactQueryOptions["patients"]["get"];
+type RequestType = RouterInputs["patients"]["get"];
 
-export const useGetPatients = ({
-  q,
-  page = 1,
-  size = 10,
-}: {
-  q?: string;
-  page?: number;
-  size?: number;
-}) => {
-  const query = useQuery<ResponseType>({
-    queryKey: ["patients", { page, size, q }],
-    queryFn: async () => {
-      const response = await client.api.patients.$get({
-        query: { page: String(page), size: String(size), q },
-      });
-      if (!response.ok) {
-        throw new Error("Não foi possivel retornar os pacientes.");
-      }
-      const data = await response.json();
-      const transformedData = data.data.map((patient) => ({
-        ...patient,
-        createdAt: new Date(patient.createdAt),
-        updatedAt: new Date(patient.updatedAt),
-      }));
-      return {
-        data: transformedData,
-        numberOfPages: data.numberOfPages,
-        hasNextPage: data.hasNextPage,
-      };
+interface Props extends RequestType {
+  opts?: Opts;
+}
+
+export const useGetPatients = ({ q, page = 1, size = 10, opts }: Props) => {
+  const query = trpc.patients.get.useQuery(
+    {
+      q,
+      page,
+      size,
     },
-    staleTime: 5000,
-    placeholderData: keepPreviousData,
-  });
+    {
+      ...opts,
+      select: (data) => {
+        const transformedData = data.data.map((patient) => ({
+          ...patient,
+          createdAt: new Date(patient.createdAt),
+          updatedAt: new Date(patient.updatedAt),
+        }));
+        return {
+          ...data,
+          data: transformedData,
+        };
+      },
+    },
+  );
+
   return query;
 };

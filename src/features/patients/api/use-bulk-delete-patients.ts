@@ -1,29 +1,31 @@
-import { client } from "@/lib/hono";
 import { toast } from "sonner";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { InferRequestType, InferResponseType } from "hono";
+import { ReactQueryOptions, trpc } from "@/lib/trpc";
 
-type ResponseType = InferResponseType<
-  (typeof client.api.patients)["bulk-delete"]["$post"]
->;
-type RequestType = InferRequestType<
-  (typeof client.api.patients)["bulk-delete"]["$post"]
->;
+type Opts = ReactQueryOptions["patients"]["bulkDelete"];
 
-export const useBulkDeletePatients = () => {
-  const queryClient = useQueryClient();
-  const mutation = useMutation<ResponseType, Error, RequestType>({
-    mutationFn: async (ids) => {
-      await client.api.patients["bulk-delete"]["$post"](ids);
-      return ids.json.ids;
+export function useBulkDeletePatients(options?: Opts) {
+  const utils = trpc.useUtils();
+  const mutation = trpc.patients.bulkDelete.useMutation({
+    ...options,
+    onError: (error, variables, context) => {
+      toast.error(
+        error?.message ||
+          "Falha ao excluir pacientes. Por favor, tente novamente.",
+      );
+
+      if (options?.onError) {
+        options.onError(error, variables, context);
+      }
     },
-    onSuccess: () => {
-      toast.success("Registros deletados com sucesso!");
-      queryClient.invalidateQueries();
-    },
-    onError: () => {
-      toast.error("Não foi possível deletar estes registros.");
+    onSuccess: async (data) => {
+      try {
+        utils.patients.invalidate();
+        toast.success(data.message || "Pacientes excluídos com sucesso.");
+      } catch (error) {
+        toast.error("Erro ao atualizar a lista de pacientes.");
+      }
     },
   });
+
   return mutation;
-};
+}
