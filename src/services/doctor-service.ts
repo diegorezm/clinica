@@ -2,8 +2,8 @@ import db from "@/db";
 import { doctorsTable, usersTable } from "@/db/schema";
 import { DoctorDTO } from "@/models/Doctor";
 import lower from "@/utils/lower";
+import { TRPCError } from "@trpc/server";
 import { eq, sql } from "drizzle-orm";
-import { HTTPException } from "hono/http-exception";
 
 class DoctorService {
   async getAll({
@@ -50,10 +50,12 @@ class DoctorService {
       .from(doctorsTable)
       .where(eq(doctorsTable.id, id));
 
-    if (!data)
-      throw new HTTPException(404, {
+    if (!data) {
+      throw new TRPCError({
+        code: "NOT_FOUND",
         message: "Doutor não encontrado.",
       });
+    }
     return data;
   }
 
@@ -68,9 +70,10 @@ class DoctorService {
       .update(doctorsTable)
       .set(payload)
       .where(eq(doctorsTable.id, patientId));
-    if (response.fieldCount === 0) {
-      throw new HTTPException(404, {
-        message: "Doutor não encontrado.",
+    if (response.affectedRows === 0) {
+      throw new TRPCError({
+        code: "NOT_FOUND",
+        message: "Registro não encontrado.",
       });
     }
     const data = await this.getById(patientId);
@@ -82,7 +85,9 @@ class DoctorService {
   }
 
   async bulkDelete(ids: number[]) {
-    ids.map((e) => this.delete(e));
+    const deletedPromises = ids.map((e) => this.delete(e));
+    await Promise.all(deletedPromises);
+    return deletedPromises.length;
   }
 }
 const doctorService = new DoctorService();

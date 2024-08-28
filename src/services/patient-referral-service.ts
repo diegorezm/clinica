@@ -1,9 +1,9 @@
-import { and, eq, sql } from "drizzle-orm";
+import { and, DrizzleError, eq, sql } from "drizzle-orm";
 import db from "@/db";
 import { patientReferralsTable } from "../db/schema";
 import lower from "@/utils/lower";
 import { PatientReferralDTO } from "@/models/Patient/patient-referral";
-import { HTTPException } from "hono/http-exception";
+import { TRPCError } from "@trpc/server";
 
 class PatientReferralService {
   async getAll({
@@ -58,15 +58,35 @@ class PatientReferralService {
   }
 
   async update(payload: PatientReferralDTO, id: number) {
-    const [response] = await db
-      .update(patientReferralsTable)
-      .set(payload)
-      .where(eq(patientReferralsTable.id, id));
-    if (response.fieldCount === 0) {
-      throw new HTTPException(404);
+    try {
+      const [response] = await db
+        .update(patientReferralsTable)
+        .set(payload)
+        .where(eq(patientReferralsTable.id, id));
+      if (response.affectedRows === 0) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Não foi possivel recuperar este registro.",
+        });
+      }
+      const data = await this.getById(id);
+      return data;
+    } catch (error: any) {
+      if (error instanceof DrizzleError) {
+        console.error(error);
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: error.message ?? "Não foi possível processar a solicitação.",
+          cause: error.cause,
+        });
+      } else {
+        console.error("Unexpected error:", error);
+        throw new TRPCError({
+          code: error.code ?? "INTERNAL_SERVER_ERROR",
+          message: error.message ?? "Ocorreu um erro inesperado.",
+        });
+      }
     }
-    const data = await this.getById(id);
-    return data;
   }
 
   async delete(id: number) {
@@ -76,7 +96,9 @@ class PatientReferralService {
   }
 
   async bulkDelete(ids: number[]) {
-    await Promise.all(ids.map((id) => this.delete(id)));
+    const deletePromises = ids.map((id) => this.delete(id));
+    await Promise.all(deletePromises);
+    return ids.length;
   }
 }
 const patientReferralService = new PatientReferralService();

@@ -45,6 +45,10 @@ export const patientReferralCols: ColumnDef<PatientReferral>[] = [
     header: "CRM",
   },
   {
+    accessorKey: "jobFunction",
+    header: "Função",
+  },
+  {
     accessorKey: "createdAt",
     header: "Criado em",
   },
@@ -52,7 +56,7 @@ export const patientReferralCols: ColumnDef<PatientReferral>[] = [
     id: "actions",
     cell: ({ row }) => {
       // eslint-disable-next-line react-hooks/rules-of-hooks
-      const { onOpen } = useOpenUpdatePatientReferral()
+      const { onOpen } = useOpenUpdatePatientReferral();
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>

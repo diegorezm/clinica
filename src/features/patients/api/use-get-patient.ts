@@ -1,21 +1,10 @@
-import { client } from "@/lib/hono";
+import { trpc } from "@/lib/trpc";
 import { Patient } from "@/models/Patient";
-import { keepPreviousData, useQuery } from "@tanstack/react-query";
 
 export const useGetPatient = (id?: number) => {
-  const query = useQuery<Patient>({
+  const query = trpc.patients.getById.useQuery(id, {
     enabled: !!id,
-    queryKey: ["patient", { id }],
-    queryFn: async () => {
-      const response = await client.api.patients[":id"]["$get"]({
-        param: {
-          id: String(id),
-        },
-      });
-      if (!response.ok) {
-        throw new Error("Não foi possivel retornar os dados do paciente.");
-      }
-      const { data } = await response.json();
+    select: (data) => {
       const patient: Patient = {
         ...data,
         createdAt: new Date(data.createdAt),
@@ -23,8 +12,6 @@ export const useGetPatient = (id?: number) => {
       };
       return patient;
     },
-    staleTime: 5000,
-    placeholderData: keepPreviousData,
   });
   return query;
 };

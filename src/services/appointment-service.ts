@@ -1,6 +1,5 @@
 import db from "../db";
 import { eq, or, sql } from "drizzle-orm";
-import { HTTPException } from "hono/http-exception";
 import {
   appointmentsTable,
   doctorsTable,
@@ -9,6 +8,7 @@ import {
 } from "../db/schema";
 import { AppointmentDTO } from "@/models/Appointment";
 import lower from "@/utils/lower";
+import { TRPCError } from "@trpc/server";
 
 class AppointmentService {
   async getAll({
@@ -58,10 +58,12 @@ class AppointmentService {
       .from(doctorsTable)
       .where(eq(doctorsTable.id, id));
 
-    if (!data)
-      throw new HTTPException(404, {
+    if (!data) {
+      throw new TRPCError({
+        code: "NOT_FOUND",
         message: "Agendamento não encontrado.",
       });
+    }
     return data;
   }
 
@@ -77,7 +79,8 @@ class AppointmentService {
       .set(payload)
       .where(eq(appointmentsTable.id, appointmentId));
     if (response.fieldCount === 0) {
-      throw new HTTPException(404, {
+      throw new TRPCError({
+        code: "NOT_FOUND",
         message: "Agendamento não encontrado.",
       });
     }
@@ -94,5 +97,5 @@ class AppointmentService {
     ids.map((e) => this.delete(e));
   }
 }
-const appointmentService = new AppointmentService()
+const appointmentService = new AppointmentService();
 export default appointmentService;

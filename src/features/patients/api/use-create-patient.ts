@@ -1,24 +1,22 @@
-import { client } from "@/lib/hono";
+import { ReactQueryOptions, trpc } from "@/lib/trpc";
 import { toast } from "sonner";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { InferRequestType, InferResponseType } from "hono";
 
-type ResponseType = InferResponseType<typeof client.api.patients.$post>;
-type RequestType = InferRequestType<typeof client.api.patients.$post>["json"];
+type Opts = ReactQueryOptions["patients"]["create"];
 
-export const useCreatePatient = () => {
-  const queryClient = useQueryClient();
-  const mutation = useMutation<ResponseType, Error, RequestType>({
-    mutationFn: async (json) => {
-      const response = await client.api.patients.$post({ json });
-      return await response.json();
+export const useCreatePatient = (opts?: Opts) => {
+  const utils = trpc.useUtils();
+  const mutation = trpc.patients.create.useMutation({
+    ...opts,
+    onError: (error) => {
+      toast.error(error.message ?? "Não foi possível criar este registro.");
     },
-    onSuccess: () => {
-      toast.success("Registro criado com sucesso!");
-      queryClient.invalidateQueries({ queryKey: ["patients"] });
-    },
-    onError: () => {
-      toast.error("Não foi possível criar este registro.");
+    onSuccess: async () => {
+      try {
+        utils.patients.invalidate();
+        toast.success("Registro criado com sucesso!");
+      } catch (error) {
+        toast.error("Erro ao atualizar a lista de pacientes.");
+      }
     },
   });
   return mutation;
