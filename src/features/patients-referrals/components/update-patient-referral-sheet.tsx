@@ -5,8 +5,6 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet";
-import { PatientDTO } from "@/models/Patient";
-import { useGetPatientsReferrals } from "../api/use-get-patient-referrals";
 import LoadingSpinner from "@/components/loading-spinner";
 import { useConfirm } from "@/hooks/use-confirm";
 import { useBulkDeletePatientsReferrals } from "../api/use-bulk-delete-patients-referrals";
@@ -33,24 +31,19 @@ export default function UpdatePatientReferralSheet() {
 
     const ok = await confirm();
     if (ok) {
-      deleteReferralQuery.mutate(
-        { json: { ids: [id] } },
-        {
-          onSuccess: () => {
-            onClose();
-          },
+      deleteReferralQuery.mutate([id], {
+        onSuccess: () => {
+          onClose();
         },
-      );
+      });
     }
   };
 
   async function onSubmit(values: PatientReferralDTO) {
     await updateReferralQuery.mutateAsync(
       {
-        json: { ...values },
-        param: {
-          id: String(id),
-        },
+        data: { ...values },
+        id: id!,
       },
       {
         onSuccess: () => {

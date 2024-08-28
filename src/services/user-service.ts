@@ -2,8 +2,8 @@ import db from "@/db";
 import { usersTable } from "@/db/schema";
 import { UserDTO } from "@/models/User";
 import lower from "@/utils/lower";
+import { TRPCError } from "@trpc/server";
 import { eq, sql } from "drizzle-orm";
-import { HTTPException } from "hono/http-exception";
 
 class UserService {
   async getAll({
@@ -41,7 +41,10 @@ class UserService {
       .from(usersTable)
       .where(eq(usersTable.id, id));
     if (!data) {
-      throw new HTTPException(404, { message: "Usuário não encontrado." });
+      throw new TRPCError({
+        code: "NOT_FOUND",
+        message: "Usuário não encontrado.",
+      });
     }
     return data;
   }
@@ -65,5 +68,5 @@ class UserService {
     ids.map(async (e) => await this.delete(e));
   }
 }
-const userService = new UserService()
+const userService = new UserService();
 export default userService;

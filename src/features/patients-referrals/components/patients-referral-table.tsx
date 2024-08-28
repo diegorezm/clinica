@@ -42,7 +42,7 @@ export default function PatientsRefarralsTable({
         disabled={isDisabled}
         onDelete={(rows) => {
           const ids: number[] = rows.map((row) => row.original.id);
-          deleteReferrals.mutate({ json: { ids } });
+          deleteReferrals.mutate(ids);
         }}
       />
       <DataTablePagination

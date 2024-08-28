@@ -1,5 +1,4 @@
 import { and, eq, ne, sql } from "drizzle-orm";
-import { HTTPException } from "hono/http-exception";
 import db from "@/db";
 import { patientsTable } from "@/db/schema";
 import { Patient, PatientDTO } from "@/models/Patient";
@@ -76,7 +75,8 @@ class PatientService {
         .limit(1);
 
       if (existingPatient.length > 0) {
-        throw new HTTPException(409, {
+        throw new TRPCError({
+          code: "CONFLICT",
           message: "RG já está em uso por outro paciente.",
         });
       }

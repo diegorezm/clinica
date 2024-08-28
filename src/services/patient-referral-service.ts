@@ -3,7 +3,7 @@ import db from "@/db";
 import { patientReferralsTable } from "../db/schema";
 import lower from "@/utils/lower";
 import { PatientReferralDTO } from "@/models/Patient/patient-referral";
-import { HTTPException } from "hono/http-exception";
+import { TRPCError } from "@trpc/server";
 
 class PatientReferralService {
   async getAll({
@@ -63,7 +63,7 @@ class PatientReferralService {
       .set(payload)
       .where(eq(patientReferralsTable.id, id));
     if (response.fieldCount === 0) {
-      throw new HTTPException(404);
+      throw new TRPCError({ code: "NOT_FOUND" });
     }
     const data = await this.getById(id);
     return data;

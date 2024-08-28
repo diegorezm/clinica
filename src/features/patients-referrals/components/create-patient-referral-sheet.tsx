@@ -24,9 +24,7 @@ export default function CreatePatientReferralSheet() {
       <SheetContent>
         <SheetHeader>
           <SheetTitle>Registrar encaminhamento</SheetTitle>
-          <SheetDescription>
-            Preencha os campos abaixo.
-          </SheetDescription>
+          <SheetDescription>Preencha os campos abaixo.</SheetDescription>
         </SheetHeader>
         <PatientReferralForm
           disabled={isPending}
