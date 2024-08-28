@@ -45,7 +45,6 @@ export default function PatientPage({ params, searchParams }: Props) {
     handleSearch(formSearchQ);
   };
 
-
   useEffect(() => {
     if (formSearchQ === "") {
       handleSearch("");
@@ -63,7 +62,7 @@ export default function PatientPage({ params, searchParams }: Props) {
     <div className="flex flex-col max-w-screen-2xl w-full h-full space-y-2">
       <nav className="flex justify-start items-center w-full">
         <Link href={"/patients"} scroll={false}>
-          <Button size="sm">
+          <Button size="sm" variant={"ghost"}>
             <ArrowLeft className="size-4" />
           </Button>
         </Link>
@@ -104,4 +103,3 @@ export default function PatientPage({ params, searchParams }: Props) {
     </div>
   );
 }
-

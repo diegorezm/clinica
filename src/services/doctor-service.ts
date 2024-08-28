@@ -70,10 +70,10 @@ class DoctorService {
       .update(doctorsTable)
       .set(payload)
       .where(eq(doctorsTable.id, patientId));
-    if (response.fieldCount === 0) {
+    if (response.affectedRows === 0) {
       throw new TRPCError({
         code: "NOT_FOUND",
-        message: "Doutor não encontrado.",
+        message: "Registro não encontrado.",
       });
     }
     const data = await this.getById(patientId);
@@ -85,7 +85,9 @@ class DoctorService {
   }
 
   async bulkDelete(ids: number[]) {
-    ids.map((e) => this.delete(e));
+    const deletedPromises = ids.map((e) => this.delete(e));
+    await Promise.all(deletedPromises);
+    return deletedPromises.length;
   }
 }
 const doctorService = new DoctorService();

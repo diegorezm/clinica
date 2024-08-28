@@ -11,7 +11,7 @@ import {
 } from "./ui/sheet";
 import { Button } from "./ui/button";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 
 type NavItem = {
   label: string;
@@ -86,7 +86,7 @@ const DesktopNavigation = ({ currentPath }: { currentPath: string }) => {
 };
 
 const Navigation = () => {
-  const pathName = usePathname()
+  const pathName = usePathname();
   const [isDesktop, setIsDesktop] = useState(false);
 
   useEffect(() => {

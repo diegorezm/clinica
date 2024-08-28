@@ -40,6 +40,7 @@ export default function UpdatePatientReferralSheet() {
   };
 
   async function onSubmit(values: PatientReferralDTO) {
+    console.log(id);
     await updateReferralQuery.mutateAsync(
       {
         data: { ...values },
