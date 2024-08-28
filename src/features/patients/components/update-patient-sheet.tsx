@@ -32,7 +32,7 @@ export default function UpdatePatientSheet() {
     const ok = await confirm();
     if (ok) {
       deletePatientsQuery.mutate(
-        { json: { ids: [id] } },
+        { ids: [id] },
         {
           onSuccess: () => {
             onClose();
@@ -45,10 +45,8 @@ export default function UpdatePatientSheet() {
   async function onSubmit(values: PatientDTO) {
     await updatePatientQuery.mutateAsync(
       {
-        json: { ...values },
-        param: {
-          id: String(id),
-        },
+        payload: { ...values },
+        patientId: id!,
       },
       {
         onSuccess: () => {

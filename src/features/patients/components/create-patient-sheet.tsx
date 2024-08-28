@@ -8,11 +8,10 @@ import {
 import { PatientDTO } from "@/models/Patient";
 import { useOpenCreatePatient } from "../hooks/use-open-create-patient";
 import PatientsForm from "./patients-form";
-import { trpc } from "@/lib/trpc";
+import { useCreatePatient } from "../api/use-create-patient";
 
 export default function CreatePatientSheet() {
-  const { mutateAsync, isPending, isError, error } =
-    trpc.patients.create.useMutation();
+  const { mutateAsync, isPending } = useCreatePatient();
   const { isOpen, onClose } = useOpenCreatePatient();
 
   async function onSubmit(values: PatientDTO) {

@@ -76,7 +76,9 @@ class PatientReferralService {
   }
 
   async bulkDelete(ids: number[]) {
-    await Promise.all(ids.map((id) => this.delete(id)));
+    const deletePromises = ids.map((id) => this.delete(id));
+    await Promise.all(deletePromises);
+    return ids.length;
   }
 }
 const patientReferralService = new PatientReferralService();
