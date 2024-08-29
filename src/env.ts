@@ -6,6 +6,8 @@ const processEnvSchema = z.object({
   DB_NAME: z.string().min(1, "DB_NAME is required"),
   DB_USER: z.string().min(1, "DB_USER is required"),
   DB_PORT: z.coerce.number(),
+  HASH_KEY: z.string().min(1, "HASH_KEY is required"),
+  JWT_SECRET_KEY: z.string().min(1, "HASH_KEY is required"),
   NODE_ENV: z
     .enum(["development", "production", "test"])
     .optional()

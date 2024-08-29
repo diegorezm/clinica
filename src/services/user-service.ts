@@ -40,19 +40,15 @@ class UserService {
       .select()
       .from(usersTable)
       .where(eq(usersTable.id, id));
-    if (!data) {
-      throw new TRPCError({
-        code: "NOT_FOUND",
-        message: "Usuário não encontrado.",
-      });
-    }
     return data;
   }
 
-  async create(payload: UserDTO) {
-    const [response] = await db.insert(usersTable).values(payload);
-    const userId = response.insertId.toString();
-    return await this.getById(userId);
+  async getByEmail(email: string) {
+    const [data] = await db
+      .select()
+      .from(usersTable)
+      .where(eq(usersTable.email, email));
+    return data;
   }
 
   async update(payload: UserDTO, id: string) {

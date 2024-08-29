@@ -46,12 +46,6 @@ class PatientService {
       .select()
       .from(patientsTable)
       .where(eq(patientsTable.id, id));
-
-    if (!data)
-      throw new TRPCError({
-        code: "NOT_FOUND",
-        message: "Não encontrado.",
-      });
     return data;
   }
 

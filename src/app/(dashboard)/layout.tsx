@@ -1,5 +1,4 @@
 import Navigation from "@/components/navigation";
-import QueryProvider from "@/providers/query-providers";
 import SheetProvider from "@/providers/sheet-providers";
 import { ReactNode } from "react";
 
@@ -18,4 +17,3 @@ export default function DashboardLayout({
     </main>
   );
 }
-

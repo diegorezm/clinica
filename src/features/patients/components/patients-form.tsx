@@ -34,12 +34,12 @@ export default function PatientsForm({
     defaultValues !== undefined
       ? defaultValues
       : {
-        rg: undefined,
-        name: "",
-        phone: "",
-        insurance: undefined,
-        insuranceNumber: undefined,
-      };
+          rg: undefined,
+          name: "",
+          phone: "",
+          insurance: undefined,
+          insuranceNumber: undefined,
+        };
   const form = useForm<z.infer<typeof patientInsertSchema>>({
     resolver: zodResolver(patientInsertSchema),
     defaultValues: values,

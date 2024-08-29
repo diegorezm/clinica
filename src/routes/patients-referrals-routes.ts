@@ -3,6 +3,7 @@ import { paginatedRequestSchema } from ".";
 import patientReferralService from "@/services/patient-referral-service";
 import { z } from "zod";
 import { patientReferralsTableInsertSchema } from "@/models/Patient/patient-referral";
+import { TRPCError } from "@trpc/server";
 
 const routes = router({
   get: publicProcedure
@@ -21,6 +22,12 @@ const routes = router({
     }),
   getById: publicProcedure.input(z.number()).query(async ({ input }) => {
     const data = await patientReferralService.getById(input);
+    if (!data) {
+      throw new TRPCError({
+        code: "NOT_FOUND",
+        message: "Encaminhamento não encontrado.",
+      });
+    }
     return data;
   }),
   create: publicProcedure

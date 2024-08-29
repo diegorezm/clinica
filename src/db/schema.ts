@@ -9,7 +9,11 @@ import {
 import crypto from "crypto";
 
 // ENUMS
-export const userRolesEnum = mysqlEnum("user_roles", ["admin", "user"]);
+export const userRolesEnum = mysqlEnum("user_roles", [
+  "admin",
+  "regular",
+  "doctor",
+]);
 export const statusEnum = mysqlEnum("status", ["f", "fj", "fm", "ok"]);
 export const doctorWorkPeriodEnum = mysqlEnum("periods", ["m", "t", "n"]);
 export const weekDaysEnum = mysqlEnum("week_days_enum", [
@@ -31,7 +35,7 @@ export const usersTable = mysqlTable("users", {
     .unique(),
   name: varchar("name", { length: 128 }).notNull(),
   email: varchar("email", { length: 255 }).notNull().unique(),
-  role: userRolesEnum.default("user"),
+  role: userRolesEnum.default("regular").notNull(),
   password: varchar("password", { length: 255 }).notNull(),
   createdAt: timestamp("created_at", { mode: "date", fsp: 3 })
     .defaultNow()

@@ -21,6 +21,12 @@ const routes = router({
         });
       }
       const patient = await patientService.getById(input);
+      if (!patient) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Paciente não encontrado.",
+        });
+      }
       return patient;
     }),
   create: publicProcedure
