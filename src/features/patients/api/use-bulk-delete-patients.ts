@@ -3,7 +3,7 @@ import { ReactQueryOptions, trpc } from "@/lib/trpc";
 
 type Opts = ReactQueryOptions["patients"]["bulkDelete"];
 
-export function useBulkDeletePatients(options?: Opts) {
+export const useBulkDeletePatients = (options?: Opts) => {
   const utils = trpc.useUtils();
   const mutation = trpc.patients.bulkDelete.useMutation({
     ...options,
@@ -28,4 +28,4 @@ export function useBulkDeletePatients(options?: Opts) {
   });
 
   return mutation;
-}
+};

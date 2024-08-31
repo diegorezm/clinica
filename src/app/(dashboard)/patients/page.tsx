@@ -19,7 +19,6 @@ export default function PatientsPage({
 }) {
   const q = searchParams?.q || "";
   const page = Number(searchParams?.page) || 1;
-
   const [formSearchQ, setFormSearchQ] = useState(q);
   const { onOpen } = useOpenCreatePatient();
   const pathname = usePathname();
@@ -79,4 +78,3 @@ export default function PatientsPage({
     </div>
   );
 }
-

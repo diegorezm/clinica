@@ -5,11 +5,12 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import LoginForm from "./login-form";
 
 export default function LoginPage() {
   return (
-    <div className="max-w-screen-2xl w-full pb-10">
-      <Card>
+    <div className="max-w-screen-2xl w-full p-6">
+      <Card className="drop-shadow-sm">
         <CardHeader>
           <CardTitle>Login</CardTitle>
           <CardDescription>
@@ -17,7 +18,7 @@ export default function LoginPage() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <p>Card Content</p>
+          <LoginForm />
         </CardContent>
       </Card>
     </div>

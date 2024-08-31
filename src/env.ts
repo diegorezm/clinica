@@ -1,4 +1,4 @@
-import { z } from "zod";
+import { z, ZodError } from "zod";
 
 const processEnvSchema = z.object({
   DB_HOST: z.string().min(1, "DB_HOST is required"),
@@ -18,8 +18,16 @@ const parsedEnv = processEnvSchema.safeParse(process.env);
 
 if (!parsedEnv.success) {
   console.error("Invalid environment variables:", parsedEnv.error.format());
-  process.exit(1);
+  throw new ZodError(parsedEnv.error.errors);
 }
 
-export const { NODE_ENV, DB_HOST, DB_NAME, DB_USER, DB_PASSWORD, DB_PORT } =
-  parsedEnv.data;
+export const {
+  NODE_ENV,
+  DB_HOST,
+  DB_NAME,
+  DB_USER,
+  DB_PASSWORD,
+  DB_PORT,
+  HASH_KEY,
+  JWT_SECRET_KEY,
+} = parsedEnv.data;

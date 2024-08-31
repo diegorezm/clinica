@@ -1,8 +1,7 @@
 import db from "@/db";
 import { usersTable } from "@/db/schema";
-import { UserDTO } from "@/models/User";
+import { User, UserDTO } from "@/models/User";
 import lower from "@/utils/lower";
-import { TRPCError } from "@trpc/server";
 import { eq, sql } from "drizzle-orm";
 
 class UserService {
@@ -35,7 +34,7 @@ class UserService {
     return { data, numberOfPages, hasNextPage };
   }
 
-  async getById(id: string) {
+  async getById(id: string): Promise<User> {
     const [data] = await db
       .select()
       .from(usersTable)
@@ -43,7 +42,7 @@ class UserService {
     return data;
   }
 
-  async getByEmail(email: string) {
+  async getByEmail(email: string): Promise<User> {
     const [data] = await db
       .select()
       .from(usersTable)
@@ -51,7 +50,7 @@ class UserService {
     return data;
   }
 
-  async update(payload: UserDTO, id: string) {
+  async update(payload: UserDTO, id: string): Promise<User> {
     await db.update(usersTable).set(payload).where(eq(usersTable.id, id));
     return await this.getById(id);
   }
