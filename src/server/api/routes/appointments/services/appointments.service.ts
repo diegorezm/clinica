@@ -1,13 +1,15 @@
-import db from "../db";
+import db from "@/db";
 import { eq, or, sql } from "drizzle-orm";
 import {
   appointmentsTable,
   doctorsTable,
   patientsTable,
   usersTable,
-} from "../db/schema";
-import { AppointmentDTO } from "@/models/Appointment";
+} from "@/db/schema";
+
 import lower from "@/utils/lower";
+
+import { AppointmentDTO } from "@/models/Appointment";
 import { TRPCError } from "@trpc/server";
 
 class AppointmentService {

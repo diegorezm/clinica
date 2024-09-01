@@ -1,9 +1,11 @@
+import { router, publicProcedure, isAuth } from "@/server/trpc";
+
 import { userInsertSchema } from "@/models/User";
 import { loginSchema } from "@/models/User/auth";
-import { router, publicProcedure, isAuth } from "@/server/trpc";
-import authService from "@/services/auth-service";
+
+import authService from "./services/auth.service";
+
 import { TRPCError } from "@trpc/server";
-import { cookies } from "next/headers";
 
 const routes = router({
   verify: publicProcedure.use(isAuth).query(async ({ ctx }) => {
@@ -24,15 +26,11 @@ const routes = router({
     }
   }),
   login: publicProcedure.input(loginSchema).mutation(async ({ input }) => {
-    const cookieStore = cookies();
     const response = await authService.login(input);
-    cookieStore.set("token", response.token, {
-      httpOnly: true,
-    });
     return response;
   }),
-  logout: publicProcedure.use(isAuth).mutation(async ({ ctx }) => {
-    ctx.res.setHeader("Set-Cookie", "token=; HttpOnly; Path=/; Max-Age=0");
+  logout: publicProcedure.use(isAuth).mutation(async () => {
+    authService.logout();
     return {
       message: "Logout realizado com sucesso!",
       success: true,

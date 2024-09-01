@@ -1,7 +1,9 @@
-import { and, DrizzleError, eq, sql } from "drizzle-orm";
 import db from "@/db";
-import { patientReferralsTable } from "../db/schema";
+import { and, DrizzleError, eq, sql } from "drizzle-orm";
+import { patientReferralsTable } from "@/db/schema";
+
 import lower from "@/utils/lower";
+
 import { PatientReferralDTO } from "@/models/Patient/patient-referral";
 import { TRPCError } from "@trpc/server";
 

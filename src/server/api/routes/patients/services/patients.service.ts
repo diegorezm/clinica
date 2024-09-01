@@ -1,8 +1,10 @@
-import { and, eq, ne, sql } from "drizzle-orm";
 import db from "@/db";
+import { and, eq, ne, sql } from "drizzle-orm";
 import { patientsTable } from "@/db/schema";
-import { Patient, PatientDTO } from "@/models/Patient";
+
 import lower from "@/utils/lower";
+
+import { Patient, PatientDTO } from "@/models/Patient";
 import { TRPCError } from "@trpc/server";
 
 type PaginatedPatientResponse = {

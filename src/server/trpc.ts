@@ -1,25 +1,13 @@
-import tokenService from "@/services/token-service";
-import userService from "@/services/user-service";
-import { getTokenFromCookies } from "@/utils/token";
 import { initTRPC, TRPCError } from "@trpc/server";
-import { NextApiRequest, NextApiResponse } from "next";
+import { User } from "lucia";
+import { NextRequest, NextResponse } from "next/server";
+import { validateRequest } from "./api/common/utils/cookie-manager";
 
-export async function createContext({
-  req,
-  res,
-}: {
-  req: NextApiRequest;
-  res: NextApiResponse;
-}) {
-  const user = await getTokenFromCookies();
-  return {
-    user,
-    req,
-    res,
-  };
-}
-
-type Context = Awaited<ReturnType<typeof createContext>>;
+type Context = {
+  user?: User;
+  req?: NextRequest;
+  res?: NextResponse;
+};
 
 const t = initTRPC.context<Context>().create();
 
@@ -27,7 +15,13 @@ export const router = t.router;
 export const publicProcedure = t.procedure;
 
 export const isAuth = t.middleware(async ({ ctx, next }) => {
-  const { user } = await getTokenFromCookies();
+  const { user } = await validateRequest();
+  if (!user) {
+    throw new TRPCError({
+      code: "UNAUTHORIZED",
+      message: "Faça login para realizar esta ação.",
+    });
+  }
   return next({
     ctx: {
       ...ctx,

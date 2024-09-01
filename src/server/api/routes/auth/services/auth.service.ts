@@ -1,11 +1,17 @@
 import { User, UserDTO } from "@/models/User";
 import { LoginDTO } from "@/models/User/auth";
-import userService from "./user-service";
 import { TRPCError } from "@trpc/server";
+
+import userService from "@/server/api/routes/users/services/users.service";
+import {
+  createSessionCookie,
+  deleteSessionCookie,
+} from "@/server/api/common/utils/cookie-manager";
+
 import db from "@/db";
 import { usersTable } from "@/db/schema";
 import { eq } from "drizzle-orm";
-import tokenService from "./token-service";
+import { lucia } from "@/lib/auth";
 
 class AuthService {
   async register(payload: UserDTO) {
@@ -47,17 +53,20 @@ class AuthService {
       "argon2id",
     );
     if (isMatch) {
-      const token = tokenService.sign(user.email);
-      return {
-        user: user as User,
-        token,
-      };
+      const session = await lucia.createSession(user.id, {});
+      createSessionCookie(session.id);
+      return user as User;
     }
     throw new TRPCError({
       code: "UNAUTHORIZED",
       message: "Senha inválida.",
     });
   }
+
+  logout() {
+    deleteSessionCookie();
+  }
+
   private async getByEmail(email: string) {
     const [data] = await db
       .select()

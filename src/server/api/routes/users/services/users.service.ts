@@ -1,8 +1,10 @@
 import db from "@/db";
-import { usersTable } from "@/db/schema";
-import { User, UserDTO } from "@/models/User";
-import lower from "@/utils/lower";
 import { eq, sql } from "drizzle-orm";
+import { usersTable } from "@/db/schema";
+
+import lower from "@/utils/lower";
+
+import { User, UserDTO } from "@/models/User";
 
 class UserService {
   async getAll({

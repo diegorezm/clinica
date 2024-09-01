@@ -1,9 +1,11 @@
-import { router, publicProcedure } from "@/server/trpc";
-import { paginatedRequestSchema } from ".";
-import patientReferralService from "@/services/patient-referral-service";
 import { z } from "zod";
-import { patientReferralsTableInsertSchema } from "@/models/Patient/patient-referral";
+
+import { router, publicProcedure } from "@/server/trpc";
 import { TRPCError } from "@trpc/server";
+
+import { patientReferralsTableInsertSchema } from "@/models/Patient/patient-referral";
+import { paginatedRequestSchema } from "@/server/api/common/input/paginated-request";
+import patientReferralService from "./services/patients-referrals.service";
 
 const routes = router({
   get: publicProcedure
