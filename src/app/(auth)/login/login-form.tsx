@@ -62,7 +62,7 @@ export default function LoginForm() {
             <FormItem>
               <FormLabel>Senha</FormLabel>
               <FormControl>
-                <Input placeholder="Sua senha..." {...field} />
+                <Input placeholder="Sua senha..." {...field} type="password" />
               </FormControl>
               <FormMessage />
             </FormItem>

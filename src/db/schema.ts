@@ -1,4 +1,5 @@
 import {
+  datetime,
   index,
   int,
   mysqlEnum,
@@ -44,6 +45,18 @@ export const usersTable = mysqlTable("users", {
     .defaultNow()
 
     .notNull(),
+});
+
+export const sessionTable = mysqlTable("session", {
+  id: varchar("id", {
+    length: 255,
+  }).primaryKey(),
+  userId: varchar("user_id", {
+    length: 255,
+  })
+    .notNull()
+    .references(() => usersTable.id),
+  expiresAt: datetime("expires_at").notNull(),
 });
 
 export const doctorsTable = mysqlTable("doctors", {

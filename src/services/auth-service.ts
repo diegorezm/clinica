@@ -2,7 +2,6 @@ import { User, UserDTO } from "@/models/User";
 import { LoginDTO } from "@/models/User/auth";
 import userService from "./user-service";
 import { TRPCError } from "@trpc/server";
-import encoder from "@/lib/encoder";
 import db from "@/db";
 import { usersTable } from "@/db/schema";
 import { eq } from "drizzle-orm";
@@ -17,7 +16,11 @@ class AuthService {
         message: "Usuário já existe.",
       });
     }
-    const hashPass = encoder.encrypt(payload.password);
+    const hashPass = await Bun.password.hash(payload.password, {
+      algorithm: "argon2id",
+      timeCost: 4,
+      memoryCost: 12,
+    });
     if (!hashPass) {
       throw new TRPCError({
         code: "INTERNAL_SERVER_ERROR",
@@ -38,8 +41,12 @@ class AuthService {
         message: "Usuário não existe.",
       });
     }
-    const userPwd = encoder.decrypt(user.password);
-    if (userPwd === payload.password) {
+    const isMatch = await Bun.password.verify(
+      payload.password,
+      user.password,
+      "argon2id",
+    );
+    if (isMatch) {
       const token = tokenService.sign(user.email);
       return {
         user: user as User,
