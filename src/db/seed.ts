@@ -1,7 +1,7 @@
 import { patientFactory } from "@/factory/patients-factory";
 import db from ".";
 import { patientsTable } from "./schema";
-import authService from "@/services/auth-service";
+import authService from "@/server/api/routes/auth/services/auth.service";
 
 (async function main() {
   try {

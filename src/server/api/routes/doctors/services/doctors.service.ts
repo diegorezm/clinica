@@ -1,9 +1,11 @@
 import db from "@/db";
-import { doctorsTable, usersTable } from "@/db/schema";
-import { DoctorDTO } from "@/models/Doctor";
 import lower from "@/utils/lower";
-import { TRPCError } from "@trpc/server";
 import { eq, sql } from "drizzle-orm";
+
+import { doctorsTable, usersTable } from "@/db/schema";
+
+import { DoctorDTO } from "@/models/Doctor";
+import { TRPCError } from "@trpc/server";
 
 class DoctorService {
   async getAll({

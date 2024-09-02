@@ -1,6 +1,8 @@
-import { User, UserDTO } from "@/models/User";
-import { LoginDTO } from "@/models/User/auth";
-import { TRPCError } from "@trpc/server";
+import db from "@/db";
+import { usersTable } from "@/db/schema";
+import { eq } from "drizzle-orm";
+
+import { hash, verify } from "@node-rs/argon2";
 
 import userService from "@/server/api/routes/users/services/users.service";
 import {
@@ -8,10 +10,18 @@ import {
   deleteSessionCookie,
 } from "@/server/api/common/utils/cookie-manager";
 
-import db from "@/db";
-import { usersTable } from "@/db/schema";
-import { eq } from "drizzle-orm";
 import { lucia } from "@/lib/auth";
+
+import { User, UserDTO } from "@/models/User";
+import { LoginDTO } from "@/models/User/auth";
+import { TRPCError } from "@trpc/server";
+
+const hashConfig = {
+  memoryCost: 19456,
+  timeCost: 2,
+  outputLen: 32,
+  parallelism: 1,
+};
 
 class AuthService {
   async register(payload: UserDTO) {
@@ -22,11 +32,8 @@ class AuthService {
         message: "Usuário já existe.",
       });
     }
-    const hashPass = await Bun.password.hash(payload.password, {
-      algorithm: "argon2id",
-      timeCost: 4,
-      memoryCost: 12,
-    });
+    const hashPass = await hash(payload.password, hashConfig);
+
     if (!hashPass) {
       throw new TRPCError({
         code: "INTERNAL_SERVER_ERROR",
@@ -47,11 +54,8 @@ class AuthService {
         message: "Usuário não existe.",
       });
     }
-    const isMatch = await Bun.password.verify(
-      payload.password,
-      user.password,
-      "argon2id",
-    );
+    const isMatch = await verify(user.password, payload.password, hashConfig);
+
     if (isMatch) {
       const session = await lucia.createSession(user.id, {});
       createSessionCookie(session.id);

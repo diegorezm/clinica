@@ -12,9 +12,9 @@ export const useLogin = (opts?: Opts) => {
     onSuccess: (data, ...rest) => {
       toast.success("Login realizado com sucesso!");
       const user: User = {
-        ...data.user,
-        createdAt: new Date(data.user.createdAt),
-        updatedAt: new Date(data.user.updatedAt),
+        ...data,
+        createdAt: new Date(data.createdAt),
+        updatedAt: new Date(data.updatedAt),
       };
       setUser(user);
       if (opts?.onSuccess) {

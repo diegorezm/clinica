@@ -1,8 +1,8 @@
 import { defineConfig } from "drizzle-kit";
-import { DB_HOST, DB_NAME, DB_USER, DB_PASSWORD, DB_PORT } from "./server/env";
+import { DB_HOST, DB_NAME, DB_USER, DB_PASSWORD, DB_PORT } from "./src/env";
 
 export default defineConfig({
-  schema: "./server/db/schema.ts",
+  schema: "./src/db/schema.ts",
   dialect: "mysql",
   out: "./drizzle",
   dbCredentials: {
