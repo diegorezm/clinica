@@ -4,6 +4,7 @@ import { patientReferralsTable } from "@/db/schema";
 import { z } from "zod";
 
 const selectSchema = createSelectSchema(patientReferralsTable);
+
 export const patientReferralsTableInsertSchema = createInsertSchema(
   patientReferralsTable,
 ).omit({ id: true, createdAt: true, updatedAt: true });

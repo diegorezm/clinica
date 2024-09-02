@@ -8,7 +8,15 @@ export const patientInsertSchema = createInsertSchema(patientsTable, {
     .min(4, { message: "Não é um nome válido." })
     .max(255, { message: "Nome muito longo." }),
   phone: z.string(),
-  rg: z.string().optional(),
+  rg: z
+    .string()
+    .min(11, {
+      message: "Insira um rg válido.",
+    })
+    .max(11, {
+      message: "Insira um rg válido.",
+    })
+    .optional(),
   insurance: z.string().optional(),
   insuranceNumber: z.string().optional(),
 }).omit({
