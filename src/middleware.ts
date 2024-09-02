@@ -1,6 +1,31 @@
-import { NextRequest, NextResponse } from "next/server";
+import { cookies } from "next/headers";
+import { type NextRequest, NextResponse } from "next/server";
 
-export function middleware(req: NextRequest) {
-  // const { pathname } = new URL(req.url);
+export default async function middleware(req: NextRequest) {
+  const origin = req.nextUrl.origin;
+  const verifyRequest = await fetch(`${origin}/api/auth/verify-session`, {
+    headers: { Cookie: cookies().toString() },
+  });
+  const verifySession = (await verifyRequest.json()) as {
+    valid: boolean;
+  };
+  if (!verifySession.valid) {
+    const url = req.nextUrl.clone();
+    url.pathname = "/login";
+    return NextResponse.rewrite(url);
+  }
   return NextResponse.next();
 }
+
+export const config = {
+  matcher: [
+    /*
+     * Match all request paths except for the ones starting with:
+     * - api (API routes)
+     * - _next/static (static files)
+     * - _next/image (image optimization files)
+     * - favicon.ico, sitemap.xml, robots.txt (metadata files)
+     */
+    "/((?!api|_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt).*)",
+  ],
+};

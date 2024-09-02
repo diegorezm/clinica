@@ -6,13 +6,18 @@ import { loginSchema } from "@/models/User/auth";
 import authService from "./services/auth.service";
 
 import { TRPCError } from "@trpc/server";
+import { validateRequest } from "../../common/utils/cookie-manager";
+import { lucia } from "@/lib/auth";
+import { cookies } from "next/headers";
+import userService from "../users/services/users.service";
 
 const routes = router({
-  verify: publicProcedure.use(isAuth).query(async ({ ctx }) => {
+  me: publicProcedure.use(isAuth).query(async ({ ctx }) => {
     try {
       const { user } = ctx;
+      const getUserById = await userService.getById(user.id);
       return {
-        user,
+        user: getUserById,
       };
     } catch (error) {
       if (error instanceof TRPCError) {
@@ -30,7 +35,18 @@ const routes = router({
     return response;
   }),
   logout: publicProcedure.use(isAuth).mutation(async () => {
-    authService.logout();
+    // should move this logic somewhere
+    const { session } = await validateRequest();
+    if (!session) {
+      throw new TRPCError({ code: "UNAUTHORIZED" });
+    }
+    await lucia.invalidateSession(session.id);
+    const sessionCookie = lucia.createBlankSessionCookie();
+    cookies().set(
+      sessionCookie.name,
+      sessionCookie.value,
+      sessionCookie.attributes,
+    );
     return {
       message: "Logout realizado com sucesso!",
       success: true,
