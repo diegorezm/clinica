@@ -67,18 +67,18 @@ class DoctorService {
     return data;
   }
 
-  async update(payload: DoctorDTO, patientId: number) {
+  async update(payload: DoctorDTO, doctorId: number) {
     const [response] = await db
       .update(doctorsTable)
       .set(payload)
-      .where(eq(doctorsTable.id, patientId));
+      .where(eq(doctorsTable.id, doctorId));
     if (response.affectedRows === 0) {
       throw new TRPCError({
         code: "NOT_FOUND",
         message: "Registro não encontrado.",
       });
     }
-    const data = await this.getById(patientId);
+    const data = await this.getById(doctorId);
     return data;
   }
 

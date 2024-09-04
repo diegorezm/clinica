@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-import { router, publicProcedure } from "@/server/trpc";
+import { router, privateProcedure } from "@/server/trpc";
 import { paginatedRequestSchema } from "@/server/api/common/input/paginated-request";
 
 import { patientInsertSchema } from "@/models/Patient";
@@ -10,13 +10,13 @@ import { TRPCError } from "@trpc/server";
 import patientService from "./services/patients.service";
 
 const routes = router({
-  get: publicProcedure
+  get: privateProcedure
     .input(paginatedRequestSchema)
     .query(async ({ input }) => {
       const patients = await patientService.getAll(input);
       return patients;
     }),
-  getById: publicProcedure
+  getById: privateProcedure
     .input(z.number().optional())
     .query(async ({ input }) => {
       if (!input) {
@@ -33,13 +33,13 @@ const routes = router({
       }
       return patient;
     }),
-  create: publicProcedure
+  create: privateProcedure
     .input(patientInsertSchema)
     .mutation(async ({ input }) => {
       const patient = await patientService.create(input);
       return patient;
     }),
-  update: publicProcedure
+  update: privateProcedure
     .input(
       z.object({
         patientId: z.number(),
@@ -53,13 +53,13 @@ const routes = router({
       );
       return patient;
     }),
-  delete: publicProcedure.input(z.number()).mutation(async ({ input }) => {
+  delete: privateProcedure.input(z.number()).mutation(async ({ input }) => {
     await patientService.delete(input);
     return {
       message: "Registro removido com sucesso!",
     };
   }),
-  bulkDelete: publicProcedure
+  bulkDelete: privateProcedure
     .input(
       z.object({
         ids: z.number().array(),
