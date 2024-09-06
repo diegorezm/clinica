@@ -52,7 +52,7 @@ class UserService {
     return data;
   }
 
-  async update(payload: UserDTO, id: string): Promise<User> {
+  async update(payload: Partial<User>, id: string): Promise<User> {
     await db.update(usersTable).set(payload).where(eq(usersTable.id, id));
     return await this.getById(id);
   }

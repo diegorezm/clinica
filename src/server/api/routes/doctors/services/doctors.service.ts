@@ -4,7 +4,7 @@ import { eq, sql } from "drizzle-orm";
 
 import { doctorsTable, usersTable } from "@/db/schema";
 
-import { DoctorDTO } from "@/models/Doctor";
+import { Doctor, DoctorDTO } from "@/models/Doctor";
 import { TRPCError } from "@trpc/server";
 
 class DoctorService {
@@ -21,8 +21,15 @@ class DoctorService {
 
     const query = db
       .select({
-        user: usersTable,
-        doctor: doctorsTable,
+        id: doctorsTable.id,
+        name: usersTable.name,
+        email: usersTable.email,
+        role: usersTable.role,
+        jobFunction: doctorsTable.jobFunction,
+        crm: doctorsTable.crm,
+        createdAt: doctorsTable.createdAt,
+        updatedAt: doctorsTable.updatedAt,
+        userId: usersTable.id,
       })
       .from(doctorsTable)
       .limit(size)
@@ -48,9 +55,20 @@ class DoctorService {
 
   async getById(id: number) {
     const [data] = await db
-      .select()
+      .select({
+        id: doctorsTable.id,
+        name: usersTable.name,
+        email: usersTable.email,
+        role: usersTable.role,
+        jobFunction: doctorsTable.jobFunction,
+        crm: doctorsTable.crm,
+        createdAt: doctorsTable.createdAt,
+        updatedAt: doctorsTable.updatedAt,
+        userId: usersTable.id,
+      })
       .from(doctorsTable)
-      .where(eq(doctorsTable.id, id));
+      .where(eq(doctorsTable.id, id))
+      .innerJoin(usersTable, eq(doctorsTable.userId, usersTable.id));
 
     if (!data) {
       throw new TRPCError({
@@ -67,7 +85,7 @@ class DoctorService {
     return data;
   }
 
-  async update(payload: DoctorDTO, doctorId: number) {
+  async update(payload: Partial<Doctor>, doctorId: number): Promise<Doctor> {
     const [response] = await db
       .update(doctorsTable)
       .set(payload)

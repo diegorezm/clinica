@@ -30,7 +30,7 @@ export const weekDaysEnum = mysqlEnum("week_days_enum", [
 // TABLES
 
 export const usersTable = mysqlTable("users", {
-  id: varchar("id", { length: 128 })
+  id: varchar("id", { length: 255 })
     .$defaultFn(() => crypto.randomUUID())
     .primaryKey()
     .unique(),

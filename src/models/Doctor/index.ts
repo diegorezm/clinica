@@ -1,6 +1,7 @@
 import { doctorsTable } from "@/db/schema";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
+import { User, userInsertSchema } from "../User";
 
 export const doctorInsertSchema = createInsertSchema(doctorsTable, {
   crm: z.string().min(9),
@@ -11,5 +12,14 @@ export const doctorInsertSchema = createInsertSchema(doctorsTable, {
   updatedAt: true,
 });
 
-export type Doctor = typeof doctorsTable.$inferSelect;
+export const doctorWithUserSchema = z.object({
+  user: userInsertSchema,
+  doctor: doctorInsertSchema,
+});
+
+type DoctorRaw = typeof doctorsTable.$inferSelect;
+
+export interface Doctor extends Omit<User, "id">, DoctorRaw {}
+
 export type DoctorDTO = z.infer<typeof doctorInsertSchema>;
+export type DoctorWithUserDTO = z.infer<typeof doctorWithUserSchema>;

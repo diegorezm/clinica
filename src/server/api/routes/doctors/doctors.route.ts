@@ -1,28 +1,33 @@
-import { router, publicProcedure, isAdmin } from "@/server/trpc";
+import { router, adminProcedure, privateProcedure } from "@/server/trpc";
 import doctorService from "./services/doctors.service";
 import { paginatedRequestSchema } from "../../common/input/paginated-request";
 import { doctorInsertSchema } from "@/models/Doctor";
 import { z } from "zod";
 
-const doctorsProcedure = publicProcedure.use(isAdmin);
-
 const routes = router({
-  getAll: publicProcedure
+  get: privateProcedure
     .input(paginatedRequestSchema)
     .query(async ({ input }) => {
       const response = await doctorService.getAll(input);
       return response;
     }),
-  create: doctorsProcedure
+  getById: privateProcedure.input(z.number()).query(async ({ input }) => {
+    const response = await doctorService.getById(input);
+    return response;
+  }),
+  create: adminProcedure
     .input(doctorInsertSchema)
     .mutation(async ({ input }) => {
       const response = await doctorService.create(input);
       return response;
     }),
-  update: doctorsProcedure
+  update: adminProcedure
     .input(
       z.object({
-        data: doctorInsertSchema,
+        data: doctorInsertSchema.pick({
+          jobFunction: true,
+          crm: true,
+        }),
         id: z.number(),
       }),
     )
@@ -30,13 +35,13 @@ const routes = router({
       const response = await doctorService.update(input.data, input.id);
       return response;
     }),
-  delete: doctorsProcedure.input(z.number()).mutation(async ({ input }) => {
+  delete: adminProcedure.input(z.number()).mutation(async ({ input }) => {
     await doctorService.delete(input);
     return {
       message: "Registro removido com sucesso!",
     };
   }),
-  bulkDelete: doctorsProcedure
+  bulkDelete: adminProcedure
     .input(z.number().array())
     .mutation(async ({ input }) => {
       const response = await doctorService.bulkDelete(input);

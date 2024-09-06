@@ -15,6 +15,5 @@ const conn = mysql.createPool({
   queueLimit: 0,
 });
 
-// Export the resolved drizzle connection
 const db = drizzle(conn);
 export default db;
