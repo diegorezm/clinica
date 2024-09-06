@@ -112,7 +112,7 @@ const DesktopNavigation = ({
   user,
 }: {
   currentPath: string;
-  user: User;
+  user: User | null;
 }) => {
   return (
     <nav className="flex justify-between w-full">
@@ -130,20 +130,22 @@ const DesktopNavigation = ({
           </li>
         ))}
       </ul>
-      <div>
-        <DropdownMenu>
-          <DropdownMenuTrigger className="flex items-center p-2 gap-1">
-            <span>{user.name}</span>
-            <ArrowDownNarrowWide className="size-4" />
-          </DropdownMenuTrigger>
-          <DropdownMenuContent className="mx-2">
-            <DropdownMenuLabel>Ações</DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem>Perfil</DropdownMenuItem>
-            <DropdownMenuItem>Logout</DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      </div>
+      {user !== null && (
+        <div>
+          <DropdownMenu>
+            <DropdownMenuTrigger className="flex items-center p-2 gap-1">
+              <span>{user.name}</span>
+              <ArrowDownNarrowWide className="size-4" />
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="mx-2">
+              <DropdownMenuLabel>Ações</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem>Perfil</DropdownMenuItem>
+              <DropdownMenuItem>Logout</DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+      )}
     </nav>
   );
 };
