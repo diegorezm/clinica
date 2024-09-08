@@ -10,9 +10,9 @@ export default function DashboardLayout({
 }) {
   return (
     <AuthProvider>
-      <main className="space-y-2">
+      <main className="lg:flex space-y-2 w-full">
         <Navigation />
-        <section className="flex items-center justify-center w-full px-2">
+        <section className="flex justify-center w-full px-2">
           {children}
         </section>
         <SheetProvider />

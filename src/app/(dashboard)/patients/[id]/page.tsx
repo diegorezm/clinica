@@ -1,6 +1,6 @@
 "use client";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Plus, Search } from "lucide-react";
+import { ArrowLeft, Plus } from "lucide-react";
 import Link from "next/link";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -8,8 +8,10 @@ import PatientsRefarralsTable from "@/features/patients-referrals/components/pat
 import { useGetPatient } from "@/features/patients/api/use-get-patient";
 import LoadingSpinner from "@/components/loading-spinner";
 import { useOpenCreatePatientReferral } from "@/features/patients-referrals/hooks/use-open-create-patient-referrals";
-import { FormEvent, useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
+
+const DEBOUNCE_DELAY = 500;
 
 type Props = {
   params: {
@@ -31,24 +33,19 @@ export default function PatientPage({ params, searchParams }: Props) {
   const pathname = usePathname();
   const { replace } = useRouter();
 
-  const handleSearch = useCallback(
-    (search: string) => {
-      const params = new URLSearchParams(searchParams);
-      params.set("q", search);
-      replace(`${pathname}?${params.toString()}`);
-    },
-    [pathname, searchParams, replace],
-  );
-
-  const onSubmit = (e: FormEvent) => {
-    e.preventDefault();
-    handleSearch(formSearchQ);
-  };
+  const handleSearch = useCallback(() => {
+    const params = new URLSearchParams(searchParams);
+    params.set("q", formSearchQ);
+    replace(`${pathname}?${params.toString()}`);
+  }, [formSearchQ, pathname, searchParams, replace]);
 
   useEffect(() => {
-    if (formSearchQ === "") {
-      handleSearch("");
-    }
+    const handler = setTimeout(() => {
+      handleSearch();
+    }, DEBOUNCE_DELAY);
+    return () => {
+      clearTimeout(handler);
+    };
   }, [formSearchQ, handleSearch]);
 
   if (getPatient.isFetching) {
@@ -71,21 +68,12 @@ export default function PatientPage({ params, searchParams }: Props) {
         <CardHeader className="space-y-2">
           <CardTitle>Encaminhamentos de {getPatient.data?.name}</CardTitle>
           <div className="w-full flex flex-col gap-2 md:flex-row md:justify-between">
-            <form className="flex gap-1 w-full" onSubmit={onSubmit}>
-              <Input
-                placeholder="Pesquise por CID/CRM..."
-                className="w-full md:w-1/3"
-                value={formSearchQ}
-                onChange={(e) => setFormSearchQ(e.target.value)}
-              />
-              <Button
-                size="sm"
-                type={"submit"}
-                className="hidden md:inline-flex"
-              >
-                <Search className="size-4" />
-              </Button>
-            </form>
+            <Input
+              placeholder="Pesquise por CID/CRM..."
+              className="w-full md:w-1/3"
+              value={formSearchQ}
+              onChange={(e) => setFormSearchQ(e.target.value)}
+            />
             <Button size="sm" onClick={() => onOpen(Number(params.id))}>
               <Plus className="size-4 mr-2" />
               Novo

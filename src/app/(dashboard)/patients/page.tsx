@@ -4,9 +4,11 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import PatientsTable from "@/features/patients/components/patients-table";
 import { useOpenCreatePatient } from "@/features/patients/hooks/use-open-create-patient";
-import { Plus, Search } from "lucide-react";
+import { Plus } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
-import { FormEvent, useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
+
+const DEBOUNCE_DELAY = 300;
 
 type SearchProps = {
   q?: string;
@@ -24,24 +26,19 @@ export default function PatientsPage({
   const pathname = usePathname();
   const { replace } = useRouter();
 
-  const handleSearch = useCallback(
-    (search: string) => {
-      const params = new URLSearchParams(searchParams);
-      params.set("q", search);
-      replace(`${pathname}?${params.toString()}`);
-    },
-    [pathname, searchParams, replace],
-  );
-
-  const onSubmit = (e: FormEvent) => {
-    e.preventDefault();
-    handleSearch(formSearchQ);
-  };
+  const handleSearch = useCallback(() => {
+    const params = new URLSearchParams(searchParams);
+    params.set("q", formSearchQ);
+    replace(`${pathname}?${params.toString()}`);
+  }, [formSearchQ, pathname, searchParams, replace]);
 
   useEffect(() => {
-    if (formSearchQ === "") {
-      handleSearch("");
-    }
+    const handler = setTimeout(() => {
+      handleSearch();
+    }, DEBOUNCE_DELAY);
+    return () => {
+      clearTimeout(handler);
+    };
   }, [formSearchQ, handleSearch]);
 
   return (
@@ -50,21 +47,12 @@ export default function PatientsPage({
         <CardHeader className="space-y-2">
           <CardTitle>Pacientes</CardTitle>
           <div className="w-full flex flex-col gap-2 md:flex-row md:justify-between">
-            <form className="flex gap-1 w-full" onSubmit={onSubmit}>
-              <Input
-                placeholder="Pesquise por nome/rg..."
-                className="w-full md:w-1/3"
-                value={formSearchQ}
-                onChange={(e) => setFormSearchQ(e.target.value)}
-              />
-              <Button
-                size="sm"
-                type={"submit"}
-                className="hidden md:inline-flex"
-              >
-                <Search className="size-4" />
-              </Button>
-            </form>
+            <Input
+              placeholder="Pesquise por nome/rg..."
+              className="w-full md:w-1/3"
+              value={formSearchQ}
+              onChange={(e) => setFormSearchQ(e.target.value)}
+            />
             <Button size="sm" onClick={onOpen}>
               <Plus className="size-4 mr-2" />
               Novo

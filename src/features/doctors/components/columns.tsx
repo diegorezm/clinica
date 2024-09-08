@@ -11,10 +11,9 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-import { useOpenUpdatePatient } from "../hooks/use-open-update-patient";
-
 import Link from "next/link";
 import { Doctor } from "@/models/Doctor";
+import { useOpenUpdateDoctor } from "../hooks/use-open-update-doctor";
 
 export const doctorCols: ColumnDef<Doctor>[] = [
   {
@@ -70,7 +69,7 @@ export const doctorCols: ColumnDef<Doctor>[] = [
     id: "actions",
     cell: ({ row }) => {
       // eslint-disable-next-line react-hooks/rules-of-hooks
-      const { onOpen } = useOpenUpdatePatient();
+      const { onOpen } = useOpenUpdateDoctor();
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>

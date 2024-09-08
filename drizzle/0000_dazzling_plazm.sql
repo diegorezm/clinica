@@ -63,7 +63,7 @@ CREATE TABLE `session` (
 );
 --> statement-breakpoint
 CREATE TABLE `users` (
-	`id` varchar(128) NOT NULL,
+	`id` varchar(255) NOT NULL,
 	`name` varchar(128) NOT NULL,
 	`email` varchar(255) NOT NULL,
 	`user_roles` enum('admin','regular','doctor') NOT NULL DEFAULT 'regular',

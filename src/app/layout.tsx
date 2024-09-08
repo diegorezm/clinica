@@ -19,7 +19,7 @@ export default function RootLayout({
   return (
     <QueryProvider>
       <html lang="en">
-        <body className={inter.className}>
+        <body className={`flex items-center justify-center ${inter.className}`}>
           {children}
           <Toaster />
         </body>
