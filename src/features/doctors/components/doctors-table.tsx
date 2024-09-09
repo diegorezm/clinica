@@ -6,7 +6,7 @@ import { useBulkDeleteDoctors } from "../api/use-bulk-delete-doctors";
 import { useGetDoctors } from "../api/use-get-doctors";
 import { doctorCols } from "./columns";
 
-export default function PatientsTable({
+export default function DoctorsTable({
   q,
   page,
 }: {

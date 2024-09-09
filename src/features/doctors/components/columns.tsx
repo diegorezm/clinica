@@ -14,27 +14,38 @@ import {
 import Link from "next/link";
 import { Doctor } from "@/models/Doctor";
 import { useOpenUpdateDoctor } from "../hooks/use-open-update-doctor";
+import { useAuthStore } from "@/features/auth/hooks/use-auth-store";
 
 export const doctorCols: ColumnDef<Doctor>[] = [
   {
     id: "select",
-    header: ({ table }) => (
-      <Checkbox
-        checked={
-          table.getIsAllPageRowsSelected() ||
-          (table.getIsSomePageRowsSelected() && "indeterminate")
-        }
-        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-        aria-label="Select all"
-      />
-    ),
-    cell: ({ row }) => (
-      <Checkbox
-        checked={row.getIsSelected()}
-        onCheckedChange={(value) => row.toggleSelected(!!value)}
-        aria-label="Select row"
-      />
-    ),
+    header: ({ table }) => {
+      // eslint-disable-next-line react-hooks/rules-of-hooks
+      const user = useAuthStore().user;
+      const isAdmin = user?.role === "admin";
+      return isAdmin ? (
+        <Checkbox
+          checked={
+            table.getIsAllPageRowsSelected() ||
+            (table.getIsSomePageRowsSelected() && "indeterminate")
+          }
+          onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+          aria-label="Select all"
+        />
+      ) : null;
+    },
+    cell: ({ row }) => {
+      // eslint-disable-next-line react-hooks/rules-of-hooks
+      const user = useAuthStore().user;
+      const isAdmin = user?.role === "admin";
+      return isAdmin ? (
+        <Checkbox
+          checked={row.getIsSelected()}
+          onCheckedChange={(value) => row.toggleSelected(!!value)}
+          aria-label="Select row"
+        />
+      ) : null;
+    },
     enableSorting: false,
     enableHiding: false,
   },
@@ -70,7 +81,11 @@ export const doctorCols: ColumnDef<Doctor>[] = [
     cell: ({ row }) => {
       // eslint-disable-next-line react-hooks/rules-of-hooks
       const { onOpen } = useOpenUpdateDoctor();
-      return (
+
+      // eslint-disable-next-line react-hooks/rules-of-hooks
+      const user = useAuthStore().user;
+      const isAdmin = user?.role === "admin";
+      return isAdmin ? (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" className="h-8 w-8 p-0">
@@ -86,7 +101,7 @@ export const doctorCols: ColumnDef<Doctor>[] = [
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
-      );
+      ) : null;
     },
   },
 ];
