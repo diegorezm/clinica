@@ -57,6 +57,15 @@ class PatientService {
     return data;
   }
 
+  bulkInsert(payload: PatientDTO[]): Patient[] {
+    const patients: Patient[] = [];
+    payload.forEach(async (e) => {
+      const patient = await this.create(e);
+      patients.push(patient);
+    });
+    return patients;
+  }
+
   async update(payload: PatientDTO, patientId: number): Promise<Patient> {
     if (payload.rg) {
       const existingPatient = await db

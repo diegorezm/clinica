@@ -85,6 +85,15 @@ class DoctorService {
     return data;
   }
 
+  bulkInsert(payload: DoctorDTO[]): Doctor[] {
+    const doctors: Doctor[] = [];
+    payload.forEach(async (e) => {
+      const doctor = await this.create(e);
+      doctors.push(doctor);
+    });
+    return doctors;
+  }
+
   async update(payload: Partial<Doctor>, doctorId: number): Promise<Doctor> {
     const [response] = await db
       .update(doctorsTable)

@@ -5,6 +5,7 @@ import { usersTable } from "@/db/schema";
 import lower from "@/utils/lower";
 
 import { User, UserDTO } from "@/models/User";
+import authService from "../../auth/services/auth.service";
 
 class UserService {
   async getAll({
@@ -44,6 +45,15 @@ class UserService {
     return data;
   }
 
+  bulkInsert(payload: UserDTO[]) {
+    const users: User[] = [];
+    payload.forEach(async (e) => {
+      const user = await authService.register(e);
+      users.push(user);
+    });
+    return users;
+  }
+
   async getByEmail(email: string): Promise<User> {
     const [data] = await db
       .select()
@@ -61,7 +71,7 @@ class UserService {
     await db.delete(usersTable).where(eq(usersTable.id, id));
   }
 
-  async bulkDelete(ids: string[]) {
+  bulkDelete(ids: string[]) {
     ids.map(async (e) => await this.delete(e));
   }
 }

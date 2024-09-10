@@ -55,10 +55,7 @@ export const doctorCols: ColumnDef<Doctor>[] = [
     cell: ({ row }) => {
       const { id, name } = row.original;
       return (
-        <Link
-          href={`/patients/${id}`}
-          className="text-blue-700 hover:text-foreground"
-        >
+        <Link href={`/doctors/${id}`} className="text-primary">
           {name}
         </Link>
       );
