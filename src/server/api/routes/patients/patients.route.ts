@@ -1,30 +1,34 @@
-import { z } from "zod";
+import {z} from "zod";
 
-import { router, privateProcedure } from "@/server/trpc";
-import { paginatedRequestSchema } from "@/server/api/common/input/paginated-request";
+import {router, privateProcedure} from "@/server/trpc";
+import {paginatedRequestSchema} from "@/server/api/common/input/paginated-request";
 
-import { patientInsertSchema } from "@/models/Patient";
+import {patientInsertSchema} from "@/models/Patient";
 
-import { TRPCError } from "@trpc/server";
+import {TRPCError} from "@trpc/server";
+import PatientService from "./services/patients.service";
+import db from "@/db";
+import PatientRepository from "./repository/patient.repository";
 
-import patientService from "./services/patients.service";
+const patientRepository = new PatientRepository(db);
+const patientService = new PatientService(patientRepository);
 
 const routes = router({
   get: privateProcedure
     .input(paginatedRequestSchema)
-    .query(async ({ input }) => {
-      const patients = await patientService.getAll(input);
+    .query(async ({input}) => {
+      const patients = await patientService.findAll(input);
       return patients;
     }),
   getById: privateProcedure
-    .input(z.number().optional())
-    .query(async ({ input }) => {
+    .input(z.string().optional())
+    .query(async ({input}) => {
       if (!input) {
         throw new TRPCError({
           code: "BAD_REQUEST",
         });
       }
-      const patient = await patientService.getById(input);
+      const patient = await patientService.findByID(input);
       if (!patient) {
         throw new TRPCError({
           code: "NOT_FOUND",
@@ -35,25 +39,29 @@ const routes = router({
     }),
   create: privateProcedure
     .input(patientInsertSchema)
-    .mutation(async ({ input }) => {
-      const patient = await patientService.create(input);
-      return patient;
+    .mutation(async ({input}) => {
+      await patientService.create(input);
+      return {
+        message: "Paciente criado com sucesso!",
+      }
     }),
   update: privateProcedure
     .input(
       z.object({
-        patientId: z.number(),
+        patientId: z.string(),
         payload: patientInsertSchema,
       }),
     )
-    .mutation(async ({ input }) => {
-      const patient = await patientService.update(
+    .mutation(async ({input}) => {
+      await patientService.update(
         input.payload,
         input.patientId,
       );
-      return patient;
+      return {
+        message: "Paciente atualizado com sucesso!",
+      }
     }),
-  delete: privateProcedure.input(z.number()).mutation(async ({ input }) => {
+  delete: privateProcedure.input(z.string()).mutation(async ({input}) => {
     await patientService.delete(input);
     return {
       message: "Registro removido com sucesso!",
@@ -61,15 +69,12 @@ const routes = router({
   }),
   bulkDelete: privateProcedure
     .input(
-      z.object({
-        ids: z.number().array(),
-      }),
+      z.string().array(),
     )
-    .mutation(async ({ input }) => {
-      const { ids } = input;
-      const deletedCount = await patientService.bulkDelete(ids);
+    .mutation(async ({input}) => {
+      await patientService.bulkDelete(input);
       return {
-        message: deletedCount + " registros removidos com sucesso!",
+        message: "Registros removidos com sucesso!",
       };
     }),
 });

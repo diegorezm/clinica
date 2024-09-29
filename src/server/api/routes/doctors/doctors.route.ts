@@ -1,54 +1,94 @@
-import { router, adminProcedure, privateProcedure } from "@/server/trpc";
-import doctorService from "./services/doctors.service";
-import { paginatedRequestSchema } from "../../common/input/paginated-request";
-import { doctorInsertSchema } from "@/models/Doctor";
-import { z } from "zod";
+import DoctorRepository from "./repositories/doctor.repository";
+
+import {router, adminProcedure, privateProcedure} from "@/server/trpc";
+import {paginatedRequestSchema} from "../../common/input/paginated-request";
+import {doctorInsertSchema} from "@/models/Doctor";
+import {z} from "zod";
+import db from "@/db";
+import DoctorService from "./services/doctors.service";
+import {doctorWorkDayInsertSchema} from "@/models/Doctor/work-days";
+import {doctorWorkPeriodInsertSchema} from "@/models/Doctor/work-period";
+
+const doctorRepository = new DoctorRepository(db)
+const doctorService = new DoctorService(doctorRepository);
 
 const routes = router({
   get: privateProcedure
     .input(paginatedRequestSchema)
-    .query(async ({ input }) => {
-      const response = await doctorService.getAll(input);
+    .query(async ({input}) => {
+      const response = await doctorService.findAll(input);
       return response;
     }),
-  getById: privateProcedure.input(z.number()).query(async ({ input }) => {
-    const response = await doctorService.getById(input);
+  getById: privateProcedure.input(z.string().uuid()).query(async ({input}) => {
+    const response = await doctorService.findById(input);
     return response;
   }),
+  getWorkDays: privateProcedure
+    .input(z.string().uuid())
+    .query(async ({input}) => {
+      const response = await doctorService.findDoctorWorkDays(input);
+      return response;
+    }),
+  getWorkPeriods: privateProcedure
+    .input(z.string().uuid())
+    .query(async ({input}) => {
+      const response = await doctorService.findDoctorWorkPeriods(input);
+      return response;
+    }),
   create: adminProcedure
     .input(doctorInsertSchema)
-    .mutation(async ({ input }) => {
-      const response = await doctorService.create(input);
-      return response;
+    .mutation(async ({input}) => {
+      await doctorService.create(input);
+      return {message: "Registro criado com sucesso!"};
+    }),
+  createDoctorWorkDay: adminProcedure
+    .input(doctorWorkDayInsertSchema)
+    .mutation(async ({input}) => {
+      await doctorService.createDoctorWorkDay(input.doctorId, input.day);
+      return {message: "Registro criado com sucesso!"};
+    }),
+  createDoctorWorkPeriod: adminProcedure
+    .input(doctorWorkPeriodInsertSchema)
+    .mutation(async ({input}) => {
+      await doctorService.createDoctorWorkPeriod(input.doctorId, input.period);
+      return {message: "Registro criado com sucesso!"};
     }),
   update: adminProcedure
     .input(
       z.object({
-        data: doctorInsertSchema.pick({
-          jobFunction: true,
-          crm: true,
-        }),
-        id: z.number(),
+        data: doctorInsertSchema,
+        id: z.string(),
       }),
     )
-    .mutation(async ({ input }) => {
-      const response = await doctorService.update(input.data, input.id);
-      return response;
+    .mutation(async ({input}) => {
+      await doctorService.update(input.data, input.id);
+      return {message: "Registro atualizado com sucesso!"};
     }),
-  delete: adminProcedure.input(z.number()).mutation(async ({ input }) => {
+  delete: adminProcedure.input(z.string().uuid()).mutation(async ({input}) => {
     await doctorService.delete(input);
     return {
       message: "Registro removido com sucesso!",
     };
   }),
   bulkDelete: adminProcedure
-    .input(z.number().array())
-    .mutation(async ({ input }) => {
-      const response = await doctorService.bulkDelete(input);
-
+    .input(z.string().array())
+    .mutation(async ({input}) => {
+      await doctorService.bulkDelete(input);
       return {
-        message: response + " registros removidos com sucesso!",
+        message: "Registros removidos com sucesso!",
       };
+    }),
+  deleteDoctorWorkDays: adminProcedure
+    .input(doctorWorkDayInsertSchema)
+    .mutation(async ({input}) => {
+      await doctorService.deleteDoctorWorkDays(input.doctorId, input.day);
+      return {message: "Registro removido com sucesso!"};
+    }),
+  deleteDoctorWorkPeriod: adminProcedure
+    .input(doctorWorkPeriodInsertSchema)
+    .mutation(async ({input}) => {
+      await doctorService.deleteDoctorWorkPeriod(input.doctorId, input.period);
+      return {message: "Registro removido com sucesso!"};
     }),
 });
 export default routes;

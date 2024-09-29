@@ -30,18 +30,18 @@ export const weekDaysEnum = mysqlEnum("week_days_enum", [
 // TABLES
 
 export const usersTable = mysqlTable("users", {
-  id: varchar("id", { length: 255 })
+  id: varchar("id", {length: 255})
     .$defaultFn(() => crypto.randomUUID())
     .primaryKey()
     .unique(),
-  name: varchar("name", { length: 128 }).notNull(),
-  email: varchar("email", { length: 255 }).notNull().unique(),
+  name: varchar("name", {length: 128}).notNull(),
+  email: varchar("email", {length: 255}).notNull().unique(),
   role: userRolesEnum.default("regular").notNull(),
-  password: varchar("password", { length: 255 }).notNull(),
-  createdAt: timestamp("created_at", { mode: "date", fsp: 3 })
+  password: varchar("password", {length: 255}).notNull(),
+  createdAt: timestamp("created_at", {mode: "date", fsp: 3})
     .defaultNow()
     .notNull(),
-  updatedAt: timestamp("updated_at", { mode: "date", fsp: 3 })
+  updatedAt: timestamp("updated_at", {mode: "date", fsp: 3})
     .defaultNow()
 
     .notNull(),
@@ -60,33 +60,39 @@ export const sessionTable = mysqlTable("session", {
 });
 
 export const doctorsTable = mysqlTable("doctors", {
-  id: int("id").autoincrement().primaryKey(),
-  jobFunction: varchar("job_function", { length: 128 }).notNull(),
-  crm: varchar("crm", { length: 12 }).notNull().unique(),
-  userId: varchar("user_id", { length: 128 })
-    .references(() => usersTable.id, { onDelete: "cascade" })
+  id: varchar("id", {length: 255})
+    .$defaultFn(() => crypto.randomUUID())
+    .primaryKey()
+    .unique(),
+  jobFunction: varchar("job_function", {length: 128}).notNull(),
+  crm: varchar("crm", {length: 12}).notNull().unique(),
+  userId: varchar("user_id", {length: 128})
+    .references(() => usersTable.id, {onDelete: "cascade"})
     .unique()
     .notNull(),
-  createdAt: timestamp("created_at", { mode: "date", fsp: 3 })
+  createdAt: timestamp("created_at", {mode: "date", fsp: 3})
     .notNull()
     .defaultNow(),
-  updatedAt: timestamp("updated_at", { mode: "date", fsp: 3 })
+  updatedAt: timestamp("updated_at", {mode: "date", fsp: 3})
     .defaultNow()
 
     .notNull(),
 });
 
 export const patientsTable = mysqlTable("patients", {
-  id: int("id").autoincrement().primaryKey(),
-  name: varchar("name", { length: 255 }).notNull(),
-  phone: varchar("phone", { length: 14 }).notNull(),
-  rg: varchar("rg", { length: 12 }).unique(),
-  insurance: varchar("insurance", { length: 255 }),
-  insuranceNumber: varchar("insuranceNumber", { length: 30 }),
-  createdAt: timestamp("created_at", { mode: "date", fsp: 3 })
+  id: varchar("id", {length: 255})
+    .$defaultFn(() => crypto.randomUUID())
+    .primaryKey()
+    .unique(),
+  name: varchar("name", {length: 255}).notNull(),
+  phone: varchar("phone", {length: 14}).notNull(),
+  rg: varchar("rg", {length: 12}).unique(),
+  insurance: varchar("insurance", {length: 255}),
+  insuranceNumber: varchar("insuranceNumber", {length: 30}),
+  createdAt: timestamp("created_at", {mode: "date", fsp: 3})
     .notNull()
     .defaultNow(),
-  updatedAt: timestamp("updated_at", { mode: "date", fsp: 3 })
+  updatedAt: timestamp("updated_at", {mode: "date", fsp: 3})
     .defaultNow()
 
     .notNull(),
@@ -96,16 +102,16 @@ export const patientReferralsTable = mysqlTable(
   "patients_referrals",
   {
     id: int("id").autoincrement().primaryKey(),
-    patientId: int("patient_id")
+    patientId: varchar("patient_id", {length: 255})
       .references(() => patientsTable.id)
       .notNull(),
-    crm: varchar("crm", { length: 12 }).notNull(),
-    cid: varchar("cid", { length: 12 }).notNull(),
-    jobFunction: varchar("job_function", { length: 128 }).notNull(),
-    createdAt: timestamp("created_at", { mode: "date", fsp: 3 })
+    crm: varchar("crm", {length: 12}).notNull(),
+    cid: varchar("cid", {length: 12}).notNull(),
+    jobFunction: varchar("job_function", {length: 128}).notNull(),
+    createdAt: timestamp("created_at", {mode: "date", fsp: 3})
       .notNull()
       .defaultNow(),
-    updatedAt: timestamp("updated_at", { mode: "date", fsp: 3 })
+    updatedAt: timestamp("updated_at", {mode: "date", fsp: 3})
       .defaultNow()
       .notNull(),
   },
@@ -130,10 +136,10 @@ export const appointmentsTable = mysqlTable(
       mode: "date",
     }).notNull(),
     status: statusEnum,
-    createdAt: timestamp("created_at", { mode: "date", fsp: 3 })
+    createdAt: timestamp("created_at", {mode: "date", fsp: 3})
       .notNull()
       .defaultNow(),
-    updatedAt: timestamp("updated_at", { mode: "date", fsp: 3 })
+    updatedAt: timestamp("updated_at", {mode: "date", fsp: 3})
       .defaultNow()
       .notNull(),
   },
@@ -146,7 +152,7 @@ export const appointmentsTable = mysqlTable(
 );
 
 export const doctorWorkPeriodTable = mysqlTable("doctors_work_period", {
-  doctorId: int("doctor_id")
+  doctorId: varchar("doctor_id", {length: 255})
     .references(() => doctorsTable.id, {
       onDelete: "cascade",
     })
@@ -155,8 +161,8 @@ export const doctorWorkPeriodTable = mysqlTable("doctors_work_period", {
 });
 
 export const doctorWorkDaysTable = mysqlTable("doctors_work_day", {
-  doctorId: int("doctor_id")
-    .references(() => doctorsTable.id, { onDelete: "cascade" })
+  doctorId: varchar("doctor_id", {length: 255})
+    .references(() => doctorsTable.id, {onDelete: "cascade"})
     .notNull(),
   day: weekDaysEnum.notNull(),
 });

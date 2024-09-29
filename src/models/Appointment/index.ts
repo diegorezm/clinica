@@ -1,6 +1,6 @@
-import { appointmentsTable } from "@/db/schema";
-import { createInsertSchema } from "drizzle-zod";
-import { z } from "zod";
+import {appointmentsTable} from "@/db/schema";
+import {createInsertSchema} from "drizzle-zod";
+import {z} from "zod";
 
 export const appointmentInsertSchema = createInsertSchema(
   appointmentsTable,

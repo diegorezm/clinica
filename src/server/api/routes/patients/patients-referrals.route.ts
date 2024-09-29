@@ -1,42 +1,41 @@
-import { z } from "zod";
+import db from "@/db";
+import {z} from "zod";
 
-import { router, publicProcedure } from "@/server/trpc";
-import { TRPCError } from "@trpc/server";
+import {router, publicProcedure} from "@/server/trpc";
+import {patientReferralsTableInsertSchema} from "@/models/Patient/patient-referral";
+import {paginatedRequestSchema} from "@/server/api/common/input/paginated-request";
+import PatientReferralRepository from "./repository/patient-referral.repository";
+import PatientReferralService from "./services/patient-referral.service";
 
-import { patientReferralsTableInsertSchema } from "@/models/Patient/patient-referral";
-import { paginatedRequestSchema } from "@/server/api/common/input/paginated-request";
-import patientReferralService from "./services/patients-referrals.service";
+const patientReferralRepository = new PatientReferralRepository(db);
+const patientReferralService = new PatientReferralService(patientReferralRepository);
 
 const routes = router({
   get: publicProcedure
     .input(
       z.object({
         param: paginatedRequestSchema,
-        patientId: z.number(),
+        patientId: z.string(),
       }),
     )
-    .query(async ({ input }) => {
-      const data = await patientReferralService.getAll({
+    .query(async ({input}) => {
+      const data = await patientReferralService.findAll({
         ...input.param,
         patientId: input.patientId,
       });
       return data;
     }),
-  getById: publicProcedure.input(z.number()).query(async ({ input }) => {
-    const data = await patientReferralService.getById(input);
-    if (!data) {
-      throw new TRPCError({
-        code: "NOT_FOUND",
-        message: "Encaminhamento não encontrado.",
-      });
-    }
+  getById: publicProcedure.input(z.number()).query(async ({input}) => {
+    const data = await patientReferralService.findByID(input);
     return data;
   }),
   create: publicProcedure
     .input(patientReferralsTableInsertSchema)
-    .mutation(async ({ input }) => {
-      const data = await patientReferralService.create(input);
-      return data;
+    .mutation(async ({input}) => {
+      await patientReferralService.create(input);
+      return {
+        message: "Paciente criado com sucesso!",
+      };
     }),
   update: publicProcedure
     .input(
@@ -45,19 +44,24 @@ const routes = router({
         id: z.number(),
       }),
     )
-    .mutation(async ({ input }) => {
-      const data = await patientReferralService.update(input.data, input.id);
-      return data;
+    .mutation(async ({input}) => {
+      await patientReferralService.update(input.data, input.id);
+      return {
+        message: "Paciente atualizado com sucesso!",
+      };
     }),
-  delete: publicProcedure.input(z.number()).mutation(async ({ input }) => {
+  delete: publicProcedure.input(z.number()).mutation(async ({input}) => {
     await patientReferralService.delete(input);
+    return {
+      message: "Registro removido com sucesso!",
+    }
   }),
   bulkDelete: publicProcedure
     .input(z.number().array())
-    .mutation(async ({ input }) => {
-      const deletedCount = await patientReferralService.bulkDelete(input);
+    .mutation(async ({input}) => {
+      await patientReferralService.bulkDelete(input);
       return {
-        message: deletedCount + " registros removidos com sucesso!",
+        message: "Registros removidos com sucesso!",
       };
     }),
 });

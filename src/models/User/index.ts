@@ -1,6 +1,6 @@
-import { z } from "zod";
-import { usersTable } from "@/db/schema";
-import { createInsertSchema, createSelectSchema } from "drizzle-zod";
+import {z} from "zod";
+import {usersTable} from "@/db/schema";
+import {createInsertSchema, createSelectSchema} from "drizzle-zod";
 
 export const userSelectSchema = createSelectSchema(usersTable).omit({
   password: true,
@@ -17,7 +17,7 @@ export const userInsertSchema = createInsertSchema(usersTable, {
     }),
   email: z
     .string()
-    .email({ message: "Insira um email válido." })
+    .email({message: "Insira um email válido."})
     .min(7, {
       message: "Insira um email válido.",
     })
@@ -39,4 +39,17 @@ export const userInsertSchema = createInsertSchema(usersTable, {
 });
 
 export type User = z.infer<typeof userSelectSchema>;
+export type SafeUser = Omit<User, "password">;
 export type UserDTO = z.infer<typeof userInsertSchema>;
+
+export const toSafeUser = (user: User): SafeUser => {
+  const safeUser: SafeUser = {
+    id: user.id,
+    name: user.name,
+    email: user.email,
+    role: user.role,
+    createdAt: user.createdAt,
+    updatedAt: user.updatedAt,
+  };
+  return safeUser;
+}

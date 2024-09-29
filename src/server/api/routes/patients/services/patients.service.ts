@@ -1,116 +1,75 @@
-import db from "@/db";
-import { and, eq, ne, sql } from "drizzle-orm";
-import { patientsTable } from "@/db/schema";
+import {Patient, PatientDTO} from "@/models/Patient";
+import {PaginatedResponse, PaginatedRequestProps} from "@/server/api/common/types";
+import {TRPCError} from "@trpc/server";
+import {IPatientRepository} from "../repository/patient.repository";
+import {handleError} from "@/server/api/common/utils/handle-error";
 
-import lower from "@/utils/lower";
+export interface IPatientService {
+  findAll(props: PaginatedRequestProps): Promise<PaginatedResponse<Patient>>;
+  findByID(id: string): Promise<Patient>;
+  create(payload: PatientDTO): Promise<void>;
+  update(payload: PatientDTO, patientId: string): Promise<void>;
+  delete(id: string): Promise<void>;
+  bulkDelete(ids: string[]): Promise<void>;
+}
 
-import { Patient, PatientDTO } from "@/models/Patient";
-import { TRPCError } from "@trpc/server";
 
-type PaginatedPatientResponse = {
-  data: Patient[];
-  numberOfPages: number;
-  hasNextPage: boolean;
-};
+export default class PatientService implements IPatientService {
+  constructor(private readonly repository: IPatientRepository) {}
 
-class PatientService {
-  async getAll({
-    q,
-    page = 1,
-    size = 10,
-  }: {
-    q?: string;
-    page?: number;
-    size?: number;
-  }): Promise<PaginatedPatientResponse> {
-    const offset = (page - 1) * size;
-    const query = db.select().from(patientsTable);
-    if (q) {
-      query.where(
-        sql`${lower(patientsTable.name)} LIKE ${`%${q.toLowerCase()}%`} OR ${lower(patientsTable.rg)} LIKE ${`%${q.toLowerCase()}%`}`,
-      );
+  async findAll(props: PaginatedRequestProps): Promise<PaginatedResponse<Patient>> {
+    try {
+      const patients = await this.repository.findAll(props);
+      return patients;
+    } catch (error) {
+      throw handleError(error);
     }
-    const sizeOfTable = await db
-      .select({ count: sql<number>`count(*)` })
-      .from(query.as("filtered"))
-      .limit(1);
-    const numberOfPages = Math.ceil(sizeOfTable[0].count / size);
-    const data = await query
-      .limit(size)
-      .offset(offset)
-      .orderBy(patientsTable.id);
-    const hasNextPage = page < numberOfPages;
-    return { data, numberOfPages, hasNextPage };
   }
-
-  async getById(id: number): Promise<Patient> {
-    const [data] = await db
-      .select()
-      .from(patientsTable)
-      .where(eq(patientsTable.id, id));
-    return data;
-  }
-
-  async create(payload: PatientDTO): Promise<Patient> {
-    const [response] = await db.insert(patientsTable).values(payload);
-    const data = await this.getById(response.insertId);
-    return data;
-  }
-
-  bulkInsert(payload: PatientDTO[]): Patient[] {
-    const patients: Patient[] = [];
-    payload.forEach(async (e) => {
-      const patient = await this.create(e);
-      patients.push(patient);
-    });
-    return patients;
-  }
-
-  async update(payload: PatientDTO, patientId: number): Promise<Patient> {
-    if (payload.rg) {
-      const existingPatient = await db
-        .select()
-        .from(patientsTable)
-        .where(
-          and(
-            eq(patientsTable.rg, payload.rg),
-            ne(patientsTable.id, patientId),
-          ),
-        )
-        .limit(1);
-
-      if (existingPatient.length > 0) {
+  async findByID(id: string): Promise<Patient> {
+    try {
+      const patient = await this.repository.findByID(id);
+      if (!patient) {
         throw new TRPCError({
-          code: "CONFLICT",
-          message: "RG já está em uso por outro paciente.",
+          code: "NOT_FOUND",
+          message: "Paciente não encontrado.",
         });
       }
+      return patient;
     }
-    const [response] = await db
-      .update(patientsTable)
-      .set({ ...payload, updatedAt: new Date() })
-      .where(eq(patientsTable.id, patientId));
-
-    if (response.affectedRows === 0) {
-      throw new TRPCError({
-        code: "NOT_FOUND",
-        message: "Não encontrado.",
-      });
+    catch (error) {
+      throw handleError(error);
     }
-    const data = await this.getById(patientId);
-    return data;
   }
 
-  async delete(id: number): Promise<void> {
-    await db.delete(patientsTable).where(eq(patientsTable.id, id));
+  async create(payload: PatientDTO): Promise<void> {
+    try {
+      await this.repository.create(payload);
+    } catch (error) {
+      throw handleError(error);
+    }
   }
 
-  async bulkDelete(ids: number[]): Promise<number> {
-    const deletePromises = ids.map((id) => this.delete(id));
-    await Promise.all(deletePromises);
-    return ids.length;
+  async update(payload: PatientDTO, patientId: string): Promise<void> {
+    try {
+      await this.repository.update(payload, patientId);
+    } catch (error) {
+      throw handleError(error);
+    }
+  }
+
+  async delete(id: string): Promise<void> {
+    try {
+      await this.repository.delete(id);
+    } catch (error) {
+      throw handleError(error);
+    }
+  }
+
+  async bulkDelete(ids: string[]): Promise<void> {
+    try {
+      await this.repository.bulkDelete(ids);
+    } catch (error) {
+      throw handleError(error);
+    }
   }
 }
-const patientService = new PatientService();
-
-export default patientService;

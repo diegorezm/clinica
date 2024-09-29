@@ -1,123 +1,121 @@
-import db from "@/db";
-import lower from "@/utils/lower";
-import { eq, sql } from "drizzle-orm";
+import {Doctor, DoctorDTO} from "@/models/Doctor";
+import {DoctorWorkDay, WeekDay} from "@/models/Doctor/work-days";
+import {DoctorWorkPeriod, Period} from "@/models/Doctor/work-period";
+import {PaginatedRequestProps, PaginatedResponse} from "@/server/api/common/types";
+import {TRPCError} from "@trpc/server";
+import {IDoctorRepository} from "../repositories/doctor.repository";
+import {handleError} from "@/server/api/common/utils/handle-error";
 
-import { doctorsTable, usersTable } from "@/db/schema";
+export interface IDoctorService {
+  findAll(props: PaginatedRequestProps): Promise<PaginatedResponse<Doctor>>;
+  findById(id: string): Promise<Doctor>;
+  findDoctorWorkDays(id: string): Promise<DoctorWorkDay[]>;
+  findDoctorWorkPeriods(id: string): Promise<DoctorWorkPeriod[]>;
+  create(doctor: DoctorDTO): Promise<void>;
+  createDoctorWorkDay(doctorId: string, day: WeekDay): Promise<void>;
+  createDoctorWorkPeriod(doctorId: string, period: Period): Promise<void>;
+  update(doctor: DoctorDTO, doctorID: string): Promise<void>;
+  delete(id: string): Promise<void>;
+  bulkDelete(ids: string[]): Promise<void>;
+  deleteDoctorWorkDays(doctorId: string, day: WeekDay): Promise<void>;
+  deleteDoctorWorkPeriod(doctorId: string, period: Period): Promise<void>;
+}
 
-import { Doctor, DoctorDTO } from "@/models/Doctor";
-import { TRPCError } from "@trpc/server";
-
-class DoctorService {
-  async getAll({
-    q,
-    page = 1,
-    size = 10,
-  }: {
-    q?: string;
-    page?: number;
-    size?: number;
-  }) {
-    const offset = (page - 1) * size;
-
-    const query = db
-      .select({
-        id: doctorsTable.id,
-        name: usersTable.name,
-        email: usersTable.email,
-        role: usersTable.role,
-        jobFunction: doctorsTable.jobFunction,
-        crm: doctorsTable.crm,
-        createdAt: doctorsTable.createdAt,
-        updatedAt: doctorsTable.updatedAt,
-        userId: usersTable.id,
-      })
-      .from(doctorsTable)
-      .limit(size)
-      .offset(offset)
-      .innerJoin(usersTable, eq(doctorsTable.userId, usersTable.id));
-    if (q) {
-      query.where(
-        sql`${lower(usersTable.name)} LIKE ${`%${q.toLowerCase()}%`}`,
-      );
+export default class DoctorService implements IDoctorService {
+  constructor(private readonly repository: IDoctorRepository) {}
+  async findAll(props: PaginatedRequestProps): Promise<PaginatedResponse<Doctor>> {
+    try {
+      const doctors = await this.repository.findAll(props);
+      return doctors;
+    } catch (error) {
+      throw handleError(error);
     }
-
-    const sizeOfTable = await db
-      .select({ count: sql<number>`count(*)` })
-      .from(query.as("filtered"))
-      .limit(1);
-
-    const numberOfPages = Math.ceil(sizeOfTable[0].count / size);
-
-    const data = await query;
-    const hasNextPage = page < numberOfPages;
-    return { data, numberOfPages, hasNextPage };
   }
-
-  async getById(id: number) {
-    const [data] = await db
-      .select({
-        id: doctorsTable.id,
-        name: usersTable.name,
-        email: usersTable.email,
-        role: usersTable.role,
-        jobFunction: doctorsTable.jobFunction,
-        crm: doctorsTable.crm,
-        createdAt: doctorsTable.createdAt,
-        updatedAt: doctorsTable.updatedAt,
-        userId: usersTable.id,
-      })
-      .from(doctorsTable)
-      .where(eq(doctorsTable.id, id))
-      .innerJoin(usersTable, eq(doctorsTable.userId, usersTable.id));
-
-    if (!data) {
-      throw new TRPCError({
-        code: "NOT_FOUND",
-        message: "Doutor não encontrado.",
-      });
+  async findById(id: string): Promise<Doctor> {
+    try {
+      const doctor = await this.repository.findById(id);
+      if (!doctor) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Médico não encontrado.",
+        });
+      }
+      return doctor;
+    } catch (error) {
+      throw handleError(error);
     }
-    return data;
   }
-
-  async create(payload: DoctorDTO) {
-    const [response] = await db.insert(doctorsTable).values(payload);
-    const data = await this.getById(response.insertId);
-    return data;
-  }
-
-  bulkInsert(payload: DoctorDTO[]): Doctor[] {
-    const doctors: Doctor[] = [];
-    payload.forEach(async (e) => {
-      const doctor = await this.create(e);
-      doctors.push(doctor);
-    });
-    return doctors;
-  }
-
-  async update(payload: Partial<Doctor>, doctorId: number): Promise<Doctor> {
-    const [response] = await db
-      .update(doctorsTable)
-      .set(payload)
-      .where(eq(doctorsTable.id, doctorId));
-    if (response.affectedRows === 0) {
-      throw new TRPCError({
-        code: "NOT_FOUND",
-        message: "Registro não encontrado.",
-      });
+  async findDoctorWorkDays(id: string): Promise<DoctorWorkDay[]> {
+    try {
+      const workDays = await this.repository.findDoctorWorkDays(id);
+      return workDays;
+    } catch (error) {
+      throw handleError(error);
     }
-    const data = await this.getById(doctorId);
-    return data;
+  }
+  async findDoctorWorkPeriods(id: string): Promise<DoctorWorkPeriod[]> {
+    try {
+      const workPeriods = await this.repository.findDoctorWorkPeriods(id);
+      return workPeriods;
+    } catch (error) {
+      throw handleError(error);
+    }
+  }
+  async create(doctor: DoctorDTO): Promise<void> {
+    try {
+      await this.repository.create(doctor);
+    } catch (error) {
+      throw handleError(error);
+    }
+  }
+  async createDoctorWorkDay(doctorId: string, day: WeekDay): Promise<void> {
+    try {
+      await this.repository.createDoctorWorkDay(doctorId, day);
+    } catch (error) {
+      throw handleError(error);
+    }
+  }
+  async createDoctorWorkPeriod(doctorId: string, period: Period): Promise<void> {
+    try {
+      await this.repository.createDoctorWorkPeriod(doctorId, period);
+    } catch (error) {
+      throw handleError(error);
+    }
   }
 
-  async delete(id: number) {
-    await db.delete(doctorsTable).where(eq(doctorsTable.id, id));
+  async update(doctor: DoctorDTO, doctorID: string): Promise<void> {
+    try {
+      await this.repository.update(doctor, doctorID);
+    } catch (error) {
+      throw handleError(error);
+    }
   }
-
-  async bulkDelete(ids: number[]) {
-    const deletedPromises = ids.map((e) => this.delete(e));
-    await Promise.all(deletedPromises);
-    return deletedPromises.length;
+  async delete(id: string): Promise<void> {
+    try {
+      await this.repository.delete(id);
+    } catch (error) {
+      throw handleError(error);
+    }
+  }
+  async bulkDelete(ids: string[]): Promise<void> {
+    try {
+      await this.repository.bulkDelete(ids);
+    } catch (error) {
+      throw handleError(error);
+    }
+  }
+  async deleteDoctorWorkDays(doctorId: string, day: WeekDay): Promise<void> {
+    try {
+      await this.repository.deleteDoctorWorkDays(doctorId, day);
+    } catch (error) {
+      throw handleError(error);
+    }
+  }
+  async deleteDoctorWorkPeriod(doctorId: string, period: Period): Promise<void> {
+    try {
+      await this.repository.deleteDoctorWorkPeriod(doctorId, period);
+    } catch (error) {
+      throw handleError(error);
+    }
   }
 }
-const doctorService = new DoctorService();
-export default doctorService;

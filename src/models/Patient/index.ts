@@ -1,12 +1,12 @@
-import { z } from "zod";
-import { createInsertSchema } from "drizzle-zod";
-import { patientsTable } from "@/db/schema";
+import {z} from "zod";
+import {createInsertSchema} from "drizzle-zod";
+import {patientsTable} from "@/db/schema";
 
 export const patientInsertSchema = createInsertSchema(patientsTable, {
   name: z
     .string()
-    .min(4, { message: "Não é um nome válido." })
-    .max(255, { message: "Nome muito longo." }),
+    .min(4, {message: "Não é um nome válido."})
+    .max(255, {message: "Nome muito longo."}),
   phone: z.string(),
   rg: z
     .string()
