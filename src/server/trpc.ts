@@ -3,6 +3,7 @@ import {initTRPC, TRPCError} from "@trpc/server";
 import {User} from "lucia";
 import {NextRequest, NextResponse} from "next/server";
 import {validateRequest} from "./api/common/utils/cookie-manager";
+import {getInjections} from "./api/common/di/container";
 
 type Context = {
   user?: User;
@@ -37,6 +38,15 @@ export const isAdmin = t.middleware(async ({ctx, next}) => {
     });
   }
   // TODO: check if user is admin
+  const userService = getInjections("IUserService")
+  const u = await userService.findByID(user.id)
+  const isAdmin = u.role === "admin"
+  if (!isAdmin) {
+    throw new TRPCError({
+      code: "UNAUTHORIZED",
+      message: "Este usuário não tem permissão para realizar esta ação.",
+    });
+  }
   return next({
     ctx: {
       ...ctx,
