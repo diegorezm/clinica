@@ -1,9 +1,9 @@
-import {User} from "@/models/User";
+import {SafeUser} from "@/models/User";
 import {create} from "zustand";
 
 interface AuthState {
-  user: User | null;
-  setUser: (user: User | null) => void;
+  user: SafeUser | null;
+  setUser: (user: SafeUser | null) => void;
   clearAuth: () => void;
 }
 

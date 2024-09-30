@@ -1,27 +1,27 @@
 "use client";
 
 import LoadingSpinner from "@/components/loading-spinner";
-import { useMe } from "@/features/auth/api/use-me";
-import { useAuthStore } from "@/features/auth/hooks/use-auth-store";
-import { User } from "@/models/User";
-import { useRouter } from "next/navigation";
-import { ReactNode, useCallback, useEffect } from "react";
+import {useWhoAmI} from "@/features/auth/api/use-whoami";
+import {useAuthStore} from "@/features/auth/hooks/use-auth-store";
+import {SafeUser} from "@/models/User";
+import {useRouter} from "next/navigation";
+import {ReactNode, useCallback, useEffect} from "react";
 
 type Props = {
   children: ReactNode;
 };
 
-export default function UserStoreProvider({ children }: Props) {
-  const { setUser, clearAuth } = useAuthStore();
+export default function UserStoreProvider({children}: Props) {
+  const {setUser, clearAuth} = useAuthStore();
   const router = useRouter();
-  const meQuery = useMe();
+  const meQuery = useWhoAmI();
   const getMe = useCallback(() => {
     if (meQuery.isLoading) return;
-    const cookieUser = meQuery.data?.user;
+    const cookieUser = meQuery.data;
     if (!cookieUser) {
       clearAuth();
     } else {
-      const newUser: User = {
+      const newUser: SafeUser = {
         ...cookieUser,
         createdAt: new Date(cookieUser.createdAt),
         updatedAt: new Date(cookieUser.updatedAt),
