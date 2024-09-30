@@ -42,15 +42,15 @@ const routes = router({
       return {message: "Registro criado com sucesso!"};
     }),
   createDoctorWorkDay: adminProcedure
-    .input(doctorWorkDayInsertSchema)
+    .input(doctorWorkDayInsertSchema.array())
     .mutation(async ({input}) => {
-      await doctorService.createDoctorWorkDay(input.doctorId, input.day);
+      await doctorService.createDoctorWorkDays(input);
       return {message: "Registro criado com sucesso!"};
     }),
   createDoctorWorkPeriod: adminProcedure
-    .input(doctorWorkPeriodInsertSchema)
+    .input(doctorWorkPeriodInsertSchema.array())
     .mutation(async ({input}) => {
-      await doctorService.createDoctorWorkPeriod(input.doctorId, input.period);
+      await doctorService.createDoctorWorkPeriods(input);
       return {message: "Registro criado com sucesso!"};
     }),
   update: adminProcedure

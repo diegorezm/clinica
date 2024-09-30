@@ -5,16 +5,16 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet";
-import { useOpenCreateDoctor } from "../hooks/use-open-create-doctor";
+import {useOpenCreateDoctor} from "../hooks/use-open-create-doctor";
 import DoctorsForm from "./doctors-form";
-import { useCreateDoctor } from "../api/use-create-doctor";
-import { DoctorWithUserDTO } from "@/models/Doctor";
-import { useRegister } from "@/features/auth/api/use-register";
+import {useCreateDoctor} from "../api/use-create-doctor";
+import {DoctorWithUserDTO} from "@/models/Doctor";
+import {useRegister} from "@/features/auth/api/use-register";
 
 export default function CreatePatientSheet() {
   const createDoctorQuery = useCreateDoctor();
   const registerQuery = useRegister();
-  const { isOpen, onClose } = useOpenCreateDoctor();
+  const {isOpen, onClose} = useOpenCreateDoctor();
 
   async function onSubmit(values: DoctorWithUserDTO) {
     const user = await registerQuery.mutateAsync({

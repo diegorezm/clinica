@@ -1,14 +1,14 @@
-import { create } from "zustand";
+import {create} from "zustand";
 type OpenUpdatePatientState = {
-  id?: number;
+  id?: string;
   isOpen: boolean;
-  onOpen: (id: number) => void;
+  onOpen: (id: string) => void;
   onClose: () => void;
 };
 
 export const useOpenUpdatePatient = create<OpenUpdatePatientState>((set) => ({
   id: undefined,
   isOpen: false,
-  onOpen: (id: number) => set({ isOpen: true, id }),
-  onClose: () => set({ isOpen: false, id: undefined }),
+  onOpen: (id) => set({isOpen: true, id}),
+  onClose: () => set({isOpen: false, id: undefined}),
 }));

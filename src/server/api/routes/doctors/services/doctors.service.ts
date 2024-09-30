@@ -7,13 +7,11 @@ import {IDoctorRepository} from "../repositories/doctor.repository";
 import {handleError} from "@/server/api/common/utils/handle-error";
 
 export interface IDoctorService {
-  findAll(props: PaginatedRequestProps): Promise<PaginatedResponse<Doctor>>;
-  findById(id: string): Promise<Doctor>;
-  findDoctorWorkDays(id: string): Promise<DoctorWorkDay[]>;
+  findAll(props: PaginatedRequestProps): Promise<PaginatedResponse<Doctor>>; findById(id: string): Promise<Doctor>; findDoctorWorkDays(id: string): Promise<DoctorWorkDay[]>;
   findDoctorWorkPeriods(id: string): Promise<DoctorWorkPeriod[]>;
   create(doctor: DoctorDTO): Promise<void>;
-  createDoctorWorkDay(doctorId: string, day: WeekDay): Promise<void>;
-  createDoctorWorkPeriod(doctorId: string, period: Period): Promise<void>;
+  createDoctorWorkDays(payload: DoctorWorkDay[]): Promise<void>;
+  createDoctorWorkPeriods(payload: DoctorWorkPeriod[]): Promise<void>;
   update(doctor: DoctorDTO, doctorID: string): Promise<void>;
   delete(id: string): Promise<void>;
   bulkDelete(ids: string[]): Promise<void>;
@@ -48,6 +46,12 @@ export default class DoctorService implements IDoctorService {
   async findDoctorWorkDays(id: string): Promise<DoctorWorkDay[]> {
     try {
       const workDays = await this.repository.findDoctorWorkDays(id);
+      if (!workDays) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Não foi localizado nenhum dia de trabalho.",
+        });
+      }
       return workDays;
     } catch (error) {
       throw handleError(error);
@@ -56,6 +60,12 @@ export default class DoctorService implements IDoctorService {
   async findDoctorWorkPeriods(id: string): Promise<DoctorWorkPeriod[]> {
     try {
       const workPeriods = await this.repository.findDoctorWorkPeriods(id);
+      if (!workPeriods) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Não foi localizado nenhum horário de trabalho.",
+        });
+      }
       return workPeriods;
     } catch (error) {
       throw handleError(error);
@@ -68,16 +78,17 @@ export default class DoctorService implements IDoctorService {
       throw handleError(error);
     }
   }
-  async createDoctorWorkDay(doctorId: string, day: WeekDay): Promise<void> {
+
+  async createDoctorWorkDays(payload: DoctorWorkDay[]): Promise<void> {
     try {
-      await this.repository.createDoctorWorkDay(doctorId, day);
+      await this.repository.createDoctorWorkDays(payload);
     } catch (error) {
       throw handleError(error);
     }
   }
-  async createDoctorWorkPeriod(doctorId: string, period: Period): Promise<void> {
+  async createDoctorWorkPeriods(payload: DoctorWorkPeriod[]): Promise<void> {
     try {
-      await this.repository.createDoctorWorkPeriod(doctorId, period);
+      await this.repository.createDoctorWorkPeriods(payload);
     } catch (error) {
       throw handleError(error);
     }

@@ -21,7 +21,7 @@ export const doctorWithUserSchema = z.object({
 
 type DoctorRaw = typeof doctorsTable.$inferSelect;
 
-export interface Doctor extends Omit<User, "id">, DoctorRaw {
+export interface Doctor extends Omit<User, "id" | "password">, DoctorRaw {
   periods: Period[];
   workDays: WeekDay[];
 }

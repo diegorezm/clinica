@@ -1,4 +1,4 @@
-import { Button } from "@/components/ui/button";
+import {Button} from "@/components/ui/button";
 import {
   Form,
   FormControl,
@@ -7,15 +7,15 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Trash2 } from "lucide-react";
-import { zodResolver } from "@hookform/resolvers/zod";
+import {Input} from "@/components/ui/input";
+import {Trash2} from "lucide-react";
+import {zodResolver} from "@hookform/resolvers/zod";
 import {
   PatientReferralDTO,
   patientReferralsTableInsertSchema,
 } from "@/models/Patient/patient-referral";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
+import {useForm} from "react-hook-form";
+import {z} from "zod";
 
 type Props = {
   onSubmit: (values: PatientReferralDTO) => void;
@@ -37,11 +37,11 @@ export default function PatientReferralForm({
     defaultValues !== undefined
       ? defaultValues
       : {
-          cid: "",
-          crm: "",
-          jobFunction: "",
-          patientId,
-        };
+        cid: "",
+        crm: "",
+        jobFunction: "",
+        patientId,
+      };
   const form = useForm<z.infer<typeof patientReferralsTableInsertSchema>>({
     resolver: zodResolver(patientReferralsTableInsertSchema),
     defaultValues: values,
@@ -52,7 +52,7 @@ export default function PatientReferralForm({
         <FormField
           control={form.control}
           name="cid"
-          render={({ field }) => (
+          render={({field}) => (
             <FormItem>
               <FormLabel>CID</FormLabel>
               <FormControl>
@@ -65,7 +65,7 @@ export default function PatientReferralForm({
         <FormField
           control={form.control}
           name="crm"
-          render={({ field }) => (
+          render={({field}) => (
             <FormItem>
               <FormLabel>CRM</FormLabel>
               <FormControl>
@@ -78,7 +78,7 @@ export default function PatientReferralForm({
         <FormField
           control={form.control}
           name="jobFunction"
-          render={({ field }) => (
+          render={({field}) => (
             <FormItem>
               <FormLabel>Função do médico</FormLabel>
               <FormControl>

@@ -1,13 +1,13 @@
 import {patientsTable} from "@/db/schema";
 import {Patient, PatientDTO} from "@/models/Patient";
-import {PaginatedPatientResponse, PaginatedRequestProps} from "@/server/api/common/types";
+import {PaginatedResponse, PaginatedRequestProps} from "@/server/api/common/types";
 import lower from "@/utils/lower";
 import {eq, or, sql} from "drizzle-orm";
 import {MySql2Database} from "drizzle-orm/mysql2";
 
 export interface IPatientRepository {
-  findAll(props: PaginatedRequestProps): Promise<PaginatedPatientResponse<Patient>>;
-  findByID(id: string): Promise<Patient>;
+  findAll(props: PaginatedRequestProps): Promise<PaginatedResponse<Patient>>;
+  findByID(id: string): Promise<Patient | null>;
   create(payload: PatientDTO): Promise<void>;
   update(payload: PatientDTO, patientId: string): Promise<void>;
   delete(id: string): Promise<void>;
@@ -17,7 +17,7 @@ export interface IPatientRepository {
 export default class PatientRepository implements IPatientRepository {
   constructor(private readonly db: MySql2Database) {}
 
-  async findAll({q, page = 1, size = 10}: PaginatedRequestProps): Promise<PaginatedPatientResponse<Patient>> {
+  async findAll({q, page = 1, size = 10}: PaginatedRequestProps): Promise<PaginatedResponse<Patient>> {
     const offset = (page - 1) * size;
     const query = this.db.select().from(patientsTable);
     if (q) {
@@ -38,7 +38,7 @@ export default class PatientRepository implements IPatientRepository {
     return {data, numberOfPages, hasNextPage};
   }
 
-  async findByID(id: string): Promise<Patient> {
+  async findByID(id: string): Promise<Patient | null> {
     const [data] = await this.db
       .select()
       .from(patientsTable)

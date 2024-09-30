@@ -1,10 +1,16 @@
-import { ReactQueryOptions, trpc } from "@/lib/trpc";
+import {ReactQueryOptions, trpc} from "@/lib/trpc";
 
-type Opts = ReactQueryOptions["user"]["getById"];
+type UserGetUsersOpts = ReactQueryOptions["user"]["getByID"];
 
-export const useGetUser = (id: string, opts?: Opts) => {
-  const query = trpc.user.getById.useQuery(id, {
-    ...opts,
+
+export const useGetUser = (id: string, opts?: UserGetUsersOpts) => {
+  const query = trpc.user.getByID.useQuery(id, {
+    ...opts
   });
+  return query;
+};
+
+export const useGetUserByEmail = (email: string) => {
+  const query = trpc.user.getByEmail.useQuery(email);
   return query;
 };

@@ -11,7 +11,7 @@ export interface ReferralPaginatedRequestProps extends PaginatedRequestProps {
 
 export interface IPatientReferralRepository {
   findAll(props: ReferralPaginatedRequestProps): Promise<PaginatedResponse<PatientReferral>>;
-  findByID(id: number): Promise<PatientReferral>;
+  findByID(id: number): Promise<PatientReferral | null>;
   create(payload: PatientReferralDTO): Promise<void>;
   update(payload: Omit<PatientReferralDTO, "patientId">, id: number): Promise<void>;
   delete(id: number): Promise<void>;
@@ -48,7 +48,7 @@ export default class PatientReferralRepository implements IPatientReferralReposi
     return {data, hasNextPage, numberOfPages};
   }
 
-  async findByID(id: number): Promise<PatientReferral> {
+  async findByID(id: number): Promise<PatientReferral | null> {
     const [data] = await this.
       db.select().from(patientReferralsTable).where(eq(patientReferralsTable.id, id));
     return data

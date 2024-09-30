@@ -5,21 +5,21 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet";
-import { PatientDTO } from "@/models/Patient";
-import { useGetPatient } from "../api/use-get-patient";
+import {PatientDTO} from "@/models/Patient";
+import {useGetPatient} from "../api/use-get-patient";
 import PatientsForm from "./patients-form";
 import LoadingSpinner from "@/components/loading-spinner";
-import { useConfirm } from "@/hooks/use-confirm";
-import { useBulkDeletePatients } from "../api/use-bulk-delete-patients";
-import { useOpenUpdatePatient } from "../hooks/use-open-update-patient";
-import { useUpdatePatient } from "../api/use-update-patient";
+import {useConfirm} from "@/hooks/use-confirm";
+import {useBulkDeletePatients} from "../api/use-bulk-delete-patients";
+import {useOpenUpdatePatient} from "../hooks/use-open-update-patient";
+import {useUpdatePatient} from "../api/use-update-patient";
 
 export default function UpdatePatientSheet() {
   const [ConfirmDialog, confirm] = useConfirm(
     "Tem certeza?",
     "Esta ação é irreversível. Ao deletar os registros, eles serão permanentemente removidos e não poderão ser recuperados.",
   );
-  const { id, isOpen, onClose } = useOpenUpdatePatient();
+  const {id, isOpen, onClose} = useOpenUpdatePatient();
   const deletePatientsQuery = useBulkDeletePatients();
   const updatePatientQuery = useUpdatePatient();
   const patientQuery = useGetPatient(id);
@@ -32,7 +32,7 @@ export default function UpdatePatientSheet() {
     const ok = await confirm();
     if (ok) {
       deletePatientsQuery.mutate(
-        { ids: [id] },
+        [id],
         {
           onSuccess: () => {
             onClose();
@@ -45,7 +45,7 @@ export default function UpdatePatientSheet() {
   async function onSubmit(values: PatientDTO) {
     await updatePatientQuery.mutateAsync(
       {
-        payload: { ...values },
+        payload: {...values},
         patientId: id!,
       },
       {

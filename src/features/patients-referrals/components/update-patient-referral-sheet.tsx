@@ -6,12 +6,12 @@ import {
   SheetTitle,
 } from "@/components/ui/sheet";
 import LoadingSpinner from "@/components/loading-spinner";
-import { useConfirm } from "@/hooks/use-confirm";
-import { useBulkDeletePatientsReferrals } from "../api/use-bulk-delete-patients-referrals";
-import { useOpenUpdatePatientReferral } from "../hooks/use-open-update-patient-referral";
-import { useUpdatePatientReferral } from "../api/use-update-patient-referral";
-import { useGetPatientReferral } from "../api/use-get-patient-referral";
-import { PatientReferralDTO } from "@/models/Patient/patient-referral";
+import {useConfirm} from "@/hooks/use-confirm";
+import {useBulkDeletePatientsReferrals} from "../api/use-bulk-delete-patients-referrals";
+import {useOpenUpdatePatientReferral} from "../hooks/use-open-update-patient-referral";
+import {useUpdatePatientReferral} from "../api/use-update-patient-referral";
+import {useGetPatientReferral} from "../api/use-get-patient-referral";
+import {PatientReferralDTO} from "@/models/Patient/patient-referral";
 import PatientReferralForm from "./patient-referral-form";
 
 export default function UpdatePatientReferralSheet() {
@@ -19,7 +19,7 @@ export default function UpdatePatientReferralSheet() {
     "Tem certeza?",
     "Esta ação é irreversível. Ao deletar os registros, eles serão permanentemente removidos e não poderão ser recuperados.",
   );
-  const { id, isOpen, onClose } = useOpenUpdatePatientReferral();
+  const {id, isOpen, onClose} = useOpenUpdatePatientReferral();
   const deleteReferralQuery = useBulkDeletePatientsReferrals();
   const updateReferralQuery = useUpdatePatientReferral();
   const referralQuery = useGetPatientReferral(id);
@@ -43,7 +43,7 @@ export default function UpdatePatientReferralSheet() {
     console.log(id);
     await updateReferralQuery.mutateAsync(
       {
-        data: { ...values },
+        data: {...values},
         id: id!,
       },
       {

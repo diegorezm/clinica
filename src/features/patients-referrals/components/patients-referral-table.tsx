@@ -1,9 +1,9 @@
-import { DataTable } from "@/components/data-table";
-import { DataTablePagination } from "@/components/data-table-pagination";
-import { Loader2 } from "lucide-react";
-import { useGetPatientsReferrals } from "../api/use-get-patient-referrals";
-import { patientReferralCols } from "./columns";
-import { useBulkDeletePatientsReferrals } from "../api/use-bulk-delete-patients-referrals";
+import {DataTable} from "@/components/data-table";
+import {DataTablePagination} from "@/components/data-table-pagination";
+import {Loader2} from "lucide-react";
+import {useGetPatientsReferrals} from "../api/use-get-patient-referrals";
+import {patientReferralCols} from "./columns";
+import {useBulkDeletePatientsReferrals} from "../api/use-bulk-delete-patients-referrals";
 
 export default function PatientsRefarralsTable({
   q,

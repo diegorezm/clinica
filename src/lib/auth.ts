@@ -1,10 +1,21 @@
 import db from "@/db";
-import { sessionTable, usersTable } from "@/db/schema";
-import { NODE_ENV } from "@/env";
-import { DrizzleMySQLAdapter } from "@lucia-auth/adapter-drizzle";
-import { Lucia } from "lucia";
+import {sessionTable, usersTable} from "@/db/schema";
+import {NODE_ENV} from "@/env";
+import {DrizzleMySQLAdapter} from "@lucia-auth/adapter-drizzle";
+import {Lucia} from "lucia";
 
 const adapter = new DrizzleMySQLAdapter(db, sessionTable, usersTable);
+
+declare module "lucia" {
+  interface Register {
+    Lucia: typeof lucia;
+    DatabaseUserAttributes: DatabaseUserAttributes;
+  }
+}
+
+interface DatabaseUserAttributes {
+  email: string;
+}
 
 export const lucia = new Lucia(adapter, {
   sessionCookie: {
@@ -19,14 +30,3 @@ export const lucia = new Lucia(adapter, {
     };
   },
 });
-
-declare module "lucia" {
-  interface Register {
-    Lucia: typeof lucia;
-    DatabaseUserAttributes: DatabaseUserAttributes;
-  }
-}
-
-interface DatabaseUserAttributes {
-  email: string;
-}

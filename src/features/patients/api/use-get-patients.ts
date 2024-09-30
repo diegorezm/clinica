@@ -1,4 +1,4 @@
-import { ReactQueryOptions, RouterInputs, trpc } from "@/lib/trpc";
+import {ReactQueryOptions, RouterInputs, trpc} from "@/lib/trpc";
 
 type Opts = ReactQueryOptions["patients"]["get"];
 type RequestType = RouterInputs["patients"]["get"];
@@ -7,7 +7,7 @@ interface Props extends RequestType {
   opts?: Opts;
 }
 
-export const useGetPatients = ({ q, page = 1, size = 10, opts }: Props) => {
+export const useGetPatients = ({q, page = 1, size = 10, opts}: Props) => {
   const query = trpc.patients.get.useQuery(
     {
       q,

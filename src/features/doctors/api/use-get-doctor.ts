@@ -1,7 +1,7 @@
-import { trpc } from "@/lib/trpc";
-import { Doctor } from "@/models/Doctor";
+import {trpc} from "@/lib/trpc";
+import {Doctor} from "@/models/Doctor";
 
-export const useGetDoctor = (id?: number) => {
+export const useGetDoctor = (id?: string) => {
   const query = trpc.doctors.getById.useQuery(id!, {
     enabled: !!id,
     select: (data) => {

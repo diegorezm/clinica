@@ -1,5 +1,5 @@
-import { toast } from "sonner";
-import { trpc } from "@/lib/trpc";
+import {toast} from "sonner";
+import {trpc} from "@/lib/trpc";
 
 export const useCreatePatientsReferrals = () => {
   const utils = trpc.useUtils();

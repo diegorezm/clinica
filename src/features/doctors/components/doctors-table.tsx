@@ -1,10 +1,10 @@
 "use client";
-import { DataTable } from "@/components/data-table";
-import { DataTablePagination } from "@/components/data-table-pagination";
-import { Loader2 } from "lucide-react";
-import { useBulkDeleteDoctors } from "../api/use-bulk-delete-doctors";
-import { useGetDoctors } from "../api/use-get-doctors";
-import { doctorCols } from "./columns";
+import {DataTable} from "@/components/data-table";
+import {DataTablePagination} from "@/components/data-table-pagination";
+import {Loader2} from "lucide-react";
+import {useBulkDeleteDoctors} from "../api/use-bulk-delete-doctors";
+import {useGetDoctors} from "../api/use-get-doctors";
+import {doctorCols} from "./columns";
 
 export default function DoctorsTable({
   q,
@@ -13,7 +13,7 @@ export default function DoctorsTable({
   q?: string;
   page: number;
 }) {
-  const { data, isPlaceholderData, isPending, error } = useGetDoctors({
+  const {data, isPlaceholderData, isPending, error} = useGetDoctors({
     q: q,
     page: page,
     size: 8,
@@ -39,7 +39,7 @@ export default function DoctorsTable({
         data={data.data}
         disabled={isDisabled}
         onDelete={(rows) => {
-          const ids: number[] = rows.map((row) => row.original.id);
+          const ids: string[] = rows.map((row) => row.original.id);
           deleteDoctors.mutate(ids);
         }}
       />

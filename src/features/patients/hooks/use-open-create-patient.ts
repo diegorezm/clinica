@@ -1,4 +1,4 @@
-import { create } from "zustand";
+import {create} from "zustand";
 type OpenCreatePatientState = {
   isOpen: boolean;
   onOpen: () => void;
@@ -7,6 +7,6 @@ type OpenCreatePatientState = {
 
 export const useOpenCreatePatient = create<OpenCreatePatientState>((set) => ({
   isOpen: false,
-  onOpen: () => set({ isOpen: true }),
-  onClose: () => set({ isOpen: false }),
+  onOpen: () => set({isOpen: true}),
+  onClose: () => set({isOpen: false}),
 }));

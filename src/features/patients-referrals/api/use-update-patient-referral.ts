@@ -1,5 +1,5 @@
-import { ReactQueryOptions, trpc } from "@/lib/trpc";
-import { toast } from "sonner";
+import {ReactQueryOptions, trpc} from "@/lib/trpc";
+import {toast} from "sonner";
 
 type Opts = ReactQueryOptions["patientsReferrals"]["update"];
 
@@ -10,7 +10,7 @@ export const useUpdatePatientReferral = (opts?: Opts) => {
     onError: (error) => {
       toast.error(
         error?.message ||
-          "Falha ao atualizar este registro. Por favor, tente novamente.",
+        "Falha ao atualizar este registro. Por favor, tente novamente.",
       );
     },
     onSuccess: () => {

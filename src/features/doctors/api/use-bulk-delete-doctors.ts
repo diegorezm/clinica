@@ -1,5 +1,5 @@
-import { toast } from "sonner";
-import { ReactQueryOptions, trpc } from "@/lib/trpc";
+import {toast} from "sonner";
+import {ReactQueryOptions, trpc} from "@/lib/trpc";
 
 type Opts = ReactQueryOptions["doctors"]["bulkDelete"];
 
@@ -10,7 +10,7 @@ export const useBulkDeleteDoctors = (options?: Opts) => {
     onError: (error, variables, context) => {
       toast.error(
         error?.message ||
-          "Falha ao excluir este registro. Por favor, tente novamente.",
+        "Falha ao excluir este registro. Por favor, tente novamente.",
       );
 
       if (options?.onError) {

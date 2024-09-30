@@ -1,6 +1,6 @@
 import db from "@/db";
-import { sessionTable } from "@/db/schema";
-import { sql } from "drizzle-orm";
+import {sessionTable} from "@/db/schema";
+import {sql} from "drizzle-orm";
 
 export const deleteExpiredSessions = async () => {
   const results = await db

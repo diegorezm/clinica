@@ -1,9 +1,9 @@
-import { PatientReferral } from "@/models/Patient/patient-referral";
-import { ColumnDef } from "@tanstack/react-table";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Edit, MoreHorizontal } from "lucide-react";
+import {PatientReferral} from "@/models/Patient/patient-referral";
+import {ColumnDef} from "@tanstack/react-table";
+import {Checkbox} from "@/components/ui/checkbox";
+import {Edit, MoreHorizontal} from "lucide-react";
 
-import { Button } from "@/components/ui/button";
+import {Button} from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -11,12 +11,12 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useOpenUpdatePatientReferral } from "../hooks/use-open-update-patient-referral";
+import {useOpenUpdatePatientReferral} from "../hooks/use-open-update-patient-referral";
 
 export const patientReferralCols: ColumnDef<PatientReferral>[] = [
   {
     id: "select",
-    header: ({ table }) => (
+    header: ({table}) => (
       <Checkbox
         checked={
           table.getIsAllPageRowsSelected() ||
@@ -26,7 +26,7 @@ export const patientReferralCols: ColumnDef<PatientReferral>[] = [
         aria-label="Select all"
       />
     ),
-    cell: ({ row }) => (
+    cell: ({row}) => (
       <Checkbox
         checked={row.getIsSelected()}
         onCheckedChange={(value) => row.toggleSelected(!!value)}
@@ -54,9 +54,9 @@ export const patientReferralCols: ColumnDef<PatientReferral>[] = [
   },
   {
     id: "actions",
-    cell: ({ row }) => {
+    cell: ({row}) => {
       // eslint-disable-next-line react-hooks/rules-of-hooks
-      const { onOpen } = useOpenUpdatePatientReferral();
+      const {onOpen} = useOpenUpdatePatientReferral();
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>

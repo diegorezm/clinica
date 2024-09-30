@@ -1,4 +1,4 @@
-import { trpc } from "@/lib/trpc";
+import {trpc} from "@/lib/trpc";
 
 export const useGetPatientReferral = (id?: number) => {
   const query = trpc.patientsReferrals.getById.useQuery(id!, {

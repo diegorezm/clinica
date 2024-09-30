@@ -1,7 +1,7 @@
-import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { Button } from "@/components/ui/button";
+import {z} from "zod";
+import {zodResolver} from "@hookform/resolvers/zod";
+import {useForm} from "react-hook-form";
+import {Button} from "@/components/ui/button";
 import {
   Form,
   FormControl,
@@ -10,9 +10,9 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Trash2 } from "lucide-react";
-import { DoctorWithUserDTO, doctorWithUserSchema } from "@/models/Doctor";
+import {Input} from "@/components/ui/input";
+import {Trash2} from "lucide-react";
+import {DoctorWithUserDTO, doctorWithUserSchema} from "@/models/Doctor";
 
 type Props = {
   onSubmit: (values: DoctorWithUserDTO) => void;
@@ -33,18 +33,18 @@ export default function DoctorsForm({
     defaultValues !== undefined
       ? defaultValues
       : {
-          doctor: {
-            crm: "",
-            jobFunction: "",
-            userId: "",
-          },
-          user: {
-            name: "",
-            role: "doctor",
-            email: "",
-            password: "",
-          },
-        };
+        doctor: {
+          crm: "",
+          jobFunction: "",
+          userId: "",
+        },
+        user: {
+          name: "",
+          role: "doctor",
+          email: "",
+          password: "",
+        },
+      };
   const form = useForm<z.infer<typeof doctorWithUserSchema>>({
     resolver: zodResolver(doctorWithUserSchema),
     defaultValues: values,
@@ -55,7 +55,7 @@ export default function DoctorsForm({
         <FormField
           control={form.control}
           name="user.name"
-          render={({ field }) => (
+          render={({field}) => (
             <FormItem>
               <FormLabel>Nome</FormLabel>
               <FormControl>
@@ -69,7 +69,7 @@ export default function DoctorsForm({
         <FormField
           control={form.control}
           name="user.email"
-          render={({ field }) => (
+          render={({field}) => (
             <FormItem>
               <FormLabel>Tel</FormLabel>
               <FormControl>
@@ -83,7 +83,7 @@ export default function DoctorsForm({
           <FormField
             control={form.control}
             name="user.password"
-            render={({ field }) => (
+            render={({field}) => (
               <FormItem>
                 <FormLabel>Senha</FormLabel>
                 <FormControl>
@@ -109,7 +109,7 @@ export default function DoctorsForm({
         <FormField
           control={form.control}
           name="doctor.jobFunction"
-          render={({ field }) => (
+          render={({field}) => (
             <FormItem>
               <FormLabel>rg</FormLabel>
               <FormControl>
@@ -131,7 +131,7 @@ export default function DoctorsForm({
         <FormField
           control={form.control}
           name="doctor.crm"
-          render={({ field }) => (
+          render={({field}) => (
             <FormItem>
               <FormLabel>CRM</FormLabel>
               <FormControl>

@@ -1,5 +1,5 @@
-import { toast } from "sonner";
-import { trpc } from "@/lib/trpc";
+import {toast} from "sonner";
+import {trpc} from "@/lib/trpc";
 
 export const useUpdatePatient = () => {
   const utils = trpc.useUtils();
@@ -7,7 +7,7 @@ export const useUpdatePatient = () => {
     onError: (error) => {
       toast.error(
         error?.message ||
-          "Falha ao atualizar paciente. Por favor, tente novamente.",
+        "Falha ao atualizar paciente. Por favor, tente novamente.",
       );
     },
     onSuccess: () => {

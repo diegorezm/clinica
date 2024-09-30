@@ -1,9 +1,9 @@
-import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { PatientDTO, patientInsertSchema } from "@/models/Patient";
-import { useForm } from "react-hook-form";
-import { Button } from "@/components/ui/button";
-import { PhoneInput } from "@/components/phone-input";
+import {z} from "zod";
+import {zodResolver} from "@hookform/resolvers/zod";
+import {PatientDTO, patientInsertSchema} from "@/models/Patient";
+import {useForm} from "react-hook-form";
+import {Button} from "@/components/ui/button";
+import {PhoneInput} from "@/components/phone-input";
 import {
   Form,
   FormControl,
@@ -12,8 +12,8 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Trash2 } from "lucide-react";
+import {Input} from "@/components/ui/input";
+import {Trash2} from "lucide-react";
 
 type Props = {
   onSubmit: (values: PatientDTO) => void;
@@ -34,12 +34,12 @@ export default function PatientsForm({
     defaultValues !== undefined
       ? defaultValues
       : {
-          rg: undefined,
-          name: "",
-          phone: "",
-          insurance: undefined,
-          insuranceNumber: undefined,
-        };
+        rg: undefined,
+        name: "",
+        phone: "",
+        insurance: undefined,
+        insuranceNumber: undefined,
+      };
   const form = useForm<z.infer<typeof patientInsertSchema>>({
     resolver: zodResolver(patientInsertSchema),
     defaultValues: values,
@@ -50,7 +50,7 @@ export default function PatientsForm({
         <FormField
           control={form.control}
           name="name"
-          render={({ field }) => (
+          render={({field}) => (
             <FormItem>
               <FormLabel>Nome</FormLabel>
               <FormControl>
@@ -64,7 +64,7 @@ export default function PatientsForm({
         <FormField
           control={form.control}
           name="phone"
-          render={({ field }) => (
+          render={({field}) => (
             <FormItem>
               <FormLabel>Tel</FormLabel>
               <FormControl>
@@ -78,7 +78,7 @@ export default function PatientsForm({
         <FormField
           control={form.control}
           name="rg"
-          render={({ field }) => (
+          render={({field}) => (
             <FormItem>
               <FormLabel>rg</FormLabel>
               <FormControl>
@@ -100,7 +100,7 @@ export default function PatientsForm({
         <FormField
           control={form.control}
           name="insurance"
-          render={({ field }) => (
+          render={({field}) => (
             <FormItem>
               <FormLabel>Carteira médica</FormLabel>
               <FormControl>
@@ -122,7 +122,7 @@ export default function PatientsForm({
         <FormField
           control={form.control}
           name="insuranceNumber"
-          render={({ field }) => (
+          render={({field}) => (
             <FormItem>
               <FormLabel>Número da carteira</FormLabel>
               <FormControl>

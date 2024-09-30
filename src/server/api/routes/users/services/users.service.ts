@@ -1,79 +1,101 @@
-import db from "@/db";
-import { eq, sql } from "drizzle-orm";
-import { usersTable } from "@/db/schema";
+import {SafeUser, toSafeUser, UserDTO} from "@/models/User";
+import {PaginatedRequestProps, PaginatedResponse} from "@/server/api/common/types";
+import {IUserRepository} from "../repositories/user.repository";
+import {handleError} from "@/server/api/common/utils/handle-error";
+import {TRPCError} from "@trpc/server";
 
-import lower from "@/utils/lower";
+export interface IUserService {
+  findAll(props: PaginatedRequestProps): Promise<PaginatedResponse<SafeUser>>;
+  findByID(id: string): Promise<SafeUser>;
+  findByEmail(email: string): Promise<SafeUser>;
+  create(payload: UserDTO): Promise<void>;
+  update(payload: UserDTO, userId: string): Promise<void>;
+  delete(id: string): Promise<void>;
+  bulkDelete(ids: string[]): Promise<void>;
+}
 
-import { User, UserDTO } from "@/models/User";
-import authService from "../../auth/services/auth.service";
+export default class UserService implements IUserService {
+  constructor(private readonly repository: IUserRepository) {}
 
-class UserService {
-  async getAll({
-    q,
-    page = 1,
-    size = 10,
-  }: {
-    q?: string;
-    page?: number;
-    size?: number;
-  }) {
-    const offset = (page - 1) * size;
-
-    const query = db.select().from(usersTable).limit(size).offset(offset);
-    if (q) {
-      query.where(
-        sql`${lower(usersTable.name)} LIKE ${`%${q.toLowerCase()}%`}`,
-      );
+  async findAll(props: PaginatedRequestProps): Promise<PaginatedResponse<SafeUser>> {
+    try {
+      const response = await this.repository.findAll(props);
+      const safeUsers = response.data.map((user) => toSafeUser(user));
+      return {
+        ...response,
+        data: safeUsers
+      };
+    } catch (error) {
+      throw handleError(error);
     }
-
-    const sizeOfTable = await db
-      .select({ count: sql<number>`count(*)` })
-      .from(query.as("filtered"))
-      .limit(1);
-
-    const numberOfPages = Math.ceil(sizeOfTable[0].count / size);
-    const data = await query;
-    const hasNextPage = page < numberOfPages;
-    return { data, numberOfPages, hasNextPage };
   }
 
-  async getById(id: string): Promise<User> {
-    const [data] = await db
-      .select()
-      .from(usersTable)
-      .where(eq(usersTable.id, id));
-    return data;
+  async findByID(id: string): Promise<SafeUser> {
+    try {
+      const user = await this.repository.findByID(id);
+      if (!user) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Usuario não encontrado.",
+        });
+      }
+      return toSafeUser(user);
+    } catch (error) {
+      throw handleError(error);
+    }
   }
 
-  bulkInsert(payload: UserDTO[]) {
-    const users: User[] = [];
-    payload.forEach(async (e) => {
-      const user = await authService.register(e);
-      users.push(user);
-    });
-    return users;
+  async findByEmail(email: string): Promise<SafeUser> {
+    try {
+      const user = await this.repository.findByEmail(email);
+      if (!user) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Usuario não encontrado.",
+        })
+      }
+      return toSafeUser(user);
+    } catch (error) {
+      throw handleError(error);
+    }
   }
 
-  async getByEmail(email: string): Promise<User> {
-    const [data] = await db
-      .select()
-      .from(usersTable)
-      .where(eq(usersTable.email, email));
-    return data;
+  async create(payload: UserDTO): Promise<void> {
+    try {
+      const userExists = await this.repository.findByEmail(payload.email);
+      if (userExists) {
+        throw new TRPCError({
+          code: "CONFLICT",
+          message: "Este email ja esta cadastrado.",
+        })
+      }
+      await this.repository.create(payload);
+    } catch (error) {
+      throw handleError(error);
+    }
   }
 
-  async update(payload: Partial<User>, id: string): Promise<User> {
-    await db.update(usersTable).set(payload).where(eq(usersTable.id, id));
-    return await this.getById(id);
+  async update(payload: UserDTO, userId: string): Promise<void> {
+    try {
+      await this.repository.update(payload, userId);
+    } catch (error) {
+      throw handleError(error);
+    }
   }
 
-  async delete(id: string) {
-    await db.delete(usersTable).where(eq(usersTable.id, id));
+  async delete(id: string): Promise<void> {
+    try {
+      await this.repository.delete(id);
+    } catch (error) {
+      throw handleError(error);
+    }
   }
 
-  bulkDelete(ids: string[]) {
-    ids.map(async (e) => await this.delete(e));
+  async bulkDelete(ids: string[]): Promise<void> {
+    try {
+      await this.repository.bulkDelete(ids);
+    } catch (error) {
+      throw handleError(error);
+    }
   }
 }
-const userService = new UserService();
-export default userService;

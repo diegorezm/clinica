@@ -5,14 +5,14 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet";
-import { PatientDTO } from "@/models/Patient";
-import { useOpenCreatePatient } from "../hooks/use-open-create-patient";
+import {PatientDTO} from "@/models/Patient";
+import {useOpenCreatePatient} from "../hooks/use-open-create-patient";
 import PatientsForm from "./patients-form";
-import { useCreatePatient } from "../api/use-create-patient";
+import {useCreatePatient} from "../api/use-create-patient";
 
 export default function CreatePatientSheet() {
-  const { mutateAsync, isPending } = useCreatePatient();
-  const { isOpen, onClose } = useOpenCreatePatient();
+  const {mutateAsync, isPending} = useCreatePatient();
+  const {isOpen, onClose} = useOpenCreatePatient();
 
   async function onSubmit(values: PatientDTO) {
     await mutateAsync(values);

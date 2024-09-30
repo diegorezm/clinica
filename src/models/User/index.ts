@@ -2,9 +2,7 @@ import {z} from "zod";
 import {usersTable} from "@/db/schema";
 import {createInsertSchema, createSelectSchema} from "drizzle-zod";
 
-export const userSelectSchema = createSelectSchema(usersTable).omit({
-  password: true,
-});
+export const userSelectSchema = createSelectSchema(usersTable);
 
 export const userInsertSchema = createInsertSchema(usersTable, {
   name: z

@@ -1,5 +1,5 @@
-import { ReactQueryOptions, trpc } from "@/lib/trpc";
-import { toast } from "sonner";
+import {ReactQueryOptions, trpc} from "@/lib/trpc";
+import {toast} from "sonner";
 
 type Opts = ReactQueryOptions["patients"]["create"];
 

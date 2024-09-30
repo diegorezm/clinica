@@ -7,25 +7,25 @@ import {
 } from "@/components/ui/sheet";
 import LoadingSpinner from "@/components/loading-spinner";
 
-import { useConfirm } from "@/hooks/use-confirm";
-import { useOpenUpdateDoctor } from "../hooks/use-open-update-doctor";
-import { useBulkDeleteDoctors } from "../api/use-bulk-delete-doctors";
-import { useGetDoctor } from "../api/use-get-doctor";
-import { useUpdateDoctor } from "../api/use-update-doctor";
-import { useGetUser } from "@/features/user/api/use-get-user";
-import { useUpdateUser } from "@/features/user/api/use-update-user";
+import {useConfirm} from "@/hooks/use-confirm";
+import {useOpenUpdateDoctor} from "../hooks/use-open-update-doctor";
+import {useBulkDeleteDoctors} from "../api/use-bulk-delete-doctors";
+import {useGetDoctor} from "../api/use-get-doctor";
+import {useUpdateDoctor} from "../api/use-update-doctor";
+import {useGetUser} from "@/features/user/api/use-get-user";
+import {useUpdateUser} from "@/features/user/api/use-update-user";
 
-import { DoctorWithUserDTO } from "@/models/Doctor";
+import {DoctorWithUserDTO} from "@/models/Doctor";
 import DoctorsForm from "./doctors-form";
 
-import { toast } from "sonner";
+import {toast} from "sonner";
 
 export default function UpdatePatientSheet() {
   const [ConfirmDialog, confirm] = useConfirm(
     "Tem certeza?",
     "Esta ação é irreversível. Ao deletar os registros, eles serão permanentemente removidos e não poderão ser recuperados.",
   );
-  const { id, isOpen, onClose } = useOpenUpdateDoctor();
+  const {id, isOpen, onClose} = useOpenUpdateDoctor();
   const deleteDoctorsQuery = useBulkDeleteDoctors();
   const updateDoctorsQuery = useUpdateDoctor();
   const doctorQuery = useGetDoctor(id);
@@ -65,7 +65,7 @@ export default function UpdatePatientSheet() {
   async function onSubmit(values: DoctorWithUserDTO) {
     await updateUserQuery.mutateAsync({
       id: userQuery.data?.id!,
-      data: {
+      payload: {
         ...values.user,
       },
     });

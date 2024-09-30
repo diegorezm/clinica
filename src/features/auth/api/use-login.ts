@@ -1,12 +1,12 @@
-import { trpc, ReactQueryOptions } from "@/lib/trpc";
-import { User } from "@/models/User";
-import { toast } from "sonner";
-import { useAuthStore } from "../hooks/use-auth-store";
+import {trpc, ReactQueryOptions} from "@/lib/trpc";
+import {User} from "@/models/User";
+import {toast} from "sonner";
+import {useAuthStore} from "../hooks/use-auth-store";
 
 type Opts = ReactQueryOptions["auth"]["login"];
 
 export const useLogin = (opts?: Opts) => {
-  const { setUser } = useAuthStore();
+  const {setUser} = useAuthStore();
   const mutation = trpc.auth.login.useMutation({
     ...opts,
     onSuccess: (data, ...rest) => {

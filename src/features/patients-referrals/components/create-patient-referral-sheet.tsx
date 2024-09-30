@@ -6,13 +6,13 @@ import {
   SheetTitle,
 } from "@/components/ui/sheet";
 import PatientReferralForm from "./patient-referral-form";
-import { PatientReferralDTO } from "@/models/Patient/patient-referral";
-import { useOpenCreatePatientReferral } from "../hooks/use-open-create-patient-referrals";
-import { useCreatePatientsReferrals } from "../api/use-create-patient-referral";
+import {PatientReferralDTO} from "@/models/Patient/patient-referral";
+import {useOpenCreatePatientReferral} from "../hooks/use-open-create-patient-referrals";
+import {useCreatePatientsReferrals} from "../api/use-create-patient-referral";
 
 export default function CreatePatientReferralSheet() {
-  const { isOpen, onClose, patientId } = useOpenCreatePatientReferral();
-  const { mutateAsync, isPending } = useCreatePatientsReferrals();
+  const {isOpen, onClose, patientId} = useOpenCreatePatientReferral();
+  const {mutateAsync, isPending} = useCreatePatientsReferrals();
 
   async function onSubmit(values: PatientReferralDTO) {
     await mutateAsync(values);

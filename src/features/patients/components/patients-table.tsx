@@ -1,10 +1,10 @@
 "use client";
-import { DataTable } from "@/components/data-table";
-import { useGetPatients } from "../api/use-get-patients";
-import { patientCols } from "./columns";
-import { DataTablePagination } from "@/components/data-table-pagination";
-import { Loader2 } from "lucide-react";
-import { useBulkDeletePatients } from "../api/use-bulk-delete-patients";
+import {DataTable} from "@/components/data-table";
+import {useGetPatients} from "../api/use-get-patients";
+import {patientCols} from "./columns";
+import {DataTablePagination} from "@/components/data-table-pagination";
+import {Loader2} from "lucide-react";
+import {useBulkDeletePatients} from "../api/use-bulk-delete-patients";
 
 export default function PatientsTable({
   q,
@@ -13,7 +13,7 @@ export default function PatientsTable({
   q?: string;
   page: number;
 }) {
-  const { data, isPlaceholderData, isPending, error } = useGetPatients({
+  const {data, isPlaceholderData, isPending, error} = useGetPatients({
     q: q,
     page: page,
     size: 8,
@@ -39,8 +39,8 @@ export default function PatientsTable({
         data={data.data}
         disabled={isDisabled}
         onDelete={(rows) => {
-          const ids: number[] = rows.map((row) => row.original.id);
-          deletePatients.mutate({ ids });
+          const ids: string[] = rows.map((row) => row.original.id);
+          deletePatients.mutate(ids);
         }}
       />
       <DataTablePagination

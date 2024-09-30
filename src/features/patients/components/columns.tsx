@@ -1,9 +1,9 @@
-import { Patient } from "@/models/Patient";
-import { ColumnDef } from "@tanstack/react-table";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Edit, MoreHorizontal } from "lucide-react";
+import {Patient} from "@/models/Patient";
+import {ColumnDef} from "@tanstack/react-table";
+import {Checkbox} from "@/components/ui/checkbox";
+import {Edit, MoreHorizontal} from "lucide-react";
 
-import { Button } from "@/components/ui/button";
+import {Button} from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -11,13 +11,13 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useOpenUpdatePatient } from "../hooks/use-open-update-patient";
+import {useOpenUpdatePatient} from "../hooks/use-open-update-patient";
 import Link from "next/link";
 
 export const patientCols: ColumnDef<Patient>[] = [
   {
     id: "select",
-    header: ({ table }) => (
+    header: ({table}) => (
       <Checkbox
         checked={
           table.getIsAllPageRowsSelected() ||
@@ -27,7 +27,7 @@ export const patientCols: ColumnDef<Patient>[] = [
         aria-label="Select all"
       />
     ),
-    cell: ({ row }) => (
+    cell: ({row}) => (
       <Checkbox
         checked={row.getIsSelected()}
         onCheckedChange={(value) => row.toggleSelected(!!value)}
@@ -40,8 +40,8 @@ export const patientCols: ColumnDef<Patient>[] = [
   {
     accessorKey: "name",
     header: "Nome",
-    cell: ({ row }) => {
-      const { id, name } = row.original;
+    cell: ({row}) => {
+      const {id, name} = row.original;
       return (
         <Link href={`/patients/${id}`} className="text-primary">
           {name}
@@ -67,9 +67,9 @@ export const patientCols: ColumnDef<Patient>[] = [
   },
   {
     id: "actions",
-    cell: ({ row }) => {
+    cell: ({row}) => {
       // eslint-disable-next-line react-hooks/rules-of-hooks
-      const { onOpen } = useOpenUpdatePatient();
+      const {onOpen} = useOpenUpdatePatient();
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>

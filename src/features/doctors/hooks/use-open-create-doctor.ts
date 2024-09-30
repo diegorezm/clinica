@@ -1,4 +1,4 @@
-import { create } from "zustand";
+import {create} from "zustand";
 type OpenCreateDoctorState = {
   isOpen: boolean;
   onOpen: () => void;
@@ -7,6 +7,6 @@ type OpenCreateDoctorState = {
 
 export const useOpenCreateDoctor = create<OpenCreateDoctorState>((set) => ({
   isOpen: false,
-  onOpen: () => set({ isOpen: true }),
-  onClose: () => set({ isOpen: false }),
+  onOpen: () => set({isOpen: true}),
+  onClose: () => set({isOpen: false}),
 }));

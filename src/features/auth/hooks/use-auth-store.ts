@@ -1,5 +1,5 @@
-import { User } from "@/models/User";
-import { create } from "zustand";
+import {User} from "@/models/User";
+import {create} from "zustand";
 
 interface AuthState {
   user: User | null;
@@ -10,6 +10,6 @@ interface AuthState {
 export const useAuthStore = create<AuthState>((set) => ({
   token: null,
   user: null,
-  setUser: (user) => set({ user }),
-  clearAuth: () => set({ user: null }),
+  setUser: (user) => set({user}),
+  clearAuth: () => set({user: null}),
 }));

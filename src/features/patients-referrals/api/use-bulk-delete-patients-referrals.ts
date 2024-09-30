@@ -1,5 +1,5 @@
-import { toast } from "sonner";
-import { trpc } from "@/lib/trpc";
+import {toast} from "sonner";
+import {trpc} from "@/lib/trpc";
 
 export const useBulkDeletePatientsReferrals = () => {
   const utils = trpc.useUtils();
@@ -7,7 +7,7 @@ export const useBulkDeletePatientsReferrals = () => {
     onError: (error) => {
       toast.error(
         error?.message ||
-          "Falha ao excluir pacientes. Por favor, tente novamente.",
+        "Falha ao excluir pacientes. Por favor, tente novamente.",
       );
     },
     onSuccess: (data) => {

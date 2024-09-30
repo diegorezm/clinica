@@ -1,39 +1,37 @@
-import db from "@/db";
-import { usersTable } from "@/db/schema";
-import { eq } from "drizzle-orm";
+import {User, UserDTO} from "@/models/User";
+import {LoginDTO} from "@/models/User/auth";
+import {IUserRepository} from "../../users/repositories/user.repository";
+import {TRPCError} from "@trpc/server";
+import {hash, verify} from "@node-rs/argon2";
+import {handleError} from "@/server/api/common/utils/handle-error";
+import {lucia} from "@/lib/auth";
+import {createSessionCookie, deleteSessionCookie} from "@/server/api/common/utils/cookie-manager";
 
-import { hash, verify } from "@node-rs/argon2";
+export interface IAuthService {
+  register(payload: UserDTO): Promise<User>;
+  login(payload: LoginDTO): Promise<User>;
+  logout(): void;
+}
 
-import userService from "@/server/api/routes/users/services/users.service";
-import {
-  createSessionCookie,
-  deleteSessionCookie,
-} from "@/server/api/common/utils/cookie-manager";
-
-import { lucia } from "@/lib/auth";
-
-import { User, UserDTO } from "@/models/User";
-import { LoginDTO } from "@/models/User/auth";
-import { TRPCError } from "@trpc/server";
-
-const hashConfig = {
+export const HASH_CONFIG = {
   memoryCost: 19456,
   timeCost: 2,
   outputLen: 32,
   parallelism: 1,
 };
 
-class AuthService {
-  async register(payload: UserDTO) {
-    const userExists = await userService.getByEmail(payload.email);
-    if (userExists !== undefined) {
+export default class AuthService implements IAuthService {
+  constructor(private readonly repository: IUserRepository) {}
+
+  async register(payload: UserDTO): Promise<User> {
+    const userExists = await this.repository.findByEmail(payload.email);
+    if (userExists) {
       throw new TRPCError({
         code: "CONFLICT",
-        message: "Usuário já existe.",
-      });
+        message: "Este email ja esta cadastrado."
+      })
     }
-    const hashPass = await hash(payload.password, hashConfig);
-
+    const hashPass = await hash(payload.password, HASH_CONFIG)
     if (!hashPass) {
       throw new TRPCError({
         code: "INTERNAL_SERVER_ERROR",
@@ -41,44 +39,42 @@ class AuthService {
       });
     }
     payload.password = hashPass;
-    const [response] = await db.insert(usersTable).values(payload);
-    const user = await userService.getById(String(response.insertId));
-    return user;
+    try {
+      await this.repository.create(payload);
+      const user = await this.repository.findByEmail(payload.email);
+      if (!user) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "Não foi possivel encontrar o registro deste usuario.",
+        })
+      }
+      return user;
+    } catch (error) {
+      throw handleError(error);
+    }
   }
 
-  async login(payload: LoginDTO) {
-    const user = await this.getByEmail(payload.email);
-    if (user === undefined) {
+  async login(payload: LoginDTO): Promise<User> {
+    const user = await this.repository.findByEmail(payload.email);
+    if (!user) {
       throw new TRPCError({
-        code: "FORBIDDEN",
-        message: "Usuário não existe.",
+        code: "NOT_FOUND",
+        message: "Usuario não encontrado. Tem certeza que digitou o email corretamente?",
       });
     }
-    const isMatch = await verify(user.password, payload.password, hashConfig);
-
-    if (isMatch) {
-      const session = await lucia.createSession(user.id, {});
-      createSessionCookie(session.id);
-      return user as User;
+    const verifyPass = await verify(user.password, payload.password);
+    if (!verifyPass) {
+      throw new TRPCError({
+        code: "BAD_REQUEST",
+        message: "Senha invalida.",
+      });
     }
-    throw new TRPCError({
-      code: "UNAUTHORIZED",
-      message: "Senha inválida.",
-    });
+    const session = await lucia.createSession(user.id, {});
+    createSessionCookie(session.id)
+    return user
   }
 
-  logout() {
+  logout(): void {
     deleteSessionCookie();
   }
-
-  private async getByEmail(email: string) {
-    const [data] = await db
-      .select()
-      .from(usersTable)
-      .where(eq(usersTable.email, email));
-    return data;
-  }
 }
-
-const authService = new AuthService();
-export default authService;

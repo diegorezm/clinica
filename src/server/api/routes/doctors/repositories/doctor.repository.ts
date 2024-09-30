@@ -10,10 +10,12 @@ import {MySql2Database} from "drizzle-orm/mysql2";
 
 export interface IDoctorRepository {
   findAll(props: PaginatedRequestProps): Promise<PaginatedResponse<Doctor>>;
-  findById(id: string): Promise<Doctor>;
+  findById(id: string): Promise<Doctor | null>;
   findDoctorWorkDays(id: string): Promise<DoctorWorkDay[]>;
   findDoctorWorkPeriods(id: string): Promise<DoctorWorkPeriod[]>;
   create(doctor: DoctorDTO): Promise<void>;
+  createDoctorWorkDays(payload: DoctorWorkDay[]): Promise<void>;
+  createDoctorWorkPeriods(payload: DoctorWorkPeriod[]): Promise<void>;
   update(doctor: DoctorDTO, doctorID: string): Promise<void>;
   delete(id: string): Promise<void>;
   bulkDelete(ids: string[]): Promise<void>;
@@ -83,7 +85,7 @@ export default class DoctorRepository implements IDoctorRepository {
     }
   }
 
-  async findById(id: string): Promise<Doctor> {
+  async findById(id: string): Promise<Doctor | null> {
     const [data] = await this.db.select({
       id: doctorsTable.id,
       name: usersTable.name,
@@ -104,18 +106,20 @@ export default class DoctorRepository implements IDoctorRepository {
     const doctor: Doctor = {
       ...data,
       workDays,
-      periods
+      periods,
     }
     return doctor;
   }
 
   async findDoctorWorkPeriods(doctorId: string): Promise<DoctorWorkPeriod[]> {
     const data = await this.db.select().from(doctorWorkPeriodTable).where(eq(doctorWorkPeriodTable.doctorId, doctorId));
+    if (!data) return []
     return data
   }
 
   async findDoctorWorkDays(doctorId: string): Promise<DoctorWorkDay[]> {
     const data = await this.db.select().from(doctorWorkDaysTable).where(eq(doctorWorkPeriodTable.doctorId, doctorId));
+    if (!data) return []
     return data
   }
 
@@ -124,11 +128,11 @@ export default class DoctorRepository implements IDoctorRepository {
     await this.db.insert(doctorsTable).values(doctor);
   }
 
-  async createDoctorWorkPeriod(periods: DoctorWorkPeriod[]): Promise<void> {
+  async createDoctorWorkPeriods(periods: DoctorWorkPeriod[]): Promise<void> {
     await this.db.insert(doctorWorkPeriodTable).values(periods);
   }
 
-  async createDoctorWorkDay(days: DoctorWorkDay[]): Promise<void> {
+  async createDoctorWorkDays(days: DoctorWorkDay[]): Promise<void> {
     await this.db.insert(doctorWorkDaysTable).values(days);
   }
 

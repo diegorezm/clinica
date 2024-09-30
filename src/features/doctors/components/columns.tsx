@@ -1,8 +1,8 @@
-import { ColumnDef } from "@tanstack/react-table";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Edit, MoreHorizontal } from "lucide-react";
+import {ColumnDef} from "@tanstack/react-table";
+import {Checkbox} from "@/components/ui/checkbox";
+import {Edit, MoreHorizontal} from "lucide-react";
 
-import { Button } from "@/components/ui/button";
+import {Button} from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -12,14 +12,14 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 import Link from "next/link";
-import { Doctor } from "@/models/Doctor";
-import { useOpenUpdateDoctor } from "../hooks/use-open-update-doctor";
-import { useAuthStore } from "@/features/auth/hooks/use-auth-store";
+import {Doctor} from "@/models/Doctor";
+import {useOpenUpdateDoctor} from "../hooks/use-open-update-doctor";
+import {useAuthStore} from "@/features/auth/hooks/use-auth-store";
 
 export const doctorCols: ColumnDef<Doctor>[] = [
   {
     id: "select",
-    header: ({ table }) => {
+    header: ({table}) => {
       // eslint-disable-next-line react-hooks/rules-of-hooks
       const user = useAuthStore().user;
       const isAdmin = user?.role === "admin";
@@ -34,7 +34,7 @@ export const doctorCols: ColumnDef<Doctor>[] = [
         />
       ) : null;
     },
-    cell: ({ row }) => {
+    cell: ({row}) => {
       // eslint-disable-next-line react-hooks/rules-of-hooks
       const user = useAuthStore().user;
       const isAdmin = user?.role === "admin";
@@ -52,8 +52,8 @@ export const doctorCols: ColumnDef<Doctor>[] = [
   {
     accessorKey: "name",
     header: "Nome",
-    cell: ({ row }) => {
-      const { id, name } = row.original;
+    cell: ({row}) => {
+      const {id, name} = row.original;
       return (
         <Link href={`/doctors/${id}`} className="text-primary">
           {name}
@@ -75,9 +75,9 @@ export const doctorCols: ColumnDef<Doctor>[] = [
   },
   {
     id: "actions",
-    cell: ({ row }) => {
+    cell: ({row}) => {
       // eslint-disable-next-line react-hooks/rules-of-hooks
-      const { onOpen } = useOpenUpdateDoctor();
+      const {onOpen} = useOpenUpdateDoctor();
 
       // eslint-disable-next-line react-hooks/rules-of-hooks
       const user = useAuthStore().user;
