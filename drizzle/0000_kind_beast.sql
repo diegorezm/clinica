@@ -1,7 +1,7 @@
 CREATE TABLE `appointments` (
 	`id` int AUTO_INCREMENT NOT NULL,
-	`doctor_id` int NOT NULL,
-	`patient_id` int NOT NULL,
+	`doctor_id` varchar(255) NOT NULL,
+	`patient_id` varchar(255) NOT NULL,
 	`appointment_date` timestamp NOT NULL,
 	`status` enum('f','fj','fm','ok'),
 	`created_at` timestamp(3) NOT NULL DEFAULT (now()),
@@ -10,30 +10,31 @@ CREATE TABLE `appointments` (
 );
 --> statement-breakpoint
 CREATE TABLE `doctors_work_day` (
-	`doctor_id` int NOT NULL,
+	`doctor_id` varchar(255) NOT NULL,
 	`week_days_enum` enum('Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday') NOT NULL
 );
 --> statement-breakpoint
 CREATE TABLE `doctors_work_period` (
-	`doctor_id` int NOT NULL,
+	`doctor_id` varchar(255) NOT NULL,
 	`periods` enum('m','t','n') NOT NULL
 );
 --> statement-breakpoint
 CREATE TABLE `doctors` (
-	`id` int AUTO_INCREMENT NOT NULL,
+	`id` varchar(255) NOT NULL,
 	`job_function` varchar(128) NOT NULL,
 	`crm` varchar(12) NOT NULL,
 	`user_id` varchar(128) NOT NULL,
 	`created_at` timestamp(3) NOT NULL DEFAULT (now()),
 	`updated_at` timestamp(3) NOT NULL DEFAULT (now()),
 	CONSTRAINT `doctors_id` PRIMARY KEY(`id`),
+	CONSTRAINT `doctors_id_unique` UNIQUE(`id`),
 	CONSTRAINT `doctors_crm_unique` UNIQUE(`crm`),
 	CONSTRAINT `doctors_user_id_unique` UNIQUE(`user_id`)
 );
 --> statement-breakpoint
 CREATE TABLE `patients_referrals` (
 	`id` int AUTO_INCREMENT NOT NULL,
-	`patient_id` int NOT NULL,
+	`patient_id` varchar(255) NOT NULL,
 	`crm` varchar(12) NOT NULL,
 	`cid` varchar(12) NOT NULL,
 	`job_function` varchar(128) NOT NULL,
@@ -43,7 +44,7 @@ CREATE TABLE `patients_referrals` (
 );
 --> statement-breakpoint
 CREATE TABLE `patients` (
-	`id` int AUTO_INCREMENT NOT NULL,
+	`id` varchar(255) NOT NULL,
 	`name` varchar(255) NOT NULL,
 	`phone` varchar(14) NOT NULL,
 	`rg` varchar(12),
@@ -52,6 +53,7 @@ CREATE TABLE `patients` (
 	`created_at` timestamp(3) NOT NULL DEFAULT (now()),
 	`updated_at` timestamp(3) NOT NULL DEFAULT (now()),
 	CONSTRAINT `patients_id` PRIMARY KEY(`id`),
+	CONSTRAINT `patients_id_unique` UNIQUE(`id`),
 	CONSTRAINT `patients_rg_unique` UNIQUE(`rg`)
 );
 --> statement-breakpoint

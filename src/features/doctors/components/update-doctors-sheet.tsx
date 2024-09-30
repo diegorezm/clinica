@@ -20,7 +20,7 @@ import DoctorsForm from "./doctors-form";
 
 import {toast} from "sonner";
 
-export default function UpdatePatientSheet() {
+export default function UpdateDoctorsSheet() {
   const [ConfirmDialog, confirm] = useConfirm(
     "Tem certeza?",
     "Esta ação é irreversível. Ao deletar os registros, eles serão permanentemente removidos e não poderão ser recuperados.",

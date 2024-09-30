@@ -1,10 +1,10 @@
-import { cookies } from "next/headers";
-import { type NextRequest, NextResponse } from "next/server";
+import {cookies} from "next/headers";
+import {type NextRequest, NextResponse} from "next/server";
 
 export default async function middleware(req: NextRequest) {
   const origin = req.nextUrl.origin;
   const verifyRequest = await fetch(`${origin}/api/auth/verify-session`, {
-    headers: { Cookie: cookies().toString() },
+    headers: {Cookie: cookies().toString()},
   });
   const verifySession = (await verifyRequest.json()) as {
     valid: boolean;

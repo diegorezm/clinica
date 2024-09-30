@@ -3,8 +3,10 @@ import {DoctorWorkDay, WeekDay} from "@/models/Doctor/work-days";
 import {DoctorWorkPeriod, Period} from "@/models/Doctor/work-period";
 import {PaginatedRequestProps, PaginatedResponse} from "@/server/api/common/types";
 import {TRPCError} from "@trpc/server";
-import {IDoctorRepository} from "../repositories/doctor.repository";
+import {type IDoctorRepository} from "../repositories/doctor.repository";
 import {handleError} from "@/server/api/common/utils/handle-error";
+import {inject, injectable} from "inversify";
+import {DI_SYMBOLS} from "@/server/api/common/di/types";
 
 export interface IDoctorService {
   findAll(props: PaginatedRequestProps): Promise<PaginatedResponse<Doctor>>; findById(id: string): Promise<Doctor>; findDoctorWorkDays(id: string): Promise<DoctorWorkDay[]>;
@@ -19,8 +21,9 @@ export interface IDoctorService {
   deleteDoctorWorkPeriod(doctorId: string, period: Period): Promise<void>;
 }
 
+@injectable()
 export default class DoctorService implements IDoctorService {
-  constructor(private readonly repository: IDoctorRepository) {}
+  constructor(@inject(DI_SYMBOLS.IDoctorRepository) private readonly repository: IDoctorRepository) {}
   async findAll(props: PaginatedRequestProps): Promise<PaginatedResponse<Doctor>> {
     try {
       const doctors = await this.repository.findAll(props);

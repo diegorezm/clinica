@@ -7,5 +7,6 @@ export const handleError = (error: unknown) => {
   return new TRPCError({
     code: "INTERNAL_SERVER_ERROR",
     message: "Erro interno do servidor.",
+    cause: error,
   });
 }

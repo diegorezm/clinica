@@ -1,8 +1,10 @@
 import {PatientReferral, PatientReferralDTO} from "@/models/Patient/patient-referral"
 import {PaginatedResponse} from "@/server/api/common/types"
-import {IPatientReferralRepository, ReferralPaginatedRequestProps} from "../repository/patient-referral.repository"
+import {type IPatientReferralRepository, ReferralPaginatedRequestProps} from "../repository/patient-referral.repository"
 import {handleError} from "@/server/api/common/utils/handle-error"
 import {TRPCError} from "@trpc/server"
+import {inject, injectable} from "inversify"
+import {DI_SYMBOLS} from "@/server/api/common/di/types"
 
 export interface IPatientReferralService {
   findAll(props: ReferralPaginatedRequestProps): Promise<PaginatedResponse<PatientReferral>>
@@ -13,8 +15,9 @@ export interface IPatientReferralService {
   bulkDelete(ids: number[]): Promise<void>
 }
 
+@injectable()
 export default class PatientReferralService implements IPatientReferralService {
-  constructor(private readonly repository: IPatientReferralRepository) {}
+  constructor(@inject(DI_SYMBOLS.IPatientReferralRepository) private readonly repository: IPatientReferralRepository) {}
   async findAll(props: ReferralPaginatedRequestProps): Promise<PaginatedResponse<PatientReferral>> {
     try {
       const response = await this.repository.findAll(props);

@@ -2,11 +2,13 @@ import {doctorsTable, doctorWorkDaysTable, doctorWorkPeriodTable, usersTable} fr
 import {Doctor, DoctorDTO} from "@/models/Doctor";
 import {DoctorWorkDay, WeekDay} from "@/models/Doctor/work-days";
 import {DoctorWorkPeriod, Period} from "@/models/Doctor/work-period";
+import {DI_SYMBOLS} from "@/server/api/common/di/types";
 import {PaginatedResponse, PaginatedRequestProps} from "@/server/api/common/types";
 import {handleError} from "@/server/api/common/utils/handle-error";
 import lower from "@/utils/lower";
 import {and, eq, or, sql} from "drizzle-orm";
-import {MySql2Database} from "drizzle-orm/mysql2";
+import {type MySql2Database} from "drizzle-orm/mysql2";
+import {inject, injectable} from "inversify";
 
 export interface IDoctorRepository {
   findAll(props: PaginatedRequestProps): Promise<PaginatedResponse<Doctor>>;
@@ -23,8 +25,9 @@ export interface IDoctorRepository {
   deleteDoctorWorkPeriod(doctorId: string, period: Period): Promise<void>;
 }
 
+@injectable()
 export default class DoctorRepository implements IDoctorRepository {
-  constructor(private readonly db: MySql2Database) {}
+  constructor(@inject(DI_SYMBOLS.MySql2Database) private readonly db: MySql2Database) {}
 
   async findAll({q, size, page}: PaginatedRequestProps): Promise<PaginatedResponse<Doctor>> {
     try {
@@ -40,7 +43,7 @@ export default class DoctorRepository implements IDoctorRepository {
           crm: doctorsTable.crm,
           createdAt: doctorsTable.createdAt,
           updatedAt: doctorsTable.updatedAt,
-          userId: usersTable.id,
+          userId: sql`users.id as userId`,
         })
         .from(doctorsTable)
         .limit(size)

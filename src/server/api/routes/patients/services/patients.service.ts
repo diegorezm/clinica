@@ -1,8 +1,10 @@
 import {Patient, PatientDTO} from "@/models/Patient";
 import {PaginatedResponse, PaginatedRequestProps} from "@/server/api/common/types";
 import {TRPCError} from "@trpc/server";
-import {IPatientRepository} from "../repository/patient.repository";
+import {type IPatientRepository} from "../repository/patient.repository";
 import {handleError} from "@/server/api/common/utils/handle-error";
+import {inject, injectable} from "inversify";
+import {DI_SYMBOLS} from "@/server/api/common/di/types";
 
 export interface IPatientService {
   findAll(props: PaginatedRequestProps): Promise<PaginatedResponse<Patient>>;
@@ -13,9 +15,9 @@ export interface IPatientService {
   bulkDelete(ids: string[]): Promise<void>;
 }
 
-
+@injectable()
 export default class PatientService implements IPatientService {
-  constructor(private readonly repository: IPatientRepository) {}
+  constructor(@inject(DI_SYMBOLS.IPatientRepository) private readonly repository: IPatientRepository) {}
 
   async findAll(props: PaginatedRequestProps): Promise<PaginatedResponse<Patient>> {
     try {

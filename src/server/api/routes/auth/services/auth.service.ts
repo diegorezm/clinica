@@ -1,11 +1,13 @@
 import {User, UserDTO} from "@/models/User";
 import {LoginDTO} from "@/models/User/auth";
-import {IUserRepository} from "../../users/repositories/user.repository";
+import {type IUserRepository} from "../../users/repositories/user.repository";
 import {TRPCError} from "@trpc/server";
 import {hash, verify} from "@node-rs/argon2";
 import {handleError} from "@/server/api/common/utils/handle-error";
 import {lucia} from "@/lib/auth";
 import {createSessionCookie, deleteSessionCookie} from "@/server/api/common/utils/cookie-manager";
+import {inject, injectable} from "inversify";
+import {DI_SYMBOLS} from "@/server/api/common/di/types";
 
 export interface IAuthService {
   register(payload: UserDTO): Promise<User>;
@@ -20,8 +22,9 @@ export const HASH_CONFIG = {
   parallelism: 1,
 };
 
+@injectable()
 export default class AuthService implements IAuthService {
-  constructor(private readonly repository: IUserRepository) {}
+  constructor(@inject(DI_SYMBOLS.IUserRepository) private readonly repository: IUserRepository) {}
 
   async register(payload: UserDTO): Promise<User> {
     const userExists = await this.repository.findByEmail(payload.email);

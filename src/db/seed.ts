@@ -1,7 +1,9 @@
-import { patientFactory } from "@/factory/patients-factory";
+import AuthService from "@/server/api/routes/auth/services/auth.service";
+import UserRepository from "@/server/api/routes/users/repositories/user.repository";
 import db from ".";
-import { patientsTable } from "./schema";
-import authService from "@/server/api/routes/auth/services/auth.service";
+
+const userRepository = new UserRepository(db);
+const authService = new AuthService(userRepository);
 
 (async function main() {
   try {

@@ -18,7 +18,7 @@ import {
   User as UserIcon,
   Users,
 } from "lucide-react";
-import { useEffect, useState } from "react";
+import {useEffect, useState} from "react";
 import {
   Sheet,
   SheetContent,
@@ -27,11 +27,11 @@ import {
   SheetTrigger,
   SheetDescription,
 } from "./ui/sheet";
-import { Button } from "./ui/button";
+import {Button} from "./ui/button";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { useAuthStore } from "@/features/auth/hooks/use-auth-store";
-import { User } from "@/models/User";
+import {usePathname} from "next/navigation";
+import {useAuthStore} from "@/features/auth/hooks/use-auth-store";
+import {SafeUser} from "@/models/User";
 import Image from "next/image";
 
 type NavItem = {
@@ -58,7 +58,7 @@ const navItems: NavItem[] = [
   },
 ];
 
-const MobileNavigation = ({ currentPath }: { currentPath: string }) => {
+const MobileNavigation = ({currentPath}: {currentPath: string}) => {
   const [open, setOpen] = useState(false);
   return (
     <Sheet open={open} onOpenChange={setOpen}>
@@ -140,9 +140,8 @@ const DesktopItem = ({
           <Icon />
         </TooltipTrigger>
         <span
-          className={`overflow-hidden text-start transition-all ${
-            expanded ? "w-52 ml-3" : "w-0"
-          }`}
+          className={`overflow-hidden text-start transition-all ${expanded ? "w-52 ml-3" : "w-0"
+            }`}
         >
           {text}
           {!expanded && (
@@ -161,7 +160,7 @@ const DesktopNavigation = ({
   user,
 }: {
   currentPath: string;
-  user: User | null;
+  user: SafeUser | null;
 }) => {
   const [expanded, setExpanded] = useState(true);
   return (
@@ -198,9 +197,9 @@ const DesktopNavigation = ({
             ))}
           </TooltipProvider>
         </div>
-        {user !== null && (
+        {user !== null && expanded && (
           <div
-            className={`border-t flex transition-all p-3 items-center ${!expanded && "justify-center"}`}
+            className={`border-t flex transition-all p-3 items-center`}
           >
             <UserIcon />
             <div
@@ -223,7 +222,7 @@ const DesktopNavigation = ({
 const Navigation = () => {
   const pathName = usePathname();
   const [isDesktop, setIsDesktop] = useState(false);
-  const { user } = useAuthStore();
+  const {user} = useAuthStore();
 
   useEffect(() => {
     const updateIsDesktop = () => setIsDesktop(window.innerWidth >= 1145);

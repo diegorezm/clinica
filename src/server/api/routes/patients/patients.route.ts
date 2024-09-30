@@ -1,22 +1,18 @@
 import {z} from "zod";
-
 import {router, privateProcedure} from "@/server/trpc";
 import {paginatedRequestSchema} from "@/server/api/common/input/paginated-request";
 
 import {patientInsertSchema} from "@/models/Patient";
 
 import {TRPCError} from "@trpc/server";
-import PatientService from "./services/patients.service";
-import db from "@/db";
-import PatientRepository from "./repository/patient.repository";
+import {getInjections} from "../../common/di/container";
 
-const patientRepository = new PatientRepository(db);
-const patientService = new PatientService(patientRepository);
 
 const routes = router({
   get: privateProcedure
     .input(paginatedRequestSchema)
     .query(async ({input}) => {
+      const patientService = getInjections("IPatientService");
       const patients = await patientService.findAll(input);
       return patients;
     }),
@@ -28,6 +24,8 @@ const routes = router({
           code: "BAD_REQUEST",
         });
       }
+
+      const patientService = getInjections("IPatientService");
       const patient = await patientService.findByID(input);
       if (!patient) {
         throw new TRPCError({
@@ -40,6 +38,8 @@ const routes = router({
   create: privateProcedure
     .input(patientInsertSchema)
     .mutation(async ({input}) => {
+
+      const patientService = getInjections("IPatientService");
       await patientService.create(input);
       return {
         message: "Paciente criado com sucesso!",
@@ -53,6 +53,8 @@ const routes = router({
       }),
     )
     .mutation(async ({input}) => {
+
+      const patientService = getInjections("IPatientService");
       await patientService.update(
         input.payload,
         input.patientId,
@@ -62,6 +64,8 @@ const routes = router({
       }
     }),
   delete: privateProcedure.input(z.string()).mutation(async ({input}) => {
+
+    const patientService = getInjections("IPatientService");
     await patientService.delete(input);
     return {
       message: "Registro removido com sucesso!",
@@ -72,6 +76,7 @@ const routes = router({
       z.string().array(),
     )
     .mutation(async ({input}) => {
+      const patientService = getInjections("IPatientService");
       await patientService.bulkDelete(input);
       return {
         message: "Registros removidos com sucesso!",

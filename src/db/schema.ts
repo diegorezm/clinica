@@ -126,10 +126,10 @@ export const appointmentsTable = mysqlTable(
   "appointments",
   {
     id: int("id").autoincrement().primaryKey(),
-    doctorId: int("doctor_id")
+    doctorId: varchar("doctor_id", {length: 255})
       .references(() => doctorsTable.id)
       .notNull(),
-    patientId: int("patient_id")
+    patientId: varchar("patient_id", {length: 255})
       .references(() => patientsTable.id)
       .notNull(),
     appointmentDate: timestamp("appointment_date", {

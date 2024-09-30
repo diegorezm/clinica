@@ -31,7 +31,6 @@ export default function UserStoreProvider({children}: Props) {
   }, [meQuery.data, meQuery.isLoading, setUser, clearAuth]);
 
   useEffect(() => {
-    console.log("running");
     if (meQuery.error) {
       clearAuth();
       router.push("/login");

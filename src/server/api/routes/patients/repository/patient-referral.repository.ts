@@ -1,9 +1,11 @@
 import {patientReferralsTable} from "@/db/schema";
+import {inject, injectable} from 'inversify'
 import {PatientReferral, PatientReferralDTO} from "@/models/Patient/patient-referral";
 import {PaginatedResponse, PaginatedRequestProps} from "@/server/api/common/types";
 import lower from "@/utils/lower";
 import {and, eq, or, sql} from "drizzle-orm";
-import {MySql2Database} from "drizzle-orm/mysql2";
+import {type MySql2Database} from "drizzle-orm/mysql2";
+import {DI_SYMBOLS} from "@/server/api/common/di/types";
 
 export interface ReferralPaginatedRequestProps extends PaginatedRequestProps {
   patientId: string;
@@ -18,8 +20,9 @@ export interface IPatientReferralRepository {
   bulkDelete(ids: number[]): Promise<void>;
 }
 
+@injectable()
 export default class PatientReferralRepository implements IPatientReferralRepository {
-  constructor(private readonly db: MySql2Database) {}
+  constructor(@inject(DI_SYMBOLS.MySql2Database) private readonly db: MySql2Database) {}
 
   async findAll({page = 1, size = 10, q, patientId}: ReferralPaginatedRequestProps): Promise<PaginatedResponse<PatientReferral>> {
     const offset = (page - 1) * size;

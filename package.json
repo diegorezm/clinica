@@ -11,7 +11,8 @@
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
     "db:seed": "bun run src/db/seed.ts",
-    "db:drop": "drizzle-kit drop"
+    "db:drop": "drizzle-kit drop",
+    "db:studio": "drizzle-kit studio"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.0",
@@ -36,6 +37,7 @@
     "cmdk": "1.0.0",
     "drizzle-orm": "^0.33.0",
     "drizzle-zod": "^0.5.1",
+    "inversify": "^6.0.2",
     "jsonwebtoken": "^9.0.2",
     "lucia": "^3.2.0",
     "lucide-react": "^0.435.0",
@@ -46,6 +48,7 @@
     "react-dom": "^18",
     "react-hook-form": "^7.53.0",
     "react-phone-number-input": "^3.4.5",
+    "reflect-metadata": "^0.2.2",
     "sonner": "^1.5.0",
     "tailwind-merge": "^2.5.2",
     "tailwindcss-animate": "^1.0.7",

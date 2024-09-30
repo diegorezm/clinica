@@ -1,13 +1,14 @@
 "use client";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
+import {Button} from "@/components/ui/button";
+import {Card, CardContent, CardHeader, CardTitle} from "@/components/ui/card";
+import {Input} from "@/components/ui/input";
+import {useAuthStore} from "@/features/auth/hooks/use-auth-store";
 import DoctorsTable from "@/features/doctors/components/doctors-table";
-import { useOpenCreateDoctor } from "@/features/doctors/hooks/use-open-create-doctor";
-import { Plus } from "lucide-react";
+import {useOpenCreateDoctor} from "@/features/doctors/hooks/use-open-create-doctor";
+import {Plus} from "lucide-react";
 
-import { usePathname, useRouter } from "next/navigation";
-import { useCallback, useEffect, useState } from "react";
+import {usePathname, useRouter} from "next/navigation";
+import {useCallback, useEffect, useState} from "react";
 
 const DEBOUNCE_DELAY = 500;
 
@@ -21,14 +22,15 @@ export default function DoctorsPage({
 }: {
   searchParams?: SearchProps;
 }) {
+  const {user} = useAuthStore()
   const q = searchParams?.q || "";
   const page = Number(searchParams?.page) || 1;
 
   const [formSearchQ, setFormSearchQ] = useState(q);
-  const { onOpen } = useOpenCreateDoctor();
+  const {onOpen} = useOpenCreateDoctor();
 
   const pathname = usePathname();
-  const { replace } = useRouter();
+  const {replace} = useRouter();
 
   const handleSearch = useCallback(() => {
     const params = new URLSearchParams(searchParams);
@@ -49,18 +51,20 @@ export default function DoctorsPage({
     <div className="max-w-screen-2xl w-full pb-10">
       <Card className="drop-shadow-sm">
         <CardHeader className="space-y-2">
-          <CardTitle>Pacientes</CardTitle>
+          <CardTitle>Doutores</CardTitle>
           <div className="w-full flex flex-col gap-2 md:flex-row md:justify-between">
             <Input
               placeholder="Pesquise por nome/rg..."
-              className="w-full md:w-1/3"
+              className={user?.role !== "admin" ? "w-full" : "w-full md:w-1/3"}
               value={formSearchQ}
               onChange={(e) => setFormSearchQ(e.target.value)}
             />
-            <Button size="sm" onClick={onOpen}>
-              <Plus className="size-4 mr-2" />
-              Novo
-            </Button>
+            {user?.role === "admin" && (
+              <Button size="sm" onClick={onOpen}>
+                <Plus className="size-4 mr-2" />
+                Novo
+              </Button>
+            )}
           </div>
         </CardHeader>
         <CardContent>

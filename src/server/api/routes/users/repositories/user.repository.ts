@@ -1,9 +1,11 @@
 import {usersTable} from "@/db/schema";
 import {User, UserDTO} from "@/models/User";
+import {DI_SYMBOLS} from "@/server/api/common/di/types";
 import {PaginatedRequestProps, PaginatedResponse} from "@/server/api/common/types";
 import lower from "@/utils/lower";
 import {eq, or, sql} from "drizzle-orm";
-import {MySql2Database} from "drizzle-orm/mysql2";
+import {type MySql2Database} from "drizzle-orm/mysql2";
+import {inject, injectable} from "inversify";
 
 export interface IUserRepository {
   findAll(props: PaginatedRequestProps): Promise<PaginatedResponse<User>>;
@@ -15,8 +17,9 @@ export interface IUserRepository {
   bulkDelete(ids: string[]): Promise<void>;
 }
 
+@injectable()
 export default class UserRepository implements IUserRepository {
-  constructor(private readonly db: MySql2Database) {}
+  constructor(@inject(DI_SYMBOLS.MySql2Database) private readonly db: MySql2Database) {}
 
   async findAll({q, page = 1, size = 10}: PaginatedRequestProps): Promise<PaginatedResponse<User>> {
     const offset = (page - 1) * size;

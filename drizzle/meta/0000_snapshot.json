@@ -1,7 +1,7 @@
 {
   "version": "5",
   "dialect": "mysql",
-  "id": "d1bc53a6-a0a4-41fa-b3df-7b1cb5b8a892",
+  "id": "65479856-49fa-4e7e-86bb-76255a1f8f6c",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "appointments": {
@@ -16,14 +16,14 @@
         },
         "doctor_id": {
           "name": "doctor_id",
-          "type": "int",
+          "type": "varchar(255)",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "patient_id": {
           "name": "patient_id",
-          "type": "int",
+          "type": "varchar(255)",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
@@ -112,7 +112,7 @@
       "columns": {
         "doctor_id": {
           "name": "doctor_id",
-          "type": "int",
+          "type": "varchar(255)",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
@@ -149,7 +149,7 @@
       "columns": {
         "doctor_id": {
           "name": "doctor_id",
-          "type": "int",
+          "type": "varchar(255)",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
@@ -186,10 +186,10 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "int",
+          "type": "varchar(255)",
           "primaryKey": false,
           "notNull": true,
-          "autoincrement": true
+          "autoincrement": false
         },
         "job_function": {
           "name": "job_function",
@@ -254,6 +254,12 @@
         }
       },
       "uniqueConstraints": {
+        "doctors_id_unique": {
+          "name": "doctors_id_unique",
+          "columns": [
+            "id"
+          ]
+        },
         "doctors_crm_unique": {
           "name": "doctors_crm_unique",
           "columns": [
@@ -280,7 +286,7 @@
         },
         "patient_id": {
           "name": "patient_id",
-          "type": "int",
+          "type": "varchar(255)",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
@@ -362,10 +368,10 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "int",
+          "type": "varchar(255)",
           "primaryKey": false,
           "notNull": true,
-          "autoincrement": true
+          "autoincrement": false
         },
         "name": {
           "name": "name",
@@ -430,6 +436,12 @@
         }
       },
       "uniqueConstraints": {
+        "patients_id_unique": {
+          "name": "patients_id_unique",
+          "columns": [
+            "id"
+          ]
+        },
         "patients_rg_unique": {
           "name": "patients_rg_unique",
           "columns": [

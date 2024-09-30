@@ -59,7 +59,7 @@ export default function DoctorsForm({
             <FormItem>
               <FormLabel>Nome</FormLabel>
               <FormControl>
-                <Input placeholder="Nome do paciente..." {...field} />
+                <Input placeholder="Nome..." {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -71,7 +71,7 @@ export default function DoctorsForm({
           name="user.email"
           render={({field}) => (
             <FormItem>
-              <FormLabel>Tel</FormLabel>
+              <FormLabel>Email</FormLabel>
               <FormControl>
                 <Input placeholder="Email..." type="email" {...field} />
               </FormControl>
@@ -97,7 +97,7 @@ export default function DoctorsForm({
                     ref={field.ref}
                     onBlur={field.onBlur}
                     value={field.value ?? undefined}
-                    type="password"
+                    type="text"
                   />
                 </FormControl>
                 <FormMessage />
@@ -111,7 +111,7 @@ export default function DoctorsForm({
           name="doctor.jobFunction"
           render={({field}) => (
             <FormItem>
-              <FormLabel>rg</FormLabel>
+              <FormLabel>Função</FormLabel>
               <FormControl>
                 <Input
                   placeholder="Função..."
@@ -133,7 +133,7 @@ export default function DoctorsForm({
           name="doctor.crm"
           render={({field}) => (
             <FormItem>
-              <FormLabel>CRM</FormLabel>
+              <FormLabel>crm</FormLabel>
               <FormControl>
                 <Input
                   placeholder="CRM..."

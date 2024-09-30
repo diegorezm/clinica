@@ -11,7 +11,7 @@ import {useCreateDoctor} from "../api/use-create-doctor";
 import {DoctorWithUserDTO} from "@/models/Doctor";
 import {useRegister} from "@/features/auth/api/use-register";
 
-export default function CreatePatientSheet() {
+export default function CreatDoctorsSheet() {
   const createDoctorQuery = useCreateDoctor();
   const registerQuery = useRegister();
   const {isOpen, onClose} = useOpenCreateDoctor();

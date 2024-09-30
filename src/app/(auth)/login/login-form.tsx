@@ -1,9 +1,9 @@
 "use client";
-import { LoginDTO, loginSchema } from "@/models/User/auth";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
+import {LoginDTO, loginSchema} from "@/models/User/auth";
+import {zodResolver} from "@hookform/resolvers/zod";
+import {useForm} from "react-hook-form";
 
-import { Button } from "@/components/ui/button";
+import {Button} from "@/components/ui/button";
 import {
   Form,
   FormControl,
@@ -12,9 +12,9 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { useLogin } from "@/features/auth/api/use-login";
-import { useRouter } from "next/navigation";
+import {Input} from "@/components/ui/input";
+import {useLogin} from "@/features/auth/api/use-login";
+import {useRouter} from "next/navigation";
 
 export default function LoginForm() {
   const router = useRouter();
@@ -44,7 +44,7 @@ export default function LoginForm() {
         <FormField
           control={form.control}
           name="email"
-          render={({ field }) => (
+          render={({field}) => (
             <FormItem>
               <FormLabel>Email</FormLabel>
               <FormControl>
@@ -58,7 +58,7 @@ export default function LoginForm() {
         <FormField
           control={form.control}
           name="password"
-          render={({ field }) => (
+          render={({field}) => (
             <FormItem>
               <FormLabel>Senha</FormLabel>
               <FormControl>

@@ -1,8 +1,10 @@
 import {SafeUser, toSafeUser, UserDTO} from "@/models/User";
 import {PaginatedRequestProps, PaginatedResponse} from "@/server/api/common/types";
-import {IUserRepository} from "../repositories/user.repository";
+import {type IUserRepository} from "../repositories/user.repository";
 import {handleError} from "@/server/api/common/utils/handle-error";
 import {TRPCError} from "@trpc/server";
+import {inject, injectable} from "inversify";
+import {DI_SYMBOLS} from "@/server/api/common/di/types";
 
 export interface IUserService {
   findAll(props: PaginatedRequestProps): Promise<PaginatedResponse<SafeUser>>;
@@ -14,8 +16,9 @@ export interface IUserService {
   bulkDelete(ids: string[]): Promise<void>;
 }
 
+@injectable()
 export default class UserService implements IUserService {
-  constructor(private readonly repository: IUserRepository) {}
+  constructor(@inject(DI_SYMBOLS.IUserRepository) readonly repository: IUserRepository) {}
 
   async findAll(props: PaginatedRequestProps): Promise<PaginatedResponse<SafeUser>> {
     try {
