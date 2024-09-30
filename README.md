@@ -1,36 +1,75 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Clinica
+
+**Clinica** is a freelance project that I'm currently developing. It's a fullstack application built with Next.js, managing clinic resources like patients, doctors, and appointments.
 
 ## Getting Started
 
-First, run the development server:
+Follow these steps to set up the project on your local machine.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+### Prerequisites
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Ensure you have the following installed:
+- [Bun](https://bun.sh) (for managing dependencies and running the project)
+- MySQL database
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Setup
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+1. **Clone the repository**:
+    ```bash
+    git clone https://github.com/yourusername/clinica.git
+    cd clinica
+    ```
 
-## Learn More
+2. **Configure environment variables**:
+    - Copy the example environment file and configure your MySQL credentials:
+      ```bash
+      cp .env.example .env
+      ```
+    - Edit the `.env` file to include your MySQL database credentials and any other necessary configurations.
 
-To learn more about Next.js, take a look at the following resources:
+3. **Install dependencies**:
+    Use Bun to install the required dependencies:
+    ```bash
+    bun install
+    ```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+4. **Run database migrations**:
+    Ensure your MySQL database is set up and run the migrations:
+    ```bash
+    bun run db:migrate
+    ```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+5. **Start the development server**:
+    To launch the development server:
+    ```bash
+    bun run dev
+    ```
 
-## Deploy on Vercel
+    The app will be available at `http://localhost:3000`.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### Scripts
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+Here are some useful scripts for development:
+
+- **Install dependencies**:  
+  ```bash
+  bun install
+  ```
+  
+- **Run database migrations**:  
+  ```bash
+  bun run db:migrate
+  ```
+  
+- **Start the development server**:  
+  ```bash
+  bun run dev
+  ```
+
+## Technologies Used
+- **Next.js**: Fullstack framework for both the frontend and backend.
+- **tRPC**: End-to-end typesafe APIs without needing a REST or GraphQL setup.
+- **Drizzle ORM**: Lightweight, type-safe ORM for SQL databases, ensuring smooth interaction with the MySQL database.
+- **Bun**: Fast all-in-one JavaScript runtime for running the server and managing dependencies.
+- **MySQL**: Relational database for storing clinic data.
+- **TypeScript**: Ensures type safety throughout the project, including frontend, backend, and database interactions.
