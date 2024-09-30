@@ -16,7 +16,7 @@ Ensure you have the following installed:
 
 1. **Clone the repository**:
     ```bash
-    git clone https://github.com/yourusername/clinica.git
+    git clone https://github.com/diegorezm/clinica.git
     cd clinica
     ```
 
