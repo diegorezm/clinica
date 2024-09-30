@@ -51,11 +51,11 @@ Ensure you have the following installed:
 
 Here are some useful scripts for development:
 
-- **Install dependencies**:  
+- **Run generate database migrations**:  
   ```bash
-  bun install
+  bun run db:generate
   ```
-  
+
 - **Run database migrations**:  
   ```bash
   bun run db:migrate
@@ -65,6 +65,17 @@ Here are some useful scripts for development:
   ```bash
   bun run dev
   ```
+
+- **Seed database with random data**:  
+  ```bash
+  bun run db:seed
+  ```
+  
+- **Run drizzle studio**:  
+  ```bash
+  bun run db:studio
+  ```
+  
 
 ## Technologies Used
 - **Next.js**: Fullstack framework for both the frontend and backend.
