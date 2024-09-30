@@ -15,7 +15,7 @@ export const userRolesEnum = mysqlEnum("user_roles", [
   "regular",
   "doctor",
 ]);
-export const statusEnum = mysqlEnum("status", ["f", "fj", "fm", "ok"]);
+export const statusEnum = mysqlEnum("status", ["f", "fj", "fm", "ok", "p"]);
 export const doctorWorkPeriodEnum = mysqlEnum("periods", ["m", "t", "n"]);
 export const weekDaysEnum = mysqlEnum("week_days_enum", [
   "Sunday",
@@ -135,7 +135,7 @@ export const appointmentsTable = mysqlTable(
     appointmentDate: timestamp("appointment_date", {
       mode: "date",
     }).notNull(),
-    status: statusEnum,
+    status: statusEnum.notNull().default("p"),
     createdAt: timestamp("created_at", {mode: "date", fsp: 3})
       .notNull()
       .defaultNow(),

@@ -12,3 +12,4 @@ export const appointmentInsertSchema = createInsertSchema(
 
 export type Appointment = typeof appointmentsTable.$inferSelect;
 export type AppointmentDTO = z.infer<typeof appointmentInsertSchema>;
+export type Status = "p" | "f" | "fj" | "fm" | "ok";
