@@ -12,7 +12,7 @@ export default function PatientsRefarralsTable({
 }: {
   q?: string;
   page: number;
-  patientId: number;
+  patientId: string;
 }) {
   const getPatientReferrals = useGetPatientsReferrals({
     patientId,

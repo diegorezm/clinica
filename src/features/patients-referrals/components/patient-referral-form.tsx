@@ -23,7 +23,7 @@ type Props = {
   disabled?: boolean;
   editMode?: boolean;
   onDelete?: () => void;
-  patientId: number;
+  patientId: string;
 };
 export default function PatientReferralForm({
   patientId,

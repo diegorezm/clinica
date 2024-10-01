@@ -63,7 +63,7 @@ const routes = router({
     }),
   bulkCreate: privateProcedure.input(z.array(appointmentInsertSchema)).mutation(async ({input}) => {
     const service = getInjections("IAppointmentService");
-    await service.bulkCreate(input);
+    await service.createBulk(input);
     return {
       message: "Registros inseridos com sucesso!",
     }

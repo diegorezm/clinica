@@ -9,6 +9,7 @@ import PatientReferralForm from "./patient-referral-form";
 import {PatientReferralDTO} from "@/models/Patient/patient-referral";
 import {useOpenCreatePatientReferral} from "../hooks/use-open-create-patient-referrals";
 import {useCreatePatientsReferrals} from "../api/use-create-patient-referral";
+import {toast} from "sonner";
 
 export default function CreatePatientReferralSheet() {
   const {isOpen, onClose, patientId} = useOpenCreatePatientReferral();
@@ -17,6 +18,12 @@ export default function CreatePatientReferralSheet() {
   async function onSubmit(values: PatientReferralDTO) {
     await mutateAsync(values);
     onClose();
+  }
+
+  if (patientId === undefined) {
+    toast.error("Algo deu errado. Volte para a pagina principal e tente novamente");
+    onClose();
+    return
   }
 
   return (
@@ -29,7 +36,7 @@ export default function CreatePatientReferralSheet() {
         <PatientReferralForm
           disabled={isPending}
           onSubmit={onSubmit}
-          patientId={patientId as number}
+          patientId={patientId}
         />
       </SheetContent>
     </Sheet>

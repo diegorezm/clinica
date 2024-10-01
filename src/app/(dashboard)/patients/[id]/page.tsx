@@ -1,15 +1,15 @@
 "use client";
-import { Button } from "@/components/ui/button";
-import { ArrowLeft, Plus } from "lucide-react";
+import {Button} from "@/components/ui/button";
+import {ArrowLeft, Plus} from "lucide-react";
 import Link from "next/link";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
+import {Card, CardContent, CardHeader, CardTitle} from "@/components/ui/card";
+import {Input} from "@/components/ui/input";
 import PatientsRefarralsTable from "@/features/patients-referrals/components/patients-referral-table";
-import { useGetPatient } from "@/features/patients/api/use-get-patient";
+import {useGetPatient} from "@/features/patients/api/use-get-patient";
 import LoadingSpinner from "@/components/loading-spinner";
-import { useOpenCreatePatientReferral } from "@/features/patients-referrals/hooks/use-open-create-patient-referrals";
-import { useCallback, useEffect, useState } from "react";
-import { usePathname, useRouter } from "next/navigation";
+import {useOpenCreatePatientReferral} from "@/features/patients-referrals/hooks/use-open-create-patient-referrals";
+import {useCallback, useEffect, useState} from "react";
+import {usePathname, useRouter} from "next/navigation";
 
 const DEBOUNCE_DELAY = 500;
 
@@ -22,16 +22,16 @@ type Props = {
     page?: string;
   };
 };
-export default function PatientPage({ params, searchParams }: Props) {
+export default function PatientPage({params, searchParams}: Props) {
   const q = searchParams?.q || "";
   const page = Number(searchParams?.page) || 1;
 
-  const { onOpen } = useOpenCreatePatientReferral();
+  const {onOpen} = useOpenCreatePatientReferral();
   const [formSearchQ, setFormSearchQ] = useState(q);
 
-  const getPatient = useGetPatient(Number(params.id));
+  const getPatient = useGetPatient(params.id);
   const pathname = usePathname();
-  const { replace } = useRouter();
+  const {replace} = useRouter();
 
   const handleSearch = useCallback(() => {
     const params = new URLSearchParams(searchParams);
@@ -74,7 +74,7 @@ export default function PatientPage({ params, searchParams }: Props) {
               value={formSearchQ}
               onChange={(e) => setFormSearchQ(e.target.value)}
             />
-            <Button size="sm" onClick={() => onOpen(Number(params.id))}>
+            <Button size="sm" onClick={() => onOpen(params.id)}>
               <Plus className="size-4 mr-2" />
               Novo
             </Button>
@@ -82,7 +82,7 @@ export default function PatientPage({ params, searchParams }: Props) {
         </CardHeader>
         <CardContent>
           <PatientsRefarralsTable
-            patientId={Number(params.id)}
+            patientId={params.id}
             page={page}
             q={q}
           />

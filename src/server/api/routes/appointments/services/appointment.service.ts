@@ -15,7 +15,7 @@ export interface IAppointmentService {
   findByDate(date: Date, props: PaginatedRequestProps): Promise<PaginatedResponse<AppointmentWithInfo>>;
   findByDateRange(startDate: Date, endDate: Date, props: PaginatedRequestProps): Promise<PaginatedResponse<AppointmentWithInfo>>;
   create(payload: AppointmentDTO): Promise<void>;
-  bulkCreate(payloads: AppointmentDTO[]): Promise<void>;
+  createBulk(payloads: AppointmentDTO[]): Promise<void>;
   updateStatus(id: number, status: Status): Promise<void>;
   delete(id: number): Promise<void>;
   bulkDelete(ids: number[]): Promise<void>;
@@ -105,9 +105,9 @@ export default class AppointmentService implements IAppointmentService {
     }
   }
 
-  async bulkCreate(payloads: AppointmentDTO[]): Promise<void> {
+  async createBulk(payloads: AppointmentDTO[]): Promise<void> {
     try {
-      await this.repository.bulkCreate(payloads);
+      await this.repository.createBulk(payloads);
     } catch (error) {
       throw handleError(error)
     }

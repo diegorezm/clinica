@@ -1,7 +1,7 @@
 import {trpc} from "@/lib/trpc";
 
 type Props = {
-  patientId: number;
+  patientId: string;
   q?: string;
   page?: number;
   size?: number;

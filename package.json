@@ -8,6 +8,7 @@
     "start": "next start",
     "lint": "next lint",
     "test": "NODE_ENV=development bun test",
+    "trace": "tsc -p . --generateTrace trace --incremental false",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
     "db:seed": "bun run src/db/seed.ts",
