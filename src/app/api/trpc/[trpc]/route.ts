@@ -9,6 +9,10 @@ const handler = async (req: Request) => {
     createContext: () => ({}),
     onError({error}) {
       console.error('Error:', error);
+      return {
+        message: error.message,
+        status: error.code
+      }
     }
   });
   return response;

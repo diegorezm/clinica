@@ -75,6 +75,7 @@ export default class DoctorRepository implements IDoctorRepository {
 
         const doctor: Doctor = {
           ...e,
+          userId: e.userId as string,
           workDays,
           periods
         }

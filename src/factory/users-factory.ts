@@ -1,11 +1,10 @@
-import { UserDTO } from "@/models/User";
-import userService from "@/server/api/routes/users/services/users.service";
-import { faker } from "@faker-js/faker";
+import {UserDTO} from "@/models/User";
+import {faker} from "@faker-js/faker";
 
 export const usersFactory = (n: number, role?: "regular" | "doctor") => {
-  const payload: UserDTO[] = [];
+  const dtos: UserDTO[] = [];
   for (let i = 0; i < n; i++) {
-    payload.push({
+    dtos.push({
       name: faker.person.fullName(),
       email: faker.internet.email(),
       password: faker.string.alphanumeric({
@@ -17,6 +16,5 @@ export const usersFactory = (n: number, role?: "regular" | "doctor") => {
       role: role ? "regular" : role,
     });
   }
-  const users = userService.bulkInsert(payload);
-  return users;
+  return dtos;
 };
