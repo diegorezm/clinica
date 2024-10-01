@@ -10,11 +10,11 @@ import {inject, injectable} from "inversify";
 export interface IAppointmentRepository {
   findAll(props: PaginatedRequestProps): Promise<PaginatedResponse<AppointmentWithInfo>>;
   findByID(id: number): Promise<Appointment | null>;
-  findByDoctorId(doctorId: string, props: PaginatedRequestProps): Promise<PaginatedResponse<Appointment>>;
-  findByPatientId(patientId: string, props: PaginatedRequestProps): Promise<PaginatedResponse<Appointment>>;
-  findByDoctorIdAndPatientId(doctorId: string, patientId: string, props: PaginatedRequestProps): Promise<PaginatedResponse<Appointment>>;
-  findByDate(date: Date, props: PaginatedRequestProps): Promise<PaginatedResponse<Appointment>>;
-  findByDateRange(startDate: Date, endDate: Date, props: PaginatedRequestProps): Promise<PaginatedResponse<Appointment>>;
+  findByDoctorId(doctorId: string, props: PaginatedRequestProps): Promise<PaginatedResponse<AppointmentWithInfo>>;
+  findByPatientId(patientId: string, props: PaginatedRequestProps): Promise<PaginatedResponse<AppointmentWithInfo>>;
+  findByDoctorIdAndPatientId(doctorId: string, patientId: string, props: PaginatedRequestProps): Promise<PaginatedResponse<AppointmentWithInfo>>;
+  findByDate(date: Date, props: PaginatedRequestProps): Promise<PaginatedResponse<AppointmentWithInfo>>;
+  findByDateRange(startDate: Date, endDate: Date, props: PaginatedRequestProps): Promise<PaginatedResponse<AppointmentWithInfo>>;
   create(payload: AppointmentDTO): Promise<void>;
   createBulk(payloads: AppointmentDTO[]): Promise<void>;
   updateStatus(id: number, status: Status): Promise<void>;
@@ -95,7 +95,7 @@ export default class AppointmentRepository implements IAppointmentRepository {
     return data
   }
 
-  async findByDoctorId(doctorId: string, props: PaginatedRequestProps): Promise<PaginatedResponse<Appointment>> {
+  async findByDoctorId(doctorId: string, props: PaginatedRequestProps): Promise<PaginatedResponse<AppointmentWithInfo>> {
     const query = this.withInfoQuery(props.q).where(eq(appointmentsTable.doctorId, doctorId));
 
     const offset = (props.page - 1) * props.size;
@@ -124,7 +124,7 @@ export default class AppointmentRepository implements IAppointmentRepository {
     return {data, numberOfPages, hasNextPage};
   }
 
-  async findByPatientId(patientId: string, props: PaginatedRequestProps): Promise<PaginatedResponse<Appointment>> {
+  async findByPatientId(patientId: string, props: PaginatedRequestProps): Promise<PaginatedResponse<AppointmentWithInfo>> {
     const query = this.withInfoQuery(props.q).where(eq(appointmentsTable.patientId, patientId));
 
     const offset = (props.page - 1) * props.size;
@@ -153,7 +153,7 @@ export default class AppointmentRepository implements IAppointmentRepository {
     return {data, numberOfPages, hasNextPage};
   }
 
-  async findByDoctorIdAndPatientId(doctorId: string, patientId: string, props: PaginatedRequestProps): Promise<PaginatedResponse<Appointment>> {
+  async findByDoctorIdAndPatientId(doctorId: string, patientId: string, props: PaginatedRequestProps): Promise<PaginatedResponse<AppointmentWithInfo>> {
     const query = this.withInfoQuery(props.q)
       .where(and(eq(appointmentsTable.doctorId, doctorId), eq(appointmentsTable.patientId, patientId)));
 
@@ -184,7 +184,7 @@ export default class AppointmentRepository implements IAppointmentRepository {
 
   }
 
-  async findByDate(date: Date, props: PaginatedRequestProps): Promise<PaginatedResponse<Appointment>> {
+  async findByDate(date: Date, props: PaginatedRequestProps): Promise<PaginatedResponse<AppointmentWithInfo>> {
     const query = this.withInfoQuery(props.q).where(eq(appointmentsTable.appointmentDate, date));
     const offset = (props.page - 1) * props.size;
 
@@ -212,7 +212,7 @@ export default class AppointmentRepository implements IAppointmentRepository {
     return {data, numberOfPages, hasNextPage};
   }
 
-  async findByDateRange(startDate: Date, endDate: Date, props: PaginatedRequestProps): Promise<PaginatedResponse<Appointment>> {
+  async findByDateRange(startDate: Date, endDate: Date, props: PaginatedRequestProps): Promise<PaginatedResponse<AppointmentWithInfo>> {
     const query = this.withInfoQuery(props.q);
     query.where(between(appointmentsTable.appointmentDate, startDate, endDate));
     const offset = (props.page - 1) * props.size;

@@ -9,6 +9,7 @@ import {IUserService} from "../../routes/users/services/users.service"
 import {IAuthService} from "../../routes/auth/services/auth.service"
 import {IPatientReferralService} from "../../routes/patients/services/patient-referral.service"
 import {IAppointmentRepository} from "../../routes/appointments/repositories/appointment.repository"
+import {IAppointmentService} from "../../routes/appointments/services/appointment.service"
 
 export const DI_SYMBOLS = {
   //db
@@ -26,6 +27,7 @@ export const DI_SYMBOLS = {
   IUserService: Symbol.for("IUserService"),
   IPatientService: Symbol.for("IPatientService"),
   IPatientReferralService: Symbol.for("IPatientReferralService"),
+  IAppointmentService: Symbol.for("IAppointmentService"),
   IAuthService: Symbol.for("IAuthService"),
 } as const
 
@@ -45,6 +47,7 @@ export interface DI_RETURN_TYPES {
   IUserService: IUserService
   IPatientService: IPatientService
   IPatientReferralService: IPatientReferralService
+  IAppointmentService: IAppointmentService
   IAuthService: IAuthService
 }
 
