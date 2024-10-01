@@ -1,9 +1,9 @@
-import {router, adminProcedure, privateProcedure} from "@/server/trpc";
-import {paginatedRequestSchema} from "../../common/input/paginated-request";
 import {z} from "zod";
+import {router, adminProcedure, privateProcedure} from "@/server/trpc";
 import {userInsertSchema} from "@/models/User";
 import {TRPCError} from "@trpc/server";
-import {getInjections} from "../../common/di/container";
+import {getInjections} from "@/server/api/common/di/container";
+import {paginatedRequestSchema} from "@/server/api/common/input/paginated-request";
 
 
 const route = router({

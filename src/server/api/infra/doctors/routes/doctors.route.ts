@@ -1,10 +1,10 @@
-import {router, adminProcedure, privateProcedure} from "@/server/trpc";
-import {paginatedRequestSchema} from "../../common/input/paginated-request";
-import {doctorInsertSchema} from "@/models/Doctor";
 import {z} from "zod";
+import {router, adminProcedure, privateProcedure} from "@/server/trpc";
+import {doctorInsertSchema} from "@/models/Doctor";
 import {doctorWorkDayInsertSchema} from "@/models/Doctor/work-days";
 import {doctorWorkPeriodInsertSchema} from "@/models/Doctor/work-period";
-import {getInjections} from "../../common/di/container";
+import {paginatedRequestSchema} from "@/server/api/common/input/paginated-request";
+import {getInjections} from "@/server/api/common/di/container";
 
 const routes = router({
   get: privateProcedure

@@ -1,11 +1,11 @@
 import {router, publicProcedure, privateProcedure, adminProcedure} from "@/server/trpc";
 import {userInsertSchema} from "@/models/User";
 import {loginSchema} from "@/models/User/auth";
-import {validateRequest} from "../../common/utils/cookie-manager";
 import {lucia} from "@/lib/auth";
 import {cookies} from "next/headers";
 import {TRPCError} from "@trpc/server";
-import {getInjections} from "../../common/di/container";
+import {getInjections} from "@/server/api/common/di/container";
+import {validateRequest} from "@/server/api/common/utils/cookie-manager";
 
 const routes = router({
   login: publicProcedure.input(loginSchema).mutation(async ({input}) => {

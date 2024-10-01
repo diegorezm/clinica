@@ -5,7 +5,7 @@ import {paginatedRequestSchema} from "@/server/api/common/input/paginated-reques
 import {patientInsertSchema} from "@/models/Patient";
 
 import {TRPCError} from "@trpc/server";
-import {getInjections} from "../../common/di/container";
+import {getInjections} from "@/server/api/common/di/container";
 
 
 const routes = router({

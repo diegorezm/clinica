@@ -3,7 +3,7 @@ import {z} from "zod";
 import {router, publicProcedure} from "@/server/trpc";
 import {patientReferralsTableInsertSchema} from "@/models/Patient/patient-referral";
 import {paginatedRequestSchema} from "@/server/api/common/input/paginated-request";
-import {getInjections} from "../../common/di/container";
+import {getInjections} from "@/server/api/common/di/container";
 
 const routes = router({
   get: publicProcedure

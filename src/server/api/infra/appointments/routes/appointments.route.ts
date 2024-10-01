@@ -1,9 +1,9 @@
 import {appointmentInsertSchema} from "@/models/Appointment";
 import {privateProcedure, router} from "@/server/trpc";
-import {getInjections} from "../../common/di/container";
-import {paginatedRequestSchema} from "../../common/input/paginated-request";
 import {z} from "zod";
 import {Status} from '@/models/Appointment';
+import {paginatedRequestSchema} from "@/server/api/common/input/paginated-request";
+import {getInjections} from "@/server/api/common/di/container";
 
 const routes = router({
   getAll: privateProcedure
