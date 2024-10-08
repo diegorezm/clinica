@@ -1,5 +1,5 @@
-import DoctorRepository, {IDoctorRepository} from "@/server/api/routes/doctors/repositories/doctor.repository";
-import DoctorService, {IDoctorService} from "@/server/api/routes/doctors/services/doctors.service";
+import DoctorRepository, {IDoctorRepository} from "@/server/api/infra/doctors/repositories/doctor.repository";
+import DoctorService, {IDoctorService} from "@/server/api/infra/doctors/services/doctors.service";
 import {ContainerModule, interfaces} from "inversify";
 import {DI_SYMBOLS} from "../types";
 

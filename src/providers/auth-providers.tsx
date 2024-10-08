@@ -20,6 +20,7 @@ export default function UserStoreProvider({children}: Props) {
     const cookieUser = meQuery.data;
     if (!cookieUser) {
       clearAuth();
+      router.push("/login");
     } else {
       const newUser: SafeUser = {
         ...cookieUser,
@@ -28,7 +29,7 @@ export default function UserStoreProvider({children}: Props) {
       };
       setUser(newUser);
     }
-  }, [meQuery.data, meQuery.isLoading, setUser, clearAuth]);
+  }, [meQuery.data, meQuery.isLoading, setUser, clearAuth, router]);
 
   useEffect(() => {
     if (meQuery.error) {

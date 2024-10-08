@@ -10,6 +10,7 @@ import LoadingSpinner from "@/components/loading-spinner";
 import {useOpenCreatePatientReferral} from "@/features/patients-referrals/hooks/use-open-create-patient-referrals";
 import {useCallback, useEffect, useState} from "react";
 import {usePathname, useRouter} from "next/navigation";
+import PatientInfo from "./patient-info";
 
 const DEBOUNCE_DELAY = 500;
 
@@ -57,6 +58,7 @@ export default function PatientPage({params, searchParams}: Props) {
 
   return (
     <div className="flex flex-col max-w-screen-2xl w-full h-full space-y-2">
+      <PatientInfo patient={getPatient.data!} />
       <nav className="flex justify-start items-center w-full">
         <Link href={"/patients"} scroll={false}>
           <Button size="sm" variant={"ghost"}>

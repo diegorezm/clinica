@@ -1,5 +1,5 @@
-import PatientRepository, {IPatientRepository} from "@/server/api/routes/patients/repository/patient.repository";
-import PatientService, {IPatientService} from "@/server/api/routes/patients/services/patients.service";
+import PatientRepository, {IPatientRepository} from "@/server/api/infra/patients/repository/patient.repository";
+import PatientService, {IPatientService} from "@/server/api/infra/patients/services/patients.service";
 import {DI_SYMBOLS} from "../types";
 import {ContainerModule, interfaces} from "inversify";
 

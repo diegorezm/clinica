@@ -1,12 +1,12 @@
 "use client";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
+import {Button} from "@/components/ui/button";
+import {Card, CardContent, CardHeader, CardTitle} from "@/components/ui/card";
+import {Input} from "@/components/ui/input";
 import PatientsTable from "@/features/patients/components/patients-table";
-import { useOpenCreatePatient } from "@/features/patients/hooks/use-open-create-patient";
-import { Plus } from "lucide-react";
-import { usePathname, useRouter } from "next/navigation";
-import { useCallback, useEffect, useState } from "react";
+import {useOpenCreatePatient} from "@/features/patients/hooks/use-open-create-patient";
+import {Plus} from "lucide-react";
+import {usePathname, useRouter} from "next/navigation";
+import {useCallback, useEffect, useState} from "react";
 
 const DEBOUNCE_DELAY = 300;
 
@@ -22,9 +22,9 @@ export default function PatientsPage({
   const q = searchParams?.q || "";
   const page = Number(searchParams?.page) || 1;
   const [formSearchQ, setFormSearchQ] = useState(q);
-  const { onOpen } = useOpenCreatePatient();
+  const {onOpen} = useOpenCreatePatient();
   const pathname = usePathname();
-  const { replace } = useRouter();
+  const {replace} = useRouter();
 
   const handleSearch = useCallback(() => {
     const params = new URLSearchParams(searchParams);

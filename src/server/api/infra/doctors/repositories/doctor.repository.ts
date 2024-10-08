@@ -1,3 +1,4 @@
+import {Transaction} from "@/db";
 import {doctorsTable, doctorWorkDaysTable, doctorWorkPeriodTable, usersTable} from "@/db/schema";
 import {Doctor, DoctorDTO} from "@/models/Doctor";
 import {DoctorWorkDay, WeekDay} from "@/models/Doctor/work-days";
@@ -15,14 +16,14 @@ export interface IDoctorRepository {
   findById(id: string): Promise<Doctor | null>;
   findDoctorWorkDays(id: string): Promise<DoctorWorkDay[]>;
   findDoctorWorkPeriods(id: string): Promise<DoctorWorkPeriod[]>;
-  create(doctor: DoctorDTO): Promise<void>;
-  createDoctorWorkDays(payload: DoctorWorkDay[]): Promise<void>;
-  createDoctorWorkPeriods(payload: DoctorWorkPeriod[]): Promise<void>;
-  update(doctor: DoctorDTO, doctorID: string): Promise<void>;
-  delete(id: string): Promise<void>;
-  bulkDelete(ids: string[]): Promise<void>;
-  deleteDoctorWorkDays(doctorId: string, day: WeekDay): Promise<void>;
-  deleteDoctorWorkPeriod(doctorId: string, period: Period): Promise<void>;
+  create(doctor: DoctorDTO, tx: Transaction): Promise<void>;
+  createDoctorWorkDays(payload: DoctorWorkDay[], tx: Transaction): Promise<void>;
+  createDoctorWorkPeriods(payload: DoctorWorkPeriod[], tx: Transaction): Promise<void>;
+  update(doctor: DoctorDTO, doctorID: string, tx: Transaction): Promise<void>;
+  delete(id: string, tx: Transaction): Promise<void>;
+  bulkDelete(ids: string[], tx: Transaction): Promise<void>;
+  deleteDoctorWorkDays(doctorId: string, day: WeekDay, tx: Transaction): Promise<void>;
+  deleteDoctorWorkPeriod(doctorId: string, period: Period, tx: Transaction): Promise<void>;
 }
 
 @injectable()
@@ -49,7 +50,8 @@ export default class DoctorRepository implements IDoctorRepository {
         .limit(size)
         .offset(offset)
         .innerJoin(usersTable, eq(doctorsTable.userId, usersTable.id));
-      if (q) {
+
+      if (q !== undefined && q.length > 0) {
         query.where(
           sql`${lower(usersTable.name)} LIKE ${`%${q.toLowerCase()}%`}`,
         );
@@ -64,8 +66,7 @@ export default class DoctorRepository implements IDoctorRepository {
 
       const rawData = await query;
       const doctors: Doctor[] = [];
-
-      rawData.forEach(async (e) => {
+      for (const e of rawData) {
         const [dWorkDays, dPeriods] = await Promise.all([
           this.findDoctorWorkDays(e.id),
           this.findDoctorWorkPeriods(e.id)
@@ -79,9 +80,8 @@ export default class DoctorRepository implements IDoctorRepository {
           workDays,
           periods
         }
-        doctors.push(doctor);
-      })
-
+        doctors.push(doctor)
+      }
       const hasNextPage = page < numberOfPages;
       return {data: doctors, numberOfPages, hasNextPage};
     } catch (error) {
@@ -100,7 +100,9 @@ export default class DoctorRepository implements IDoctorRepository {
       createdAt: doctorsTable.createdAt,
       updatedAt: doctorsTable.updatedAt,
       userId: usersTable.id,
-    }).from(doctorsTable).where(eq(doctorsTable.id, id)).innerJoin(usersTable, eq(doctorsTable.userId, usersTable.id));
+    }).from(doctorsTable).where(eq(doctorsTable.id, id))
+      .innerJoin(usersTable, eq(doctorsTable.userId, usersTable.id));
+
     const [dWorkDays, dPeriods] = await Promise.all([
       this.findDoctorWorkDays(data.id),
       this.findDoctorWorkPeriods(data.id)
@@ -122,48 +124,48 @@ export default class DoctorRepository implements IDoctorRepository {
   }
 
   async findDoctorWorkDays(doctorId: string): Promise<DoctorWorkDay[]> {
-    const data = await this.db.select().from(doctorWorkDaysTable).where(eq(doctorWorkPeriodTable.doctorId, doctorId));
+    const data = await this.db.select().from(doctorWorkDaysTable).where(eq(doctorWorkDaysTable.doctorId, doctorId));
     if (!data) return []
     return data
   }
 
 
-  async create(doctor: DoctorDTO): Promise<void> {
-    await this.db.insert(doctorsTable).values(doctor);
+  async create(doctor: DoctorDTO, tx: Transaction): Promise<void> {
+    await tx.insert(doctorsTable).values(doctor);
   }
 
-  async createDoctorWorkPeriods(periods: DoctorWorkPeriod[]): Promise<void> {
-    await this.db.insert(doctorWorkPeriodTable).values(periods);
+  async createDoctorWorkPeriods(periods: DoctorWorkPeriod[], tx: Transaction): Promise<void> {
+    await tx.insert(doctorWorkPeriodTable).values(periods);
   }
 
-  async createDoctorWorkDays(days: DoctorWorkDay[]): Promise<void> {
-    await this.db.insert(doctorWorkDaysTable).values(days);
+  async createDoctorWorkDays(days: DoctorWorkDay[], tx: Transaction): Promise<void> {
+    await tx.insert(doctorWorkDaysTable).values(days);
   }
 
-  async update(doctor: DoctorDTO, doctorID: string): Promise<void> {
-    await this.db.update(doctorsTable).set(doctor).where(eq(doctorsTable.id, doctorID));
+  async update(doctor: DoctorDTO, doctorID: string, tx: Transaction): Promise<void> {
+    await tx.update(doctorsTable).set(doctor).where(eq(doctorsTable.id, doctorID));
   }
 
-  async delete(id: string): Promise<void> {
-    await this.db
+  async delete(id: string, tx: Transaction): Promise<void> {
+    await tx
       .delete(doctorsTable)
       .where(eq(doctorsTable.id, id));
   }
 
-  async bulkDelete(ids: string[]): Promise<void> {
-    await this.db
+  async bulkDelete(ids: string[], tx: Transaction): Promise<void> {
+    await tx
       .delete(doctorsTable)
       .where(or(...ids.map((id) => eq(doctorsTable.id, id))));
   }
 
-  async deleteDoctorWorkDays(doctorId: string, day: WeekDay): Promise<void> {
-    await this.db
+  async deleteDoctorWorkDays(doctorId: string, day: WeekDay, tx: Transaction): Promise<void> {
+    await tx
       .delete(doctorWorkDaysTable)
       .where(and(eq(doctorWorkDaysTable.day, day), eq(doctorWorkDaysTable.doctorId, doctorId)));
   }
 
-  async deleteDoctorWorkPeriod(doctorId: string, period: Period): Promise<void> {
-    await this.db
+  async deleteDoctorWorkPeriod(doctorId: string, period: Period, tx: Transaction): Promise<void> {
+    await tx
       .delete(doctorWorkPeriodTable)
       .where(and(eq(doctorWorkPeriodTable.period, period), eq(doctorWorkPeriodTable.doctorId, doctorId)));
   }

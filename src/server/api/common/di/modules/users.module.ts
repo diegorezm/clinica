@@ -1,7 +1,7 @@
-import UserRepository, {IUserRepository} from "@/server/api/routes/users/repositories/user.repository";
-import UserService, {IUserService} from "@/server/api/routes/users/services/users.service";
 import {DI_SYMBOLS} from "../types";
 import {ContainerModule, interfaces} from "inversify";
+import UserRepository, {IUserRepository} from "@/server/api/infra/users/repositories/user.repository";
+import UserService, {IUserService} from "@/server/api/infra/users/services/users.service";
 
 const initializeModule = (bind: interfaces.Bind) => {
   bind<IUserRepository>(DI_SYMBOLS.IUserRepository).to(UserRepository);

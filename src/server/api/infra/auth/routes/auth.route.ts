@@ -6,6 +6,8 @@ import {cookies} from "next/headers";
 import {TRPCError} from "@trpc/server";
 import {getInjections} from "@/server/api/common/di/container";
 import {validateRequest} from "@/server/api/common/utils/cookie-manager";
+import {doctorInsertSchema} from "@/models/Doctor";
+import {z} from "zod";
 
 const routes = router({
   login: publicProcedure.input(loginSchema).mutation(async ({input}) => {
@@ -18,6 +20,13 @@ const routes = router({
     .mutation(async ({input}) => {
       const authService = getInjections("IAuthService");
       const response = await authService.register(input);
+      return response;
+    }),
+  registerDoctor: adminProcedure
+    .input(z.object({user: userInsertSchema, doctor: doctorInsertSchema}))
+    .mutation(async ({input}) => {
+      const authService = getInjections("IAuthService");
+      const response = await authService.registerDoctor(input);
       return response;
     }),
   logout: privateProcedure.mutation(async () => {

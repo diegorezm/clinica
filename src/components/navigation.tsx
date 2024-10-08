@@ -18,7 +18,6 @@ import {
   User as UserIcon,
   Users,
 } from "lucide-react";
-import {useEffect, useState} from "react";
 import {
   Sheet,
   SheetContent,
@@ -29,10 +28,12 @@ import {
 } from "./ui/sheet";
 import {Button} from "./ui/button";
 import Link from "next/link";
-import {usePathname} from "next/navigation";
+import {usePathname, useRouter} from "next/navigation";
 import {useAuthStore} from "@/features/auth/hooks/use-auth-store";
 import {SafeUser} from "@/models/User";
 import Image from "next/image";
+import {useEffect, useState} from "react";
+import {useLogout} from "@/features/auth/api/use-logout";
 
 type NavItem = {
   label: string;
@@ -60,6 +61,14 @@ const navItems: NavItem[] = [
 
 const MobileNavigation = ({currentPath}: {currentPath: string}) => {
   const [open, setOpen] = useState(false);
+  const router = useRouter();
+  const logoutQuery = useLogout();
+  const onLogoutClick = async () => {
+    await logoutQuery.mutateAsync();
+    if (!logoutQuery.isError) {
+      router.push("/login");
+    }
+  }
   return (
     <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger>
@@ -94,7 +103,7 @@ const MobileNavigation = ({currentPath}: {currentPath: string}) => {
             <Button
               variant="outline"
               className="w-full py-0"
-              onClick={() => setOpen(false)}
+              onClick={onLogoutClick}
             >
               <span>Logout</span>
               <LogOut className="size-4 mx-2" />
@@ -163,6 +172,14 @@ const DesktopNavigation = ({
   user: SafeUser | null;
 }) => {
   const [expanded, setExpanded] = useState(true);
+  const router = useRouter();
+  const logoutQuery = useLogout();
+  const onLogoutClick = async () => {
+    await logoutQuery.mutateAsync();
+    if (!logoutQuery.isError) {
+      router.push("/login");
+    }
+  }
   return (
     <aside className="w-fit h-screen">
       <nav className="h-full flex flex-col bg-background border-r shadow-sm">
@@ -199,7 +216,8 @@ const DesktopNavigation = ({
         </div>
         {user !== null && expanded && (
           <div
-            className={`border-t flex transition-all p-3 items-center`}
+            className={`border-t flex transition-all p-3 items-center hover:cursor-pointer`}
+            onClick={() => router.push("/profile")}
           >
             <UserIcon />
             <div

@@ -6,7 +6,9 @@ import {Period} from "./work-period";
 import {WeekDay} from "./work-days";
 
 export const doctorInsertSchema = createInsertSchema(doctorsTable, {
-  crm: z.string().min(9),
+  crm: z.string().min(4, {
+    message: "O CRM deve ter pelo menos 4 digitos",
+  }),
   jobFunction: z.string().min(3),
 }).omit({
   id: true,

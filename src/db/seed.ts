@@ -1,13 +1,21 @@
+import "reflect-metadata"
+import {getInjections} from "@/server/api/common/di/container";
+
 (async function main() {
   try {
-    // const patients = patientFactory(40);
-    // await db.insert(patientsTable).values(patients);
-    // await authService.register({
-    //   name: "admin",
-    //   email: "admin@email.com",
-    //   role: "admin",
-    //   password: "abcabc",
-    // });
+    const authService = getInjections("IAuthService");
+    await authService.register({
+      name: "admin",
+      email: "admin@admin.com",
+      password: "admin",
+      role: "admin"
+    })
+    await authService.register({
+      name: "user",
+      email: "user@clinica.com",
+      password: "123456",
+      role: "regular"
+    })
     console.log("Successfully seeded the database.");
   } catch (error) {
     console.error("Error seeding table:", error);

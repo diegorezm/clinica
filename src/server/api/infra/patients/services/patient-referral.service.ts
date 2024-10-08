@@ -5,6 +5,7 @@ import {handleError} from "@/server/api/common/utils/handle-error"
 import {TRPCError} from "@trpc/server"
 import {inject, injectable} from "inversify"
 import {DI_SYMBOLS} from "@/server/api/common/di/types"
+import {type MySql2Database} from "drizzle-orm/mysql2"
 
 export interface IPatientReferralService {
   findAll(props: ReferralPaginatedRequestProps): Promise<PaginatedResponse<PatientReferral>>
@@ -17,7 +18,10 @@ export interface IPatientReferralService {
 
 @injectable()
 export default class PatientReferralService implements IPatientReferralService {
-  constructor(@inject(DI_SYMBOLS.IPatientReferralRepository) private readonly repository: IPatientReferralRepository) {}
+  constructor(
+    @inject(DI_SYMBOLS.IPatientReferralRepository) private readonly repository: IPatientReferralRepository,
+    @inject(DI_SYMBOLS.MySql2Database) private readonly db: MySql2Database
+  ) {}
   async findAll(props: ReferralPaginatedRequestProps): Promise<PaginatedResponse<PatientReferral>> {
     try {
       const response = await this.repository.findAll(props);
@@ -44,7 +48,9 @@ export default class PatientReferralService implements IPatientReferralService {
 
   async create(payload: PatientReferralDTO): Promise<void> {
     try {
-      await this.repository.create(payload);
+      this.db.transaction(async (tx) => {
+        await this.repository.create(payload, tx);
+      })
     } catch (error) {
       throw handleError(error)
     }
@@ -52,7 +58,9 @@ export default class PatientReferralService implements IPatientReferralService {
 
   async update(payload: Omit<PatientReferralDTO, "patientId">, id: number): Promise<void> {
     try {
-      await this.repository.update(payload, id);
+      this.db.transaction(async (tx) => {
+        await this.repository.update(payload, id, tx);
+      })
     } catch (error) {
       throw handleError(error)
     }
@@ -60,7 +68,9 @@ export default class PatientReferralService implements IPatientReferralService {
 
   async delete(id: number): Promise<void> {
     try {
-      await this.repository.delete(id);
+      this.db.transaction(async (tx) => {
+        await this.repository.delete(id, tx);
+      })
     } catch (error) {
       throw handleError(error)
     }
@@ -68,7 +78,9 @@ export default class PatientReferralService implements IPatientReferralService {
 
   async bulkDelete(ids: number[]): Promise<void> {
     try {
-      await this.repository.bulkDelete(ids);
+      this.db.transaction(async (tx) => {
+        await this.repository.bulkDelete(ids, tx);
+      })
     } catch (error) {
       throw handleError(error)
     }

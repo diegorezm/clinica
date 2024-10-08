@@ -7,31 +7,15 @@ import {
 } from "@/components/ui/sheet";
 import {useOpenCreateDoctor} from "../hooks/use-open-create-doctor";
 import DoctorsForm from "./doctors-form";
-import {useCreateDoctor} from "../api/use-create-doctor";
 import {DoctorWithUserDTO} from "@/models/Doctor";
-import {useRegister} from "@/features/auth/api/use-register";
+import {useRegisterDoctor} from "@/features/auth/api/use-register-doctor";
 
 export default function CreatDoctorsSheet() {
-  const createDoctorQuery = useCreateDoctor();
-  const registerQuery = useRegister();
+  const registerDoctorQuery = useRegisterDoctor();
   const {isOpen, onClose} = useOpenCreateDoctor();
 
   async function onSubmit(values: DoctorWithUserDTO) {
-    const user = await registerQuery.mutateAsync({
-      name: values.user.name,
-      email: values.user.email,
-      password: values.user.password,
-      role: values.user.role,
-    });
-
-    await createDoctorQuery.mutateAsync({
-      crm: values.doctor.crm,
-      jobFunction: values.doctor.jobFunction,
-      userId: user.id,
-    });
-    if (!registerQuery.isError && !createDoctorQuery.isError) {
-      onClose();
-    }
+    await registerDoctorQuery.mutateAsync(values);
   }
 
   return (
@@ -44,7 +28,7 @@ export default function CreatDoctorsSheet() {
           </SheetDescription>
         </SheetHeader>
         <DoctorsForm
-          disabled={createDoctorQuery.isPending || registerQuery.isPending}
+          disabled={registerDoctorQuery.isPending}
           onSubmit={onSubmit}
         />
       </SheetContent>

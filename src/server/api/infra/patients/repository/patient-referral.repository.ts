@@ -6,6 +6,7 @@ import lower from "@/utils/lower";
 import {and, eq, or, sql} from "drizzle-orm";
 import {type MySql2Database} from "drizzle-orm/mysql2";
 import {DI_SYMBOLS} from "@/server/api/common/di/types";
+import {Transaction} from "@/db";
 
 export interface ReferralPaginatedRequestProps extends PaginatedRequestProps {
   patientId: string;
@@ -14,10 +15,10 @@ export interface ReferralPaginatedRequestProps extends PaginatedRequestProps {
 export interface IPatientReferralRepository {
   findAll(props: ReferralPaginatedRequestProps): Promise<PaginatedResponse<PatientReferral>>;
   findByID(id: number): Promise<PatientReferral | null>;
-  create(payload: PatientReferralDTO): Promise<void>;
-  update(payload: Omit<PatientReferralDTO, "patientId">, id: number): Promise<void>;
-  delete(id: number): Promise<void>;
-  bulkDelete(ids: number[]): Promise<void>;
+  create(payload: PatientReferralDTO, tx: Transaction): Promise<void>;
+  update(payload: Omit<PatientReferralDTO, "patientId">, id: number, tx: Transaction): Promise<void>;
+  delete(id: number, tx: Transaction): Promise<void>;
+  bulkDelete(ids: number[], tx: Transaction): Promise<void>;
 }
 
 @injectable()
@@ -57,22 +58,24 @@ export default class PatientReferralRepository implements IPatientReferralReposi
     return data
   }
 
-  async create(payload: PatientReferralDTO): Promise<void> {
-    await this.db
+  async create(payload: PatientReferralDTO, tx: Transaction): Promise<void> {
+    await tx
       .insert(patientReferralsTable)
       .values(payload)
   }
 
-  async update(payload: Omit<PatientReferralDTO, "patientId">, id: number): Promise<void> {
-    await this.db.update(patientReferralsTable)
+  async update(payload: Omit<PatientReferralDTO, "patientId">, id: number, tx: Transaction): Promise<void> {
+    await tx.update(patientReferralsTable)
       .set(payload)
       .where(eq(patientReferralsTable.id, id));
   }
-  async delete(id: number): Promise<void> {
-    await this.db.delete(patientReferralsTable).where(eq(patientReferralsTable.id, id));
+
+  async delete(id: number, tx: Transaction): Promise<void> {
+    await tx.delete(patientReferralsTable).where(eq(patientReferralsTable.id, id));
   }
-  async bulkDelete(ids: number[]): Promise<void> {
-    await this.db.delete(patientReferralsTable).
+
+  async bulkDelete(ids: number[], tx: Transaction): Promise<void> {
+    await tx.delete(patientReferralsTable).
       where(or(...ids.map(id => eq(patientReferralsTable.id, id))));
   }
 }

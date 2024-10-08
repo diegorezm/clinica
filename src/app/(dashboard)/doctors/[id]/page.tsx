@@ -10,7 +10,7 @@ type Props = {
   };
 };
 
-export default function DoctorPage({ params, searchParams }: Props) {
+export default function DoctorPage({params, searchParams}: Props) {
   const id = Number(params.id);
   const q = searchParams?.q || "";
   const page = Number(searchParams?.page) || 1;

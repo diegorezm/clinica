@@ -5,12 +5,14 @@ import {handleError} from "@/server/api/common/utils/handle-error";
 import {TRPCError} from "@trpc/server";
 import {inject, injectable} from "inversify";
 import {DI_SYMBOLS} from "@/server/api/common/di/types";
+import type {MySql2Database} from "drizzle-orm/mysql2";
 
 export interface IUserService {
   findAll(props: PaginatedRequestProps): Promise<PaginatedResponse<SafeUser>>;
   findByID(id: string): Promise<SafeUser>;
   findByEmail(email: string): Promise<SafeUser>;
   create(payload: UserDTO): Promise<void>;
+  bulkCreate(payload: UserDTO[]): Promise<void>;
   update(payload: UserDTO, userId: string): Promise<void>;
   delete(id: string): Promise<void>;
   bulkDelete(ids: string[]): Promise<void>;
@@ -18,7 +20,7 @@ export interface IUserService {
 
 @injectable()
 export default class UserService implements IUserService {
-  constructor(@inject(DI_SYMBOLS.IUserRepository) readonly repository: IUserRepository) {}
+  constructor(@inject(DI_SYMBOLS.IUserRepository) readonly repository: IUserRepository, @inject(DI_SYMBOLS.MySql2Database) private readonly db: MySql2Database) {}
 
   async findAll(props: PaginatedRequestProps): Promise<PaginatedResponse<SafeUser>> {
     try {
@@ -72,15 +74,29 @@ export default class UserService implements IUserService {
           message: "Este email ja esta cadastrado.",
         })
       }
-      await this.repository.create(payload);
+      this.db.transaction(async (tx) => {
+        await this.repository.create(payload, tx);
+      })
     } catch (error) {
       throw handleError(error);
     }
   }
 
+  async bulkCreate(payload: UserDTO[]): Promise<void> {
+    try {
+      this.db.transaction(async (tx) => {
+        this.repository.bulkCreate(payload, tx);
+      })
+    } catch (err) {
+      throw handleError(err);
+    }
+  }
+
   async update(payload: UserDTO, userId: string): Promise<void> {
     try {
-      await this.repository.update(payload, userId);
+      this.db.transaction(async (tx) => {
+        await this.repository.update(payload, userId, tx);
+      })
     } catch (error) {
       throw handleError(error);
     }
@@ -88,7 +104,9 @@ export default class UserService implements IUserService {
 
   async delete(id: string): Promise<void> {
     try {
-      await this.repository.delete(id);
+      this.db.transaction(async (tx) => {
+        await this.repository.delete(id, tx);
+      })
     } catch (error) {
       throw handleError(error);
     }
@@ -96,7 +114,9 @@ export default class UserService implements IUserService {
 
   async bulkDelete(ids: string[]): Promise<void> {
     try {
-      await this.repository.bulkDelete(ids);
+      this.db.transaction(async (tx) => {
+        await this.repository.bulkDelete(ids, tx);
+      })
     } catch (error) {
       throw handleError(error);
     }

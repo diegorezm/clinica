@@ -7,6 +7,8 @@ import {PatientModule} from "./modules/patients.module";
 import {PatientReferralModule} from "./modules/patients-referral.module";
 import {DoctorModule} from "./modules/doctors.module";
 import {UserModule} from "./modules/users.module";
+import {AuthModule} from "./modules/auth.module";
+
 import {NODE_ENV} from '@/env'
 
 const ApplicationContainer = new Container({
@@ -19,6 +21,7 @@ export const initializeContainer = () => {
   ApplicationContainer.load(PatientReferralModule)
   ApplicationContainer.load(DoctorModule)
   ApplicationContainer.load(UserModule)
+  ApplicationContainer.load(AuthModule)
 }
 
 export const destroyContainer = () => {

@@ -1,7 +1,8 @@
-import PatientReferralRepository, {IPatientReferralRepository} from "@/server/api/routes/patients/repository/patient-referral.repository";
-import {ContainerModule, interfaces} from "inversify";
 import {DI_SYMBOLS} from "../types";
-import PatientReferralService, {IPatientReferralService} from "@/server/api/routes/patients/services/patient-referral.service";
+
+import {ContainerModule, interfaces} from "inversify";
+import PatientReferralService, {IPatientReferralService} from "@/server/api/infra/patients/services/patient-referral.service";
+import PatientReferralRepository, {IPatientReferralRepository} from "@/server/api/infra/patients/repository/patient-referral.repository";
 
 const initializeModule = (bind: interfaces.Bind) => {
   bind<IPatientReferralRepository>(DI_SYMBOLS.IPatientReferralRepository).to(PatientReferralRepository);

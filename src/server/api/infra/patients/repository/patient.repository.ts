@@ -1,3 +1,4 @@
+import {Transaction} from "@/db";
 import {patientsTable} from "@/db/schema";
 import {Patient, PatientDTO} from "@/models/Patient";
 import {DI_SYMBOLS} from "@/server/api/common/di/types";
@@ -10,10 +11,10 @@ import {inject, injectable} from "inversify";
 export interface IPatientRepository {
   findAll(props: PaginatedRequestProps): Promise<PaginatedResponse<Patient>>;
   findByID(id: string): Promise<Patient | null>;
-  create(payload: PatientDTO): Promise<void>;
-  update(payload: PatientDTO, patientId: string): Promise<void>;
-  delete(id: string): Promise<void>;
-  bulkDelete(ids: string[]): Promise<void>;
+  create(payload: PatientDTO, tx: Transaction): Promise<void>;
+  update(payload: PatientDTO, patientId: string, tx: Transaction): Promise<void>;
+  delete(id: string, tx: Transaction): Promise<void>;
+  bulkDelete(ids: string[], tx: Transaction): Promise<void>;
 }
 
 @injectable()
@@ -49,25 +50,25 @@ export default class PatientRepository implements IPatientRepository {
     return data;
   }
 
-  async create(payload: PatientDTO): Promise<void> {
-    await this.db.insert(patientsTable).values(payload);
+  async create(payload: PatientDTO, tx: Transaction): Promise<void> {
+    await tx.insert(patientsTable).values(payload);
   }
 
-  async update(payload: PatientDTO, patientId: string): Promise<void> {
-    await this.db
+  async update(payload: PatientDTO, patientId: string, tx: Transaction): Promise<void> {
+    await tx
       .update(patientsTable)
       .set(payload)
       .where(eq(patientsTable.id, patientId));
   }
 
-  async delete(id: string): Promise<void> {
-    await this.db
+  async delete(id: string, tx: Transaction): Promise<void> {
+    await tx
       .delete(patientsTable)
       .where(eq(patientsTable.id, id));
   }
 
-  async bulkDelete(ids: string[]): Promise<void> {
-    await this.db
+  async bulkDelete(ids: string[], tx: Transaction): Promise<void> {
+    await tx
       .delete(patientsTable)
       .where(or(...ids.map((id) => eq(patientsTable.id, id))));
   }

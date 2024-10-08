@@ -1,4 +1,5 @@
 import {create} from "zustand";
+
 type OpenCreatePatientState = {
   isOpen: boolean;
   onOpen: (patientId: string) => void;

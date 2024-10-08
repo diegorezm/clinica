@@ -7,6 +7,7 @@ import {type IDoctorRepository} from "../repositories/doctor.repository";
 import {handleError} from "@/server/api/common/utils/handle-error";
 import {inject, injectable} from "inversify";
 import {DI_SYMBOLS} from "@/server/api/common/di/types";
+import {type MySql2Database} from "drizzle-orm/mysql2";
 
 export interface IDoctorService {
   findAll(props: PaginatedRequestProps): Promise<PaginatedResponse<Doctor>>; findById(id: string): Promise<Doctor>; findDoctorWorkDays(id: string): Promise<DoctorWorkDay[]>;
@@ -23,7 +24,9 @@ export interface IDoctorService {
 
 @injectable()
 export default class DoctorService implements IDoctorService {
-  constructor(@inject(DI_SYMBOLS.IDoctorRepository) private readonly repository: IDoctorRepository) {}
+  constructor(
+    @inject(DI_SYMBOLS.IDoctorRepository) private readonly repository: IDoctorRepository,
+    @inject(DI_SYMBOLS.MySql2Database) private readonly db: MySql2Database) {}
   async findAll(props: PaginatedRequestProps): Promise<PaginatedResponse<Doctor>> {
     try {
       const doctors = await this.repository.findAll(props);
@@ -76,7 +79,9 @@ export default class DoctorService implements IDoctorService {
   }
   async create(doctor: DoctorDTO): Promise<void> {
     try {
-      await this.repository.create(doctor);
+      this.db.transaction(async (tx) => {
+        await this.repository.create(doctor, tx);
+      })
     } catch (error) {
       throw handleError(error);
     }
@@ -84,14 +89,18 @@ export default class DoctorService implements IDoctorService {
 
   async createDoctorWorkDays(payload: DoctorWorkDay[]): Promise<void> {
     try {
-      await this.repository.createDoctorWorkDays(payload);
+      this.db.transaction(async (tx) => {
+        await this.repository.createDoctorWorkDays(payload, tx);
+      })
     } catch (error) {
       throw handleError(error);
     }
   }
   async createDoctorWorkPeriods(payload: DoctorWorkPeriod[]): Promise<void> {
     try {
-      await this.repository.createDoctorWorkPeriods(payload);
+      this.db.transaction(async (tx) => {
+        await this.repository.createDoctorWorkPeriods(payload, tx);
+      })
     } catch (error) {
       throw handleError(error);
     }
@@ -99,35 +108,45 @@ export default class DoctorService implements IDoctorService {
 
   async update(doctor: DoctorDTO, doctorID: string): Promise<void> {
     try {
-      await this.repository.update(doctor, doctorID);
+      this.db.transaction(async (tx) => {
+        await this.repository.update(doctor, doctorID, tx);
+      })
     } catch (error) {
       throw handleError(error);
     }
   }
   async delete(id: string): Promise<void> {
     try {
-      await this.repository.delete(id);
+      this.db.transaction(async (tx) => {
+        await this.repository.delete(id, tx);
+      })
     } catch (error) {
       throw handleError(error);
     }
   }
   async bulkDelete(ids: string[]): Promise<void> {
     try {
-      await this.repository.bulkDelete(ids);
+      this.db.transaction(async (tx) => {
+        await this.repository.bulkDelete(ids, tx);
+      })
     } catch (error) {
       throw handleError(error);
     }
   }
   async deleteDoctorWorkDays(doctorId: string, day: WeekDay): Promise<void> {
     try {
-      await this.repository.deleteDoctorWorkDays(doctorId, day);
+      this.db.transaction(async (tx) => {
+        await this.repository.deleteDoctorWorkDays(doctorId, day, tx);
+      })
     } catch (error) {
       throw handleError(error);
     }
   }
   async deleteDoctorWorkPeriod(doctorId: string, period: Period): Promise<void> {
     try {
-      await this.repository.deleteDoctorWorkPeriod(doctorId, period);
+      this.db.transaction(async (tx) => {
+        await this.repository.deleteDoctorWorkPeriod(doctorId, period, tx);
+      })
     } catch (error) {
       throw handleError(error);
     }

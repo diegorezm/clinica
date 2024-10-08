@@ -1,0 +1,1 @@
+ALTER TABLE `appointments` MODIFY COLUMN `status` enum('f','fj','fm','ok','p') NOT NULL DEFAULT 'p';

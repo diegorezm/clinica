@@ -1,3 +1,4 @@
+import {Transaction} from "@/db";
 import {usersTable} from "@/db/schema";
 import {User, UserDTO} from "@/models/User";
 import {DI_SYMBOLS} from "@/server/api/common/di/types";
@@ -11,10 +12,11 @@ export interface IUserRepository {
   findAll(props: PaginatedRequestProps): Promise<PaginatedResponse<User>>;
   findByID(id: string): Promise<User | null>;
   findByEmail(email: string): Promise<User | null>;
-  create(payload: UserDTO): Promise<void>;
-  update(payload: UserDTO, userId: string): Promise<void>;
-  delete(id: string): Promise<void>;
-  bulkDelete(ids: string[]): Promise<void>;
+  create(payload: UserDTO, tx: Transaction): Promise<void>;
+  bulkCreate(payload: UserDTO[], tx: Transaction): Promise<void>;
+  update(payload: UserDTO, userId: string, tx: Transaction): Promise<void>;
+  delete(id: string, tx: Transaction): Promise<void>;
+  bulkDelete(ids: string[], tx: Transaction): Promise<void>;
 }
 
 @injectable()
@@ -32,8 +34,7 @@ export default class UserRepository implements IUserRepository {
     const sizeOfTable = await this.db
       .select({count: sql<number>`count(*)`})
       .from(query.as("filtered"))
-      .limit(1);
-    const numberOfPages = Math.ceil(sizeOfTable[0].count / size);
+      .limit(1); const numberOfPages = Math.ceil(sizeOfTable[0].count / size);
     const data = await query
       .limit(size)
       .offset(offset)
@@ -52,22 +53,26 @@ export default class UserRepository implements IUserRepository {
     return data
   }
 
-  async create(payload: UserDTO): Promise<void> {
-    await this.db.insert(usersTable).values(payload);
+  async create(payload: UserDTO, tx: Transaction): Promise<void> {
+    await tx.insert(usersTable).values(payload);
   }
 
-  async update(payload: UserDTO, userId: string): Promise<void> {
-    await this.db
+  async bulkCreate(payload: UserDTO[], tx: Transaction): Promise<void> {
+    await tx.insert(usersTable).values(payload);
+  }
+
+  async update(payload: UserDTO, userId: string, tx: Transaction): Promise<void> {
+    await tx
       .update(usersTable)
       .set(payload)
       .where(eq(usersTable.id, userId));
   }
 
-  async delete(id: string): Promise<void> {
-    await this.db.delete(usersTable).where(eq(usersTable.id, id));
+  async delete(id: string, tx: Transaction): Promise<void> {
+    await tx.delete(usersTable).where(eq(usersTable.id, id));
   }
 
-  async bulkDelete(ids: string[]): Promise<void> {
-    await this.db.delete(usersTable).where(or(...ids.map((id) => eq(usersTable.id, id))));
+  async bulkDelete(ids: string[], tx: Transaction): Promise<void> {
+    await tx.delete(usersTable).where(or(...ids.map((id) => eq(usersTable.id, id))));
   }
 }

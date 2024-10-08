@@ -143,6 +143,7 @@ export default function DoctorsForm({
                   ref={field.ref}
                   onBlur={field.onBlur}
                   value={field.value ?? undefined}
+                  maxLength={6}
                 />
               </FormControl>
               <FormMessage />

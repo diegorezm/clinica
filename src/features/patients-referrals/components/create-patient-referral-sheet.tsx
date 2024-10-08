@@ -20,7 +20,7 @@ export default function CreatePatientReferralSheet() {
     onClose();
   }
 
-  if (patientId === undefined) {
+  if (isOpen && patientId === undefined) {
     toast.error("Algo deu errado. Volte para a pagina principal e tente novamente");
     onClose();
     return
@@ -36,7 +36,7 @@ export default function CreatePatientReferralSheet() {
         <PatientReferralForm
           disabled={isPending}
           onSubmit={onSubmit}
-          patientId={patientId}
+          patientId={patientId!}
         />
       </SheetContent>
     </Sheet>
