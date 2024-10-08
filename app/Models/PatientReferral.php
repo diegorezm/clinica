@@ -9,4 +9,9 @@ class PatientReferral extends Model
 {
     /** @use HasFactory<\Database\Factories\PatientReferralFactory> */
     use HasFactory;
+
+    public function patient()
+    {
+        return $this->belongsTo(Patient::class);
+    }
 }

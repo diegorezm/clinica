@@ -16,7 +16,9 @@ return new class extends Migration
             $table->id();
             $table->string('crm');
             $table->string('fn');
-            $table->foreignIdFor(User::class)->constrained();
+            $table->json('work_periods');
+            $table->json('work_days');
+            $table->foreignIdFor(User::class)->constrained()->unique();
             $table->timestamps();
         });
     }

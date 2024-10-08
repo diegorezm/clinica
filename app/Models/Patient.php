@@ -9,4 +9,15 @@ class Patient extends Model
 {
     /** @use HasFactory<\Database\Factories\PatientFactory> */
     use HasFactory;
+
+
+    public function appointments()
+    {
+        return $this->hasMany(Appointment::class);
+    }
+
+    public function referrals()
+    {
+        return $this->hasMany(PatientReferral::class);
+    }
 }
