@@ -2,6 +2,8 @@
 
 namespace Database\Factories;
 
+use App\Models\Doctor;
+use App\Models\Patient;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -17,7 +19,10 @@ class AppointmentFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'date' => fake()->dateTime(),
+            'status' => fake()->randomElement(['p', 'f', 'fj', 'fm', 'ok']),
+            'doctor_id' => Doctor::inRandomOrder()->first()->id,
+            'patient_id' => Patient::inRandomOrder()->first()->id,
         ];
     }
 }

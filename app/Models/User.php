@@ -33,6 +33,14 @@ class User extends Authenticatable
         'remember_token',
     ];
 
+    public function doctor()
+    {
+        if ($this->role == 'doctor') {
+            return $this->hasOne(Doctor::class, 'user_id');
+        }
+        return null;
+    }
+
     /**
      * Get the attributes that should be cast.
      *

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Enums\DaysOfTheWeek;
 
 class Doctor extends Model
 {
@@ -18,6 +19,13 @@ class Doctor extends Model
     public function appointments()
     {
         return $this->hasMany(Appointment::class);
+    }
+
+    public function workDaysNames()
+    {
+        return array_map(function ($dayCode) {
+            return DaysOfTheWeek::from($dayCode)->getNome();
+        }, $this->work_days);
     }
 
     public function casts()
