@@ -2,7 +2,7 @@
     <!-- HEADER -->
     <x-header title="Pacientes" separator progress-indicator>
         <x-slot:middle class="!justify-end">
-            <x-input placeholder="Procure por nome/rg..." wire:model.live.debounce="search" clearable
+            <x-input placeholder="Procure por nome/rg..." wire:model.live.debounce.300ms="search" clearable
                 icon="o-magnifying-glass" />
         </x-slot:middle>
     </x-header>

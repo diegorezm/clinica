@@ -7,6 +7,9 @@ export default {
         "./vendor/robsontenorio/mary/src/View/Components/**/*.php",
         './vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php',
     ],
+    daisyui: {
+        themes: ["light", "dark", "black", "forest"],
+    },
     theme: {
         extend: {},
     },

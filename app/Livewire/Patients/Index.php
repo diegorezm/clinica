@@ -26,7 +26,7 @@ class Index extends Component
 
     public function headers(): array
     {
-        return [['key' => 'id', 'label' => '#'], ['key' => 'name', 'label' => 'Nome'], ['key' => 'phone', 'label' => 'Tel'], ['key' => 'rg', 'label' => 'RG'], ['key' => 'insurance', 'label' => 'Convenio', 'sortable' => false], ['key' => 'insurance_number', 'label' => 'N', 'sortable' => false]];
+        return [['key' => 'id', 'label' => '#', 'class' => 'text-primary'], ['key' => 'name', 'label' => 'Nome'], ['key' => 'phone', 'label' => 'Tel', 'sortable' => false], ['key' => 'rg', 'label' => 'RG', 'sortable' => false], ['key' => 'insurance', 'label' => 'Convenio', 'sortable' => false], ['key' => 'insurance_number', 'label' => 'N', 'sortable' => false]];
     }
 
     public function patients()
