@@ -3,14 +3,20 @@
     <x-header title="Pacientes" separator progress-indicator>
         <x-slot:middle class="!justify-end">
             <x-input placeholder="Procure por nome/rg..." wire:model.live.debounce.300ms="search" clearable
-                icon="o-magnifying-glass" />
+                icon="o-magnifying-glass" class="text-pri" />
         </x-slot:middle>
+        <x-slot:actions>
+            <x-button label="Novo" icon="o-plus" class="btn-primary" link="/dashboard/patients/create" />
+        </x-slot:actions>
     </x-header>
 
     <!-- TABLE  -->
     <x-card>
-        <x-table :headers="$headers" :rows="$patients" :sort-by="$sortBy" with-pagination per-page="perPage"
-            :per-page-values="[5, 8, 10, 15]">
+        <x-table :headers="$headers" :rows="$patients" :sort-by="$sortBy" link="/dashboard/patients/show/{id}"
+            with-pagination>
+            <x-slot:empty>
+                <x-icon name="o-cube" label="A tabela esta vazia." />
+            </x-slot:empty>
         </x-table>
     </x-card>
 </div>

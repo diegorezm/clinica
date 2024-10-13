@@ -23,5 +23,8 @@ Route::post('/logout', function (Request $request) {
 Route::group(['prefix' => 'dashboard', 'middleware' => AuthMiddleware::class], function () {
     Route::group(['prefix' => 'patients'], function () {
         Route::get("/", [PatientController::class, 'index']);
+        Route::get("/create", [PatientController::class, 'create']);
+        Route::get("/update/{patient}", [PatientController::class, 'update']);
+        Route::get("/show/{patient}", [PatientController::class, 'show']);
     });
 });

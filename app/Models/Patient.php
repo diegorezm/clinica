@@ -11,6 +11,14 @@ class Patient extends Model
     use HasFactory;
 
 
+    public $fillable = [
+        'name',
+        'phone',
+        'rg',
+        'insurance',
+        'insurance_number',
+    ];
+
     public function appointments()
     {
         return $this->hasMany(Appointment::class);
