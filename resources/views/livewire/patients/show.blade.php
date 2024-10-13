@@ -1,4 +1,6 @@
-<div>
+<div class="space-y-4">
+
+    <x-button link="{{ url()->previous() }}" icon="o-arrow-left" class="btn-circle btn-outline btn-sm" />
     <x-card title="Paciente" shadow separator>
         <div class="flex flex-col space-y-2">
             <div>
@@ -23,15 +25,9 @@
                 link="/dashboard/patients/update/{{ $patient->id }}" />
             <x-button label="Deletar" icon="o-trash" @click="$wire.showModal = true" class="btn-error" />
         </x-slot:actions>
-
-
     </x-card>
-    <x-modal wire:model="showModal" title="Tem certeza?"
-        subtitle="Tem certeza de que deseja deletar este registro? Esta ação é permanente e o registro não poderá ser recuperado.">
-        <x-slot:actions>
-            <x-button label="Cancelar" @click="$wire.showModal = false" />
-            <x-button label="Deletar" class="btn-error" wire:click="delete" spinner />
-        </x-slot:actions>
-    </x-modal>
 
+    <livewire:patients.referrals.index :$patient />
+
+    <x-modal.delete />
 </div>

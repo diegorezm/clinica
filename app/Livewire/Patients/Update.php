@@ -31,7 +31,7 @@ class Update extends Component
 
     public function submit()
     {
-        $this->validate($this->patientRules($this->id));
+        $this->validate($this->rules($this->id));
 
         $patient = Patient::find($this->id);
 

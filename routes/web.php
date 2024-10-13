@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Middleware\AuthMiddleware;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PatientController;
+use App\Http\Controllers\PatientReferralController;
 use Illuminate\Http\Request;
 
 Route::get("/", fn () => redirect('/dashboard/patients'));
@@ -26,5 +27,9 @@ Route::group(['prefix' => 'dashboard', 'middleware' => AuthMiddleware::class], f
         Route::get("/create", [PatientController::class, 'create']);
         Route::get("/update/{patient}", [PatientController::class, 'update']);
         Route::get("/show/{patient}", [PatientController::class, 'show']);
+        Route::group(['prefix' => 'referrals'], function () {
+            Route::get("/create/{patient}", [PatientReferralController::class, 'create']);
+            Route::get("/update/{patient}", [PatientReferralController::class, 'update']);
+        });
     });
 });

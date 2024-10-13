@@ -37,9 +37,9 @@ class DatabaseSeeder extends Seeder
             });
 
         Patient::factory()->count(100)->create();
-        Patient::query()->inRandomOrder()->limit(10)->get()
+        Patient::query()->get()
             ->each(function (Patient $patient) {
-                PatientReferral::factory()->create([
+                PatientReferral::factory()->count(10)->create([
                     'patient_id' => $patient->id
                 ]);
             });

@@ -3,12 +3,13 @@
 namespace App\Livewire\Patients;
 
 use App\Models\Patient;
+use App\Validation\PatientRules;
 use Livewire\Component;
 use Mary\Traits\Toast;
 
 class Create extends Component
 {
-    use Toast;
+    use Toast, PatientRules;
 
     public $name = '';
     public $phone = '';
@@ -19,13 +20,7 @@ class Create extends Component
     public function submit()
     {
         // Validate the data
-        $this->validate([
-            'name' => 'required|string|max:255',
-            'phone' => 'required|string|max:15',
-            'rg' => 'nullable|string|max:20|unique:patients,rg',
-            'insurance' => 'nullable|string|max:100',
-            'insurance_number' => 'nullable|string|max:50',
-        ]);
+        $this->validate($this->rules());
 
         // Create the patient record
         Patient::create([
