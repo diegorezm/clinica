@@ -19,10 +19,7 @@ class Create extends Component
 
     public function submit()
     {
-        // Validate the data
         $this->validate($this->rules());
-
-        // Create the patient record
         Patient::create([
             'name' => $this->name,
             'phone' => $this->phone,

@@ -15,9 +15,9 @@ return new class extends Migration
         Schema::create('doctors', function (Blueprint $table) {
             $table->id();
             $table->string('crm');
-            $table->string('fn');
-            $table->json('work_periods');
-            $table->json('work_days');
+            $table->string('specialty');
+            $table->json('work_periods')->nullable();
+            $table->json('work_days')->nullable();
             $table->foreignIdFor(User::class)->constrained()->unique();
             $table->timestamps();
         });

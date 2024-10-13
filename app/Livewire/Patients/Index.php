@@ -3,6 +3,7 @@
 namespace App\Livewire\Patients;
 
 use App\Models\Patient;
+use Livewire\Attributes\Computed;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Mary\Traits\Toast;
@@ -24,6 +25,7 @@ class Index extends Component
         $this->success('Filters cleared.', position: 'toast-bottom');
     }
 
+    #[Computed()]
     public function headers(): array
     {
         return [
@@ -36,21 +38,20 @@ class Index extends Component
         ];
     }
 
+
+    #[Computed()]
     public function patients()
     {
-        return Patient::when($this->search, fn ($query) => $query->where('name', 'like', "%{$this->search}%")->orWhere('rg', 'like', "%{$this->search}%"))
-            ->orderBy($this->sortBy['column'], $this->sortBy['direction'])
-            ->paginate($this->perPage);
+        $patients = Patient::query();
+        if ($this->search) {
+            $patients = $patients->where('name', 'like', "%{$this->search}%")
+                ->orWhere('rg', 'like', "%{$this->search}%");
+        }
+        return $patients->orderBy($this->sortBy['column'], $this->sortBy['direction'])->paginate($this->perPage);
     }
 
     public function render()
     {
-        return view('livewire.patients.index', [
-            'patients' => $this->patients(),
-            'headers' => $this->headers(),
-            'perPage' => $this->perPage,
-            'sortBy' => $this->sortBy,
-            'search' => $this->search,
-        ]);
+        return view('livewire.patients.index');
     }
 }

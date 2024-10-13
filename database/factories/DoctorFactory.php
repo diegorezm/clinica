@@ -20,7 +20,7 @@ class DoctorFactory extends Factory
     {
         return [
             'crm' => (string) fake()->numberBetween(100000, 999999),
-            'fn' => fake()->jobTitle(),
+            'specialty' => fake()->jobTitle(),
             'work_periods' => fake()->randomElements(['m', 't', 'n'], 3),
             'work_days' => fake()->randomElements([
                 DaysOfTheWeek::Segunda->value,

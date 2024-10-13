@@ -1,4 +1,4 @@
-<x-card title="Novo paciente">
+<x-card title="{{ $title ?? 'Novo paciente' }}">
     <x-form wire:submit.prevent="submit">
         <x-button link="{{ url()->previous() }}" icon="o-arrow-left" class="btn-circle btn-outline btn-sm" />
         <x-input label="Nome" wire:model="name" error-field="name" icon="o-user" clearable />

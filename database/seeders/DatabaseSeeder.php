@@ -27,8 +27,8 @@ class DatabaseSeeder extends Seeder
             'password' => Hash::make('admin'),
         ]);
 
-        User::factory()->count(20)->create();
-        User::query()->inRandomOrder()->limit(10)->get()
+        User::factory()->count(50)->create();
+        User::query()->inRandomOrder()->limit(30)->get()
             ->each(function (User $user) {
                 $user->update(['role' => 'doctor']);
                 Doctor::factory()->create([
@@ -36,10 +36,10 @@ class DatabaseSeeder extends Seeder
                 ]);
             });
 
-        Patient::factory()->count(100)->create();
+        Patient::factory()->count(50)->create();
         Patient::query()->get()
             ->each(function (Patient $patient) {
-                PatientReferral::factory()->count(10)->create([
+                PatientReferral::factory()->count(5)->create([
                     'patient_id' => $patient->id
                 ]);
             });

@@ -1,4 +1,4 @@
-<x-card title="Novo encaminhamento">
+<x-card title="{{ $title ?? 'Novo encaminamento' }}">
     <x-form wire:submit.prevent="submit">
         <x-button link="{{ url()->previous() }}" icon="o-arrow-left" class="btn-circle btn-outline btn-sm" />
         <x-input label="CID" wire:model="cid" error-field="cid" icon="o-identification" clearable />

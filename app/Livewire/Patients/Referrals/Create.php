@@ -28,7 +28,6 @@ class Create extends Component
     public function submit()
     {
         $this->validate($this->rules());
-
         PatientReferral::create([
             'patient_id' => $this->patient_id,
             'doctor_fn' => $this->doctor_fn,

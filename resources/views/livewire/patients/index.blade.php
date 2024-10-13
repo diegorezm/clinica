@@ -12,7 +12,7 @@
 
     <!-- TABLE  -->
     <x-card>
-        <x-table :headers="$headers" :rows="$patients" :sort-by="$sortBy" link="/dashboard/patients/show/{id}"
+        <x-table :headers="$this->headers" :rows="$this->patients" :sort-by="$sortBy" link="/dashboard/patients/show/{id}"
             with-pagination>
             <x-slot:empty>
                 <x-icon name="o-cube" label="A tabela esta vazia." />

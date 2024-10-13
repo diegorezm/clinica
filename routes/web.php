@@ -1,6 +1,6 @@
 <?php
 
-
+use App\Http\Controllers\DoctorController;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Middleware\AuthMiddleware;
 use Illuminate\Support\Facades\Route;
@@ -31,5 +31,12 @@ Route::group(['prefix' => 'dashboard', 'middleware' => AuthMiddleware::class], f
             Route::get("/create/{patient}", [PatientReferralController::class, 'create']);
             Route::get("/update/{patient}", [PatientReferralController::class, 'update']);
         });
+    });
+
+    Route::group(['prefix' => 'doctors'], function () {
+        Route::get("/", [DoctorController::class, 'index']);
+        Route::get("/create", [DoctorController::class, 'create']);
+        Route::get("/update/{doctor}", [DoctorController::class, 'update']);
+        Route::get("/show/{doctor}", [DoctorController::class, 'show']);
     });
 });

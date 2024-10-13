@@ -16,7 +16,7 @@ return new class extends Migration
             $table->id();
             $table->string('cid');
             $table->string('crm');
-            $table->string('doctor_fn');
+            $table->string('doctor_specialty');
             $table->foreignIdFor(Patient::class);
             $table->timestamps();
         });

@@ -1,3 +1,3 @@
 <div>
-    <x-patients.form />
+    <x-patients.form :title="'Paciente | ' . $name" />
 </div>

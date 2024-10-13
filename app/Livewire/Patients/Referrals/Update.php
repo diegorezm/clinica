@@ -19,10 +19,13 @@ class Update extends Component
 
     public int $patient_id;
 
+    public string $patient_name = '';
+
     public PatientReferral $referral;
 
     public function mount(Patient $patient)
     {
+        $this->patient_name = $patient->name;
         $this->patient_id = $patient->id;
 
         $this->referral = PatientReferral::where('patient_id', $patient->id)->first();

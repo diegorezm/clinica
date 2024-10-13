@@ -11,6 +11,14 @@ class Doctor extends Model
     /** @use HasFactory<\Database\Factories\DoctorFactory> */
     use HasFactory;
 
+    public $fillable = [
+        'crm',
+        'specialty',
+        'work_periods',
+        'work_days',
+        'user_id'
+    ];
+
     public function user()
     {
         return $this->belongsTo(User::class);

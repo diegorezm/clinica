@@ -30,9 +30,14 @@ class Index extends Component
     #[Computed()]
     public function referrals()
     {
-        return $this->patient->referrals()
-            ->when($this->search, fn ($query) => $query->where('doctor_fn', 'like', "%{$this->search}%")->orWhere('cid', 'like', "%{$this->search}%")->orWhere('crm', 'like', "%{$this->search}%"))
-            ->orderBy($this->sortBy['column'], $this->sortBy['direction'])
+        $referrals = $this->patient->referrals();
+
+        if ($this->search) {
+            $referrals = $referrals->where('doctor_fn', 'like', "%{$this->search}%")
+                ->orWhere('cid', 'like', "%{$this->search}%")
+                ->orWhere('crm', 'like', "%{$this->search}%");
+        }
+        return $referrals->orderBy($this->sortBy['column'], $this->sortBy['direction'])
             ->paginate($this->perPage);
     }
 
@@ -42,7 +47,7 @@ class Index extends Component
         return [
             ['key' => 'cid', 'label' => 'CID'],
             ['key' => 'crm', 'label' => 'CRM', 'sortable' => false],
-            ['key' => 'doctor_fn', 'label' => 'Função', 'sortable' => false],
+            ['key' => 'doctor_specialty', 'label' => 'Especialidade', 'sortable' => false],
             ['key' => 'created_at', 'label' => 'Criado em', 'sortable' => false],
         ];
     }

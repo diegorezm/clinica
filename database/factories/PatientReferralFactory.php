@@ -20,7 +20,7 @@ class PatientReferralFactory extends Factory
         return [
             'cid' => fake()->numberBetween(100000000, 999999999),
             'crm' => fake()->numberBetween(100000, 999999),
-            'doctor_fn' => fake()->jobTitle(),
+            'doctor_specialty' => fake()->jobTitle(),
             'patient_id' => Patient::class,
         ];
     }
