@@ -22,27 +22,32 @@
     {{-- MAIN --}}
     <x-main full-width>
         <x-slot:sidebar drawer="main-drawer" class="bg-base-100 lg:bg-inherit">
-            <x-menu activate-by-route>
-
-                {{-- User --}}
-                @if ($user = auth()->user())
-                    <x-menu-separator />
-                    <x-list-item :item="$user" value="name" sub-value="email" no-separator no-hover
-                        class="-mx-2 !-my-2 rounded">
-                        <x-slot:actions>
-                            <form method="POST" action="{{ route('logout') }}">
-                                @csrf
-                                <x-button icon="o-power" class="btn-circle btn-ghost btn-xs" tooltip-left="Sair"
-                                    no-wire-navigate type="submit" />
-                            </form>
-                        </x-slot:actions>
-                    </x-list-item>
-
-                    <x-menu-separator />
-                @endif
+            <x-menu activate-by-route class="h-full">
                 <x-menu-item title="Pacientes" icon="o-users" link="/dashboard/patients" />
                 <x-menu-item title="Doutores" icon="s-clipboard-document-list" link="/dashboard/doctors" />
                 <x-menu-item title="Consultas" icon="s-calendar" link="/dashboard/appointments" />
+                @if (auth()->user()->role == 'admin')
+                    <x-menu-item title="Usuários" icon="o-users" link="/dashboard/users" />
+                @endif
+
+                {{-- User --}}
+                <div class="mt-auto w-full ">
+                    @if ($user = auth()->user())
+                        <x-menu-separator />
+                        <x-list-item :item="$user" value="name" sub-value="email" no-separator no-hover
+                            class="-mx-2 !-my-2 rounded">
+                            <x-slot:actions>
+                                <form method="POST" action="{{ route('logout') }}">
+                                    @csrf
+                                    <x-button icon="o-power" class="btn-circle btn-ghost btn-xs" tooltip-left="Sair"
+                                        no-wire-navigate type="submit" />
+                                </form>
+                            </x-slot:actions>
+                        </x-list-item>
+
+                        <x-menu-separator />
+                    @endif
+                </div>
             </x-menu>
         </x-slot:sidebar>
 

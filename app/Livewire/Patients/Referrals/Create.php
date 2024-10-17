@@ -7,10 +7,6 @@ use App\Models\PatientReferral;
 
 class Create extends Form
 {
-    public function mount(Patient $patient)
-    {
-        $this->patient_id = $patient->id;
-    }
 
     public function submit()
     {

@@ -5,8 +5,7 @@
                 <x-input placeholder="Procure por CID/CRM/Função..." wire:model.live.debounce.300ms="search" clearable
                     icon="o-magnifying-glass" class="w-full" />
             </div>
-            <x-button label="Novo" icon="o-plus" class="btn-primary"
-                link="/dashboard/patients/referrals/create/{{ $patient->id }}" />
+            <x-button label="Novo" icon="o-plus" class="btn-primary" :link="route('referrals.create', ['patientId' => $patient->id])" />
 
             <x-buttons.bulkdelete :showCount="false" />
 

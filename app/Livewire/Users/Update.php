@@ -4,24 +4,28 @@ namespace App\Livewire\Users;
 
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Hash;
 
-class Create extends Form
+class Update extends Form
 {
+    public User $user;
+
+    public function mount(User $user)
+    {
+        $this->name = $user->name;
+        $this->email = $user->email;
+        $this->role = $user->role;
+        $this->user = $user;
+    }
 
     public function submit()
     {
-        $this->validation();
         DB::transaction(function () {
             try {
-                User::create([
+                $this->user->update([
                     'name' => $this->name,
                     'email' => $this->email,
-                    'password' => Hash::make($this->password),
                     'role' => $this->role,
                 ]);
-                $this->success('Usuário criado com sucesso!');
-                return redirect('/dashboard/users');
             } catch (\Exception $e) {
                 DB::rollBack();
                 $this->error($e->getMessage());
@@ -32,6 +36,6 @@ class Create extends Form
 
     public function render()
     {
-        return view('livewire.users.create');
+        return view('livewire.users.update');
     }
 }

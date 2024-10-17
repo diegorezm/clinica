@@ -57,7 +57,16 @@ class Index extends Component
     public function delete()
     {
         if (Gate::allows('admin', Auth::user())) {
-            Doctor::destroy($this->selected);
+            $doctors = Doctor::whereIn('id', $this->selected)->get();
+
+            foreach ($doctors as $doctor) {
+                $user = $doctor->user;
+                if ($user) {
+                    $user->delete();
+                }
+                $doctor->delete();
+            }
+            $this->selected = [];
             $this->success('Médico removido com sucesso.', position: 'toast-bottom');
             $this->showModal = false;
         } else {

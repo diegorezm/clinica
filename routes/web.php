@@ -2,11 +2,11 @@
 
 use App\Http\Controllers\AppointmentController;
 use App\Http\Controllers\DoctorController;
-use Illuminate\Support\Facades\Auth;
 use App\Http\Middleware\AuthMiddleware;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PatientController;
 use App\Http\Controllers\PatientReferralController;
+use App\Http\Controllers\UserController;
 use App\Http\Middleware\AdminMiddleware;
 use Illuminate\Http\Request;
 
@@ -47,5 +47,12 @@ Route::group(['prefix' => 'dashboard', 'middleware' => AuthMiddleware::class], f
         Route::get("/create", [AppointmentController::class, 'create'])->name('appointments.create');
         Route::get("/update/{appointment}", [AppointmentController::class, 'update']);
         Route::get("/show/{appointment}", [AppointmentController::class, 'show']);
+    });
+
+    Route::group(['prefix' => 'users', 'middleware' => AdminMiddleware::class], function () {
+        Route::get("/", [UserController::class, 'index']);
+        Route::get("/create", [UserController::class, 'create']);
+        Route::get("/update/{user}", [UserController::class, 'update']);
+        Route::get("/show/{user}", [UserController::class, 'show']);
     });
 });

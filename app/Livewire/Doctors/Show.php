@@ -26,6 +26,7 @@ class Show extends Component
     public function delete()
     {
         if (Gate::allows('admin', Auth::user())) {
+            $this->doctor->user->delete();
             $this->doctor->delete();
             $this->showModal = false;
             $this->success('Doutor excluído com sucesso!');
