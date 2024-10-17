@@ -8,7 +8,7 @@ export default {
         './vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php',
     ],
     daisyui: {
-        themes: ["light", "dark", "black", "forest"],
+        themes: ["light", "dark", "nord"],
     },
     theme: {
         extend: {},
