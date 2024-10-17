@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AppointmentController;
 use App\Http\Controllers\DoctorController;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Middleware\AuthMiddleware;
@@ -38,5 +39,12 @@ Route::group(['prefix' => 'dashboard', 'middleware' => AuthMiddleware::class], f
         Route::get("/create", [DoctorController::class, 'create']);
         Route::get("/update/{doctor}", [DoctorController::class, 'update']);
         Route::get("/show/{doctor}", [DoctorController::class, 'show']);
+    });
+
+    Route::group(['prefix' => 'appointments'], function () {
+        Route::get("/", [AppointmentController::class, 'index']);
+        Route::get("/create", [AppointmentController::class, 'create']);
+        Route::get("/update/{appointment}", [AppointmentController::class, 'update']);
+        Route::get("/show/{appointment}", [AppointmentController::class, 'show']);
     });
 });
