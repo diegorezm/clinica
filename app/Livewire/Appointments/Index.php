@@ -14,16 +14,6 @@ class Index extends Component
     use Toast, WithPagination;
 
     public string $search = '';
-    public $config1 = [
-        'plugins' => [
-            [
-                'monthSelectPlugin' => [
-                    'dateFormat' => 'm.y',
-                    'altFormat' => 'F Y',
-                ]
-            ]
-        ]
-    ];
 
     public int $perPage = 10;
 
