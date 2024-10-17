@@ -19,7 +19,7 @@ class AppointmentFactory extends Factory
     public function definition(): array
     {
         return [
-            'date' => fake()->dateTime(),
+            'date' => fake()->dateTimeBetween('-3 years', 'now')->format('Y-m-d H:i:s'),
             'status' => fake()->randomElement(['p', 'f', 'fj', 'fm', 'ok']),
             'doctor_id' => Doctor::inRandomOrder()->first()->id,
             'patient_id' => Patient::inRandomOrder()->first()->id,
