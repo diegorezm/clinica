@@ -13,6 +13,8 @@ class Show extends Component
     public Patient $patient;
     public bool $showModal = false;
 
+    public string $selectedTab = 'referrals';
+
     public function mount(Patient $patient)
     {
         $this->patient = $patient;
