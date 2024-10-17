@@ -7,6 +7,7 @@ use Livewire\Attributes\Computed;
 use Livewire\Component;
 use Livewire\WithPagination;
 use App\Enums\AppointmentStatus;
+use Carbon\Carbon;
 use Mary\Traits\Toast;
 
 class Index extends Component
@@ -28,7 +29,8 @@ class Index extends Component
         'year' => null,
         'status' => null,
         'doctor' => null,
-        'patient' => null
+        'patient' => null,
+        'time' => null
     ];
 
     public array $sortBy = ['column' => 'date', 'direction' => 'asc'];
@@ -55,14 +57,19 @@ class Index extends Component
             ->value('date');
 
         // If there's no record, default to the current year
-        $startYear = $oldestYear ? \Carbon\Carbon::parse($oldestYear)->year : now()->year;
+        $startYear = $oldestYear ? Carbon::parse($oldestYear)->year : now()->year;
 
-        // Get the current year
-        $currentYear = now()->year;
+        // Get the latest appointment year
+        $latestYear = Appointment::query()
+            ->orderBy('date', 'desc')
+            ->value('date');
+
+        // If there's no record, default to the current year
+        $endYear = $latestYear ? Carbon::parse($latestYear)->year : now()->year;
 
         // Generate the year options
         $years = [];
-        for ($year = $startYear; $year <= $currentYear; $year++) {
+        for ($year = $startYear; $year <= $endYear; $year++) {
             $years[] = [
                 'id' => $year,
                 'name' => (string) $year,
@@ -80,7 +87,7 @@ class Index extends Component
             ['key' => 'date', 'label' => 'Data'],
             ['key' => 'doctor.user.name', 'label' => 'Doutor', 'sortable' => false],
             ['key' => 'patient.name', 'label' => 'Paciente', 'sortable' => false],
-            ['key' => 'status', 'label' => 'Status', 'sortable' => false],
+            ['key' => 'status', 'label' => 'Status', 'class' => 'hidden md:flex', 'sortable' => false],
         ];
     }
 
@@ -89,6 +96,7 @@ class Index extends Component
     {
         $appointments = Appointment::with(['doctor.user', 'patient'])
             ->when($this->search, function ($query) {
+                $this->setPage(1);
                 $query->whereHas('doctor.user', function ($subQuery) {
                     $subQuery->where('name', 'like', "%{$this->search}%");
                 })
@@ -96,23 +104,38 @@ class Index extends Component
                         $subQuery->where('name', 'like', "%{$this->search}%")->orWhere('rg', 'like', "%{$this->search}%");
                     });
             })->when($this->filters['month'], function ($query) {
+                $this->setPage(1);
                 $query->whereMonth('date', $this->filters['month']);
             })
             ->when($this->filters['year'], function ($query) {
+                $this->setPage(1);
                 $query->whereYear('date', $this->filters['year']);
             })
             ->when($this->filters['status'], function ($query) {
+                $this->setPage(1);
                 $query->where('status', $this->filters['status']);
-            })->when($this->filters['doctor'], function ($query) {
+            })
+            ->when($this->filters['time'], function ($query) {
+                if ($this->isValidTimeFormat($this->filters['time'])) {
+                    $this->setPage(1);
+                    $t = Carbon::createFromFormat('H:m', $this->filters['time'])->format('H:m:s');
+                    $query->whereTime('date', $t);
+                }
+            })
+            ->when($this->filters['doctor'], function ($query) {
                 $query->where('doctor_id', $this->filters['doctor']);
-            })->when($this->filters['patient'], function ($query) {
+            })
+            ->when($this->filters['patient'], function ($query) {
                 $query->where('patient_id', $this->filters['patient']);
             });
 
         return $appointments->orderBy(...array_values($this->sortBy))
             ->paginate($this->perPage);
     }
-
+    protected function isValidTimeFormat($time)
+    {
+        return \DateTime::createFromFormat('H:i', $time) !== false;
+    }
     #[Computed()]
     protected function statusOpts()
     {
