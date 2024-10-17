@@ -15,3 +15,8 @@
 .mary-table-pagination button {
     @apply bg-base-100
 }
+
+.table th {
+    @apply text-neutral font-bold text-sm
+}
+
