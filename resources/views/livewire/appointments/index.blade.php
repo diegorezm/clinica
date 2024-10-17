@@ -44,6 +44,7 @@
                 :options="$this->yearOpts()" single searchable placeholder="Selecione..." />
             <x-choices-offline label="Mês" wire:model.live="filters.month" :options="$this->monthOpts()" single searchable
                 placeholder="Selecione..." />
+            <x-input label="Horario" wire:model.live="filters.time" type="time" />
             <x-choices label="Status" wire:model.live="filters.status" :options="$this->statusOpts()" single />
             <x-button label="Limpar" class="btn-primary" wire:click="clear" icon="m-bars-3-bottom-left" />
         </div>

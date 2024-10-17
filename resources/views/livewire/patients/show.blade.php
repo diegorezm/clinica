@@ -1,4 +1,4 @@
-<div class="space-y-4">
+<div class="space-y-10">
 
     <x-button link="/dashboard/patients" icon="o-arrow-left" class="btn-circle btn-outline btn-sm" />
     <x-card title="Paciente" shadow separator>
