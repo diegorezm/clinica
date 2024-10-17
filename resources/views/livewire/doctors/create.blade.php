@@ -1,3 +1,3 @@
 <div>
-    <x-doctors.form :showPassword="false" />
+    <x-doctors.form :showPassword="true" />
 </div>

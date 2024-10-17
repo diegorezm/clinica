@@ -3,6 +3,8 @@
 namespace App\Livewire\Doctors;
 
 use App\Models\Doctor;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 use Livewire\Attributes\Computed;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -16,6 +18,10 @@ class Index extends Component
     public string $search = '';
 
     public int $perPage = 10;
+
+    public array $selected = [];
+
+    public bool $showModal = false;
 
     public array $sortBy = ['column' => 'id', 'direction' => 'asc'];
 
@@ -46,6 +52,18 @@ class Index extends Component
         }
         $query->orderBy($this->sortBy['column'], $this->sortBy['direction']);
         return $query->paginate($this->perPage);
+    }
+
+    public function delete()
+    {
+        if (Gate::allows('admin', Auth::user())) {
+            Doctor::destroy($this->selected);
+            $this->success('Médico removido com sucesso.', position: 'toast-bottom');
+            $this->showModal = false;
+        } else {
+            $this->showModal = false;
+            $this->error('Acesso negado.', position: 'toast-bottom');
+        }
     }
 
     public function render()

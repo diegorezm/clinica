@@ -11,7 +11,7 @@ class Update extends Component
 {
     use PatientReferralRules;
 
-    public string $doctor_fn = '';
+    public string $specialty = '';
 
     public string $cid = '';
 
@@ -30,7 +30,7 @@ class Update extends Component
 
         $this->referral = PatientReferral::where('patient_id', $patient->id)->first();
 
-        $this->doctor_fn = $this->referral->doctor_fn;
+        $this->specialty = $this->referral->doctor_specialty;
         $this->cid = $this->referral->cid;
         $this->crm = $this->referral->crm;
     }

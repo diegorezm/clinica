@@ -10,6 +10,12 @@
         <x-input label="CRM" wire:model="crm" error-field="crm" icon="s-identification" clearable />
         <x-input label="Especialidade" wire:model="specialty" error-field="specialty" icon="o-clipboard" clearable />
 
+        <x-choices label="Dias de trabalho" allow-all allow-all-text="Selecionar todos" remove-all-text="Remover todos"
+            wire:model="work_days" :options="$this->workDaysOpts" multiple />
+
+        <x-choices label="Periodos" allow-all allow-all-text="Selecionar todos" remove-all-text="Remover todos"
+            wire:model="work_periods" :options="$this->workPeriodsOpts" multiple />
+
         <x-slot:actions>
             <x-button link="{{ url()->previous() }}" label="Cancelar" icon="o-x-mark" class="btn-outline" />
             <x-button label="Salvar" icon="o-check" class="btn-primary" type="submit" spinner="submit" />

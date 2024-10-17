@@ -18,6 +18,11 @@ class Index extends Component
 
     public array $sortBy = ['column' => 'id', 'direction' => 'asc'];
 
+    public array $selected = [];
+
+    public bool $showModal = false;
+
+
     // Clear filters
     public function clear(): void
     {
@@ -29,7 +34,7 @@ class Index extends Component
     public function headers(): array
     {
         return [
-            ['key' => 'id', 'label' => '#', 'class' => 'text-primary'],
+            ['key' => 'id', 'label' => '#', 'class' => 'text-primary font-bold'],
             ['key' => 'name', 'label' => 'Nome'],
             ['key' => 'phone', 'label' => 'Tel', 'sortable' => false],
             ['key' => 'rg', 'label' => 'RG', 'sortable' => false],
@@ -48,6 +53,14 @@ class Index extends Component
                 ->orWhere('rg', 'like', "%{$this->search}%");
         }
         return $patients->orderBy($this->sortBy['column'], $this->sortBy['direction'])->paginate($this->perPage);
+    }
+
+    public function delete()
+    {
+        Patient::destroy($this->selected);
+        $this->selected = [];
+        $this->showModal = false;
+        $this->success('Registros removidos com sucesso.', position: 'toast-bottom');
     }
 
     public function render()

@@ -3,28 +3,16 @@
 namespace App\Livewire\Doctors;
 
 use App\Models\Doctor;
+use App\Models\DoctorWorkDays;
+use App\Models\DoctorWorkPeriod;
 use App\Models\User;
-use App\Validation\DoctorRules;
-use App\Validation\UserRules;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Hash;
-use Livewire\Component;
-use Mary\Traits\Toast;
 
-class Create extends Component
+class Create extends Form
 {
-    use Toast, DoctorRules, UserRules;
-
-    public string $name = '';
-    public string $email = '';
-    public string $password = '';
-    public string $specialty = '';
-    public string $crm = '';
-    public string $role = 'doctor';
-    public ?int $user_id;
-
     public function submit()
     {
         if (!Gate::allows('admin', Auth::user())) {
@@ -34,17 +22,17 @@ class Create extends Component
             return redirect('/dashboard/doctors');
         }
         DB::transaction(function () {
-            $this->submit_user();
+            $this->submitUser();
 
             if (is_null($this->user_id)) {
                 throw new \Exception('Algo deu errado');
             }
-            $this->submit_doctor();
+            $this->submitDoctor();
         });
         return redirect('/dashboard/doctors');
     }
 
-    public function submit_user()
+    protected function submitUser()
     {
         $this->validate($this->userRules());
         $user = User::create([
@@ -56,7 +44,7 @@ class Create extends Component
         $this->user_id = $user->id;
     }
 
-    public function submit_doctor()
+    protected function submitDoctor()
     {
 
         if (is_null($this->user_id)) {
@@ -65,11 +53,16 @@ class Create extends Component
         }
 
         $this->validate($this->doctorRules());
-        Doctor::create([
+        $doctor = Doctor::create([
             'user_id' => $this->user_id,
             'specialty' => $this->specialty,
-            'crm' => $this->crm
+            'crm' => $this->crm,
         ]);
+
+        $workDayData = array_map(fn ($day) => ['doctor_id' => $doctor->id, 'day' => $day], $this->work_days);
+        $workPeriodData = array_map(fn ($period) => ['doctor_id' => $doctor->id, 'period' => $period], $this->work_periods);
+        DoctorWorkDays::insert($workDayData);
+        DoctorWorkPeriod::insert($workPeriodData);
     }
 
     public function render()

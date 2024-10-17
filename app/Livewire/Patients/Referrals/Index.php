@@ -3,6 +3,7 @@
 namespace App\Livewire\Patients\Referrals;
 
 use App\Models\Patient;
+use App\Models\PatientReferral;
 use Livewire\Attributes\Computed;
 use Livewire\Component;
 use Mary\Traits\Toast;
@@ -18,7 +19,7 @@ class Index extends Component
 
     public bool $showModal = false;
 
-    public int $toDeleteReferralId = -1;
+    public array $selected = [];
 
     public array $sortBy = ['column' => 'cid', 'direction' => 'asc'];
 
@@ -54,10 +55,15 @@ class Index extends Component
 
     public function delete()
     {
-        $this->patient->referrals()->where('id', $this->toDeleteReferralId)->delete();
+        if (count($this->selected) == 0) {
+            $this->error('Selecione pelo menos um encaminhamento.', position: 'toast-bottom');
+            $this->showModal = false;
+            return;
+        }
+        PatientReferral::destroy($this->selected);
         $this->success('Encaminhamento removido com sucesso.', position: 'toast-bottom');
         $this->showModal = false;
-        $this->toDeleteReferralId = -1;
+        $this->selected = [];
     }
 
     public function render()

@@ -14,8 +14,6 @@ class Doctor extends Model
     public $fillable = [
         'crm',
         'specialty',
-        'work_periods',
-        'work_days',
         'user_id'
     ];
 
@@ -29,18 +27,18 @@ class Doctor extends Model
         return $this->hasMany(Appointment::class);
     }
 
-    public function workDaysNames()
+    public function workDays()
     {
-        return array_map(function ($dayCode) {
-            return DaysOfTheWeek::from($dayCode)->getNome();
-        }, $this->work_days);
+        return $this->hasMany(DoctorWorkDays::class);
+    }
+
+    public function workPeriods()
+    {
+        return $this->hasMany(DoctorWorkPeriod::class);
     }
 
     public function casts()
     {
-        return [
-            'work_periods' => 'array',
-            'work_days' => 'array',
-        ];
+        return [];
     }
 }
