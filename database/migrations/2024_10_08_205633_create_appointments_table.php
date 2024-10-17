@@ -19,8 +19,8 @@ return new class extends Migration
             // pendente, falta, falta justificada, falta do médico, ok
             $table->enum('status', ['p', 'f', 'fj', 'fm', 'ok'])->default('p');
             $table->string('obs')->nullable();
-            $table->foreignIdFor(Doctor::class);
-            $table->foreignIdFor(Patient::class);
+            $table->foreignIdFor(Doctor::class)->constrained()->onDelete('cascade');
+            $table->foreignIdFor(Patient::class)->constrained()->onDelete('cascade');
             $table->timestamps();
         });
     }
