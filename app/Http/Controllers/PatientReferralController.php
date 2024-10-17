@@ -2,21 +2,19 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Patient;
+use App\Models\PatientReferral;
 
 class PatientReferralController extends Controller
 {
-    public function create(Patient $patient)
+    public function create()
     {
-        return view('pages.patients.referrals.create', [
-            'patient' => $patient
-        ]);
+        return view('pages.patients.referrals.create');
     }
 
-    public function update(Patient $patient)
+    public function update(PatientReferral $referral)
     {
         return view('pages.patients.referrals.update', [
-            'patient' => $patient,
+            'referral' => $referral,
         ]);
     }
 }

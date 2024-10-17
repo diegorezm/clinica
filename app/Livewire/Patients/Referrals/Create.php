@@ -4,22 +4,9 @@ namespace App\Livewire\Patients\Referrals;
 
 use App\Models\Patient;
 use App\Models\PatientReferral;
-use App\Validation\PatientReferralRules;
-use Livewire\Component;
 
-class Create extends Component
+class Create extends Form
 {
-    use PatientReferralRules;
-
-    public string $doctor_fn = '';
-
-    public string $cid = '';
-
-    public string $crm = '';
-
-    public int $patient_id;
-
-
     public function mount(Patient $patient)
     {
         $this->patient_id = $patient->id;
@@ -27,10 +14,10 @@ class Create extends Component
 
     public function submit()
     {
-        $this->validate($this->rules());
+        $this->validation();
         PatientReferral::create([
             'patient_id' => $this->patient_id,
-            'doctor_fn' => $this->doctor_fn,
+            'doctor_specialty' => $this->doctor_specialty,
             'cid' => $this->cid,
             'crm' => $this->crm,
         ]);

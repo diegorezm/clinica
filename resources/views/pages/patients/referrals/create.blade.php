@@ -1,3 +1,3 @@
 <x-layouts.app>
-    <livewire:patients.referrals.create :$patient />
+    <livewire:patients.referrals.create />
 </x-layouts.app>

@@ -23,6 +23,23 @@ abstract class Form extends Component
     public array $work_periods = [];
     public ?int $user_id;
 
+    public function validateUser()
+    {
+        $this->validate($this->userRules($this->user_id), [
+            'name.required' => 'O nome é obrigatório.',
+            'email.required' => 'O email é obrigatório.',
+            'password.required' => 'A senha é obrigatório.',
+        ]);
+    }
+
+    public function validateDoctor()
+    {
+        $this->validate($this->doctorRules(), [
+            'specialty.required' => 'A especialidade é obrigatória.',
+            'crm.required' => 'O CRM é obrigatório.',
+        ]);
+    }
+
     public abstract function submit();
     protected abstract function submitUser();
     protected abstract function submitDoctor();

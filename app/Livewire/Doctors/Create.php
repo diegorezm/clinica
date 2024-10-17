@@ -34,7 +34,7 @@ class Create extends Form
 
     protected function submitUser()
     {
-        $this->validate($this->userRules());
+        $this->validateUser();
         $user = User::create([
             'name' => $this->name,
             'email' => $this->email,
@@ -51,8 +51,7 @@ class Create extends Form
             $this->error('User must be created before creating a doctor.');
             return;
         }
-
-        $this->validate($this->doctorRules());
+        $this->validateDoctor();
         $doctor = Doctor::create([
             'user_id' => $this->user_id,
             'specialty' => $this->specialty,

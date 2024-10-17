@@ -3,23 +3,12 @@
 namespace App\Livewire\Patients;
 
 use App\Models\Patient;
-use App\Validation\PatientRules;
-use Livewire\Component;
-use Mary\Traits\Toast;
 
-class Create extends Component
+class Create extends Form
 {
-    use Toast, PatientRules;
-
-    public $name = '';
-    public $phone = '';
-    public $rg = '';
-    public $insurance = '';
-    public $insurance_number = '';
-
     public function submit()
     {
-        $this->validate($this->rules());
+        $this->validation();
         Patient::create([
             'name' => $this->name,
             'phone' => $this->phone,

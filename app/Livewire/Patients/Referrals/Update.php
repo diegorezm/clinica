@@ -4,48 +4,35 @@ namespace App\Livewire\Patients\Referrals;
 
 use App\Models\Patient;
 use App\Models\PatientReferral;
-use App\Validation\PatientReferralRules;
-use Livewire\Component;
 
-class Update extends Component
+class Update extends Form
 {
-    use PatientReferralRules;
-
-    public string $specialty = '';
-
-    public string $cid = '';
-
-    public string $crm = '';
-
-    public int $patient_id;
-
-    public string $patient_name = '';
-
     public PatientReferral $referral;
 
-    public function mount(Patient $patient)
+    public string $patient_name;
+
+    public function mount(PatientReferral $referral)
     {
+
+        $this->referral = $referral;
+        $this->patient_id = $referral->patient_id;
+        $patient = Patient::find($referral->patient_id);
         $this->patient_name = $patient->name;
-        $this->patient_id = $patient->id;
-
-        $this->referral = PatientReferral::where('patient_id', $patient->id)->first();
-
-        $this->specialty = $this->referral->doctor_specialty;
+        $this->doctor_specialty = $this->referral->doctor_specialty;
         $this->cid = $this->referral->cid;
         $this->crm = $this->referral->crm;
     }
 
     public function submit()
     {
-        $this->validate($this->rules());
+        $this->validation();
 
         $this->referral->update([
-            'doctor_fn' => $this->doctor_fn,
             'cid' => $this->cid,
             'crm' => $this->crm,
+            'doctor_specialty' => $this->doctor_specialty,
         ]);
         $id = $this->referral->patient_id;
-        $this->reset();
         return redirect("/dashboard/patients/show/{$id}");
     }
 

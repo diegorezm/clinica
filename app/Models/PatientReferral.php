@@ -13,7 +13,7 @@ class PatientReferral extends Model
 
     public $fillable = [
         'patient_id',
-        'doctor_fn',
+        'doctor_specialty',
         'cid',
         'crm',
     ];

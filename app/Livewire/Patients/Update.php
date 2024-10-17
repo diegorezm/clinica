@@ -3,21 +3,10 @@
 namespace App\Livewire\Patients;
 
 use App\Models\Patient;
-use App\Validation\PatientRules;
-use Livewire\Component;
-use Mary\Traits\Toast;
 
-class Update extends Component
+class Update extends Form
 {
-    use Toast, PatientRules;
-
     public int $id;
-    public $name = '';
-    public $phone = '';
-    public $rg = '';
-    public $insurance = '';
-    public $insurance_number = '';
-
 
     public function mount(Patient $patient)
     {
@@ -31,7 +20,7 @@ class Update extends Component
 
     public function submit()
     {
-        $this->validate($this->rules($this->id));
+        $this->validation($this->id);
 
         $patient = Patient::find($this->id);
 

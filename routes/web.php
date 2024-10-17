@@ -29,8 +29,8 @@ Route::group(['prefix' => 'dashboard', 'middleware' => AuthMiddleware::class], f
         Route::get("/update/{patient}", [PatientController::class, 'update']);
         Route::get("/show/{patient}", [PatientController::class, 'show']);
         Route::group(['prefix' => 'referrals'], function () {
-            Route::get("/create/{patient}", [PatientReferralController::class, 'create']);
-            Route::get("/update/{patient}", [PatientReferralController::class, 'update']);
+            Route::get("/create", [PatientReferralController::class, 'create'])->name('referrals.create');
+            Route::get("/update/{referral}", [PatientReferralController::class, 'update'])->name('referrals.update');
         });
     });
 

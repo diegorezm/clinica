@@ -8,10 +8,10 @@
             <x-button label="Novo" icon="o-plus" class="btn-primary"
                 link="/dashboard/patients/referrals/create/{{ $patient->id }}" />
 
-            <x-buttons.bulkdelete />
+            <x-buttons.bulkdelete :showCount="false" />
 
         </div>
-        <x-table class="mt-2" :headers="$this->headers" selectable wire:model="selected" :rows="$this->referrals" :sort-by="$sortBy"
+        <x-table class="mt-2" :headers="$this->headers()" selectable wire:model="selected" :rows="$this->referrals()" :sort-by="$sortBy"
             with-pagination>
             <x-slot:empty>
                 <x-icon name="o-cube" label="A tabela esta vazia." />
@@ -20,8 +20,10 @@
                 {{ $referral->created_at->format('d/m/Y') }}
             @endscope
             @scope('actions', $referral)
-                <x-button icon="o-pencil" title="Editar" class="btn-outline btn-sm"
-                    link="/dashboard/patients/referrals/update/{{ $referral->patient_id }}" />
+                <x-button icon="o-pencil" title="Editar" class="btn-outline btn-sm" :link="route('referrals.update', [
+                    'referral' => $referral->id,
+                    'patientId' => $referral->patient_id,
+                ])" />
             @endscope
         </x-table>
     </x-card>

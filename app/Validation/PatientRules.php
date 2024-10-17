@@ -4,7 +4,7 @@ namespace App\Validation;
 
 trait PatientRules
 {
-    protected function rules($patientId = null): array
+    protected function patientRules($patientId = null): array
     {
         return [
             'name' => 'required|string|max:255',

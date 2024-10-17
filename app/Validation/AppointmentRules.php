@@ -4,7 +4,7 @@ namespace App\Validation;
 
 trait AppointmentRules
 {
-    public function rules()
+    public function appointmentRules()
     {
         return [
             'status' => 'required|string',
