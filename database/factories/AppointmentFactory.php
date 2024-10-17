@@ -23,6 +23,7 @@ class AppointmentFactory extends Factory
             'status' => fake()->randomElement(['p', 'f', 'fj', 'fm', 'ok']),
             'doctor_id' => Doctor::inRandomOrder()->first()->id,
             'patient_id' => Patient::inRandomOrder()->first()->id,
+            'obs' => fake()->randomElement([fake()->sentence(), null]),
         ];
     }
 }

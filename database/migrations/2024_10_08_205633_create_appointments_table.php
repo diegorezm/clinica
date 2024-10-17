@@ -18,6 +18,7 @@ return new class extends Migration
             $table->dateTime('date');
             // pendente, falta, falta justificada, falta do médico, ok
             $table->enum('status', ['p', 'f', 'fj', 'fm', 'ok'])->default('p');
+            $table->string('obs')->nullable();
             $table->foreignIdFor(Doctor::class);
             $table->foreignIdFor(Patient::class);
             $table->timestamps();

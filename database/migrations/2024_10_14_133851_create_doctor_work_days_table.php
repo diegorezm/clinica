@@ -1,6 +1,6 @@
 <?php
 
-use App\Models\User;
+use App\Models\Doctor;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -12,11 +12,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('doctors', function (Blueprint $table) {
+        Schema::create('doctor_work_days', function (Blueprint $table) {
             $table->id();
-            $table->string('crm');
-            $table->string('specialty');
-            $table->foreignIdFor(User::class)->constrained()->unique();
+            $table->enum('day', [1, 2, 3, 4, 5, 6]);
+            $table->foreignIdFor(Doctor::class);
             $table->timestamps();
         });
     }
@@ -26,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('doctors');
+        Schema::dropIfExists('doctor_work_days');
     }
 };

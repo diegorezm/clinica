@@ -3,7 +3,6 @@
 namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
-use App\Enums\DaysOfTheWeek;
 use App\Models\User;
 
 /**
@@ -21,15 +20,6 @@ class DoctorFactory extends Factory
         return [
             'crm' => (string) fake()->numberBetween(100000, 999999),
             'specialty' => fake()->jobTitle(),
-            'work_periods' => fake()->randomElements(['m', 't', 'n'], 3),
-            'work_days' => fake()->randomElements([
-                DaysOfTheWeek::Segunda->value,
-                DaysOfTheWeek::Terça->value,
-                DaysOfTheWeek::Quarta->value,
-                DaysOfTheWeek::Quinta->value,
-                DaysOfTheWeek::Sexta->value,
-                DaysOfTheWeek::Sábado->value,
-            ], 5),
             'user_id' => User::class
         ];
     }
