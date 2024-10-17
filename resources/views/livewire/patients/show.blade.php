@@ -26,8 +26,13 @@
             <x-button label="Deletar" icon="o-trash" @click="$wire.showModal = true" class="btn-error" />
         </x-slot:actions>
     </x-card>
-
-    <livewire:patients.referrals.index :$patient />
-
+    <x-tabs wire:model="selectedTab">
+        <x-tab name="referrals" label="Referências" icon="o-users">
+            <livewire:patients.referrals.index :$patient />
+        </x-tab>
+        <x-tab name="appointments" label="Consultas" icon="o-calendar">
+            <livewire:appointments.index :patient_id="$patient->id" />
+        </x-tab>
+    </x-tabs>
     <x-modal.delete />
 </div>

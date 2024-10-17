@@ -43,7 +43,7 @@ Route::group(['prefix' => 'dashboard', 'middleware' => AuthMiddleware::class], f
 
     Route::group(['prefix' => 'appointments'], function () {
         Route::get("/", [AppointmentController::class, 'index']);
-        Route::get("/create", [AppointmentController::class, 'create']);
+        Route::get("/create", [AppointmentController::class, 'create'])->name('appointments.create');
         Route::get("/update/{appointment}", [AppointmentController::class, 'update']);
         Route::get("/show/{appointment}", [AppointmentController::class, 'show']);
     });

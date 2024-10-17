@@ -11,7 +11,10 @@
             </x-input>
         </x-slot:middle>
         <x-slot:actions>
-            <x-button label="Novo" icon="o-plus" class="btn-primary" link="/dashboard/appointments/create" />
+            <x-button label="Novo" icon="o-plus" class="btn-primary" :link="route('appointments.create', [
+                'doctorId' => $filters['doctor'] ?? null,
+                'patientId' => $filters['patient'] ?? null,
+            ])" responsive />
             <x-buttons.bulkdelete />
         </x-slot:actions>
     </x-header>

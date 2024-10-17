@@ -9,6 +9,7 @@ use App\Models\Patient;
 use App\Validation\AppointmentRules;
 use Illuminate\Database\Eloquent\Collection;
 use Livewire\Attributes\Computed;
+use Livewire\Attributes\Url;
 use Mary\Traits\Toast;
 
 abstract class Form extends Component
@@ -18,7 +19,9 @@ abstract class Form extends Component
     public string $time;
     public string $status = AppointmentStatus::P->value;
     public ?string $obs = null;
+    #[Url(as: 'doctorId')]
     public ?int $doctor_id = null;
+    #[Url(as: 'patientId')]
     public ?int $patient_id = null;
 
     public Collection $patients;

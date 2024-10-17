@@ -35,17 +35,16 @@ class Index extends Component
 
     public function clear(): void
     {
-
-        $this->filters = [
-            'month' => null,
-            'year' => null,
-            'status' => null,
-            'doctor' => null,
-            'patient' => null
-        ];
+        $doctorId = $this->filters['doctor'];
+        $patientId = $this->filters['patient'];
         $this->reset();
-        $this->resetPage();
         $this->success('Filtros limpos.', position: 'toast-bottom');
+        if ($doctorId) {
+            $this->filters['doctor'] = $doctorId;
+        }
+        if ($patientId) {
+            $this->filters['patient'] = $patientId;
+        }
     }
     #[Computed()]
     protected function yearOpts()
@@ -104,6 +103,10 @@ class Index extends Component
             })
             ->when($this->filters['status'], function ($query) {
                 $query->where('status', $this->filters['status']);
+            })->when($this->filters['doctor'], function ($query) {
+                $query->where('doctor_id', $this->filters['doctor']);
+            })->when($this->filters['patient'], function ($query) {
+                $query->where('patient_id', $this->filters['patient']);
             });
 
         return $appointments->orderBy(...array_values($this->sortBy))
@@ -152,6 +155,16 @@ class Index extends Component
         $this->success('Agendamentos removidos com sucesso.', position: 'toast-bottom');
         $this->selected = [];
         $this->showModal = false;
+    }
+
+    public function mount(int $patient_id = null, int $doctor_id = null)
+    {
+        if ($patient_id) {
+            $this->filters['patient'] = $patient_id;
+        }
+        if ($doctor_id) {
+            $this->filters['doctor'] = $doctor_id;
+        }
     }
 
     public function render()
