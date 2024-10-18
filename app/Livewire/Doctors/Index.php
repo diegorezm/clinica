@@ -4,6 +4,7 @@ namespace App\Livewire\Doctors;
 
 use App\Models\Doctor;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use Livewire\Attributes\Computed;
 use Livewire\Component;
@@ -57,18 +58,27 @@ class Index extends Component
     public function delete()
     {
         if (Gate::allows('admin', Auth::user())) {
-            $doctors = Doctor::whereIn('id', $this->selected)->get();
+            DB::transaction(function () {
+                try {
 
-            foreach ($doctors as $doctor) {
-                $user = $doctor->user;
-                if ($user) {
-                    $user->delete();
+                    $doctors = Doctor::whereIn('id', $this->selected)->get();
+
+                    foreach ($doctors as $doctor) {
+                        $user = $doctor->user;
+                        if ($user) {
+                            $user->delete();
+                        }
+                        $doctor->delete();
+                    }
+                    $this->success('Médico removido com sucesso.', position: 'toast-bottom');
+                } catch (\Exception $e) {
+                    $this->error($e->getMessage(), position: 'toast-bottom');
+                    throw $e;
+                } finally {
+                    $this->selected = [];
+                    $this->showModal = false;
                 }
-                $doctor->delete();
-            }
-            $this->selected = [];
-            $this->success('Médico removido com sucesso.', position: 'toast-bottom');
-            $this->showModal = false;
+            });
         } else {
             $this->showModal = false;
             $this->error('Acesso negado.', position: 'toast-bottom');

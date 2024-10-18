@@ -3,6 +3,7 @@
 namespace App\Livewire\Patients;
 
 use App\Models\Patient;
+use Illuminate\Support\Facades\DB;
 use Livewire\Component;
 use Mary\Traits\Toast;
 
@@ -22,11 +23,19 @@ class Show extends Component
 
     public function delete()
     {
-        $this->patient->delete();
-        $this->showModal = false;
-        $this->success('Paciente excluído com sucesso!');
-
-        return redirect('/dashboard/patients');
+        DB::transaction(function () {
+            try {
+                $this->patient->delete();
+                $this->showModal = false;
+                $this->success('Paciente excluído com sucesso!');
+                sleep(1);
+                return redirect('/dashboard/patients');
+            } catch (\Exception $e) {
+                $this->error($e->getMessage());
+                DB::rollBack();
+                throw $e;
+            }
+        });
     }
 
     public function render()

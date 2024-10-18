@@ -3,6 +3,7 @@
 namespace App\Livewire\Patients;
 
 use App\Models\Patient;
+use Illuminate\Support\Facades\DB;
 use Livewire\Attributes\Computed;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -57,10 +58,18 @@ class Index extends Component
 
     public function delete()
     {
-        Patient::destroy($this->selected);
-        $this->selected = [];
-        $this->showModal = false;
-        $this->success('Registros removidos com sucesso.', position: 'toast-bottom');
+        DB::transaction(function () {
+            try {
+                Patient::destroy($this->selected);
+                $this->selected = [];
+                $this->showModal = false;
+                $this->success('Registros removidos com sucesso.', position: 'toast-bottom');
+            } catch (\Exception $e) {
+                $this->error($e->getMessage());
+                DB::rollBack();
+                throw $e;
+            }
+        });
     }
 
     public function render()

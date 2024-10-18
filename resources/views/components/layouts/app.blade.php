@@ -24,7 +24,7 @@
         <x-slot:sidebar drawer="main-drawer" class="bg-base-100 lg:bg-inherit">
             <x-menu activate-by-route class="h-full">
                 <x-menu-item title="Pacientes" icon="o-users" link="/dashboard/patients" />
-                <x-menu-item title="Doutores" icon="s-clipboard-document-list" link="/dashboard/doctors" />
+                <x-menu-item title="Doutores" icon="o-clipboard-document-list" link="/dashboard/doctors" />
                 <x-menu-item title="Consultas" icon="s-calendar" link="/dashboard/appointments" />
                 @if (auth()->user()->role == 'admin')
                     <x-menu-item title="Usuários" icon="o-users" link="/dashboard/users" />

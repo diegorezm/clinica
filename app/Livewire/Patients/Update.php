@@ -3,6 +3,7 @@
 namespace App\Livewire\Patients;
 
 use App\Models\Patient;
+use Illuminate\Support\Facades\DB;
 
 class Update extends Form
 {
@@ -22,18 +23,25 @@ class Update extends Form
     {
         $this->validation($this->id);
 
-        $patient = Patient::find($this->id);
+        DB::transaction(function () {
+            try {
+                $patient = Patient::find($this->id);
+                $patient->update([
+                    'name' => $this->name,
+                    'phone' => $this->phone,
+                    'rg' => $this->rg,
+                    'insurance' => $this->insurance,
+                    'insurance_number' => $this->insurance_number,
+                ]);
 
-        $patient->update([
-            'name' => $this->name,
-            'phone' => $this->phone,
-            'rg' => $this->rg,
-            'insurance' => $this->insurance,
-            'insurance_number' => $this->insurance_number,
-        ]);
-
-        $this->success('Paciente atualizado com sucesso!');
-        return redirect("/dashboard/patients/show/{$patient->id}");
+                $this->success('Paciente atualizado com sucesso!');
+                return redirect("/dashboard/patients/show/{$patient->id}");
+            } catch (\Exception $e) {
+                $this->error($e->getMessage());
+                DB::rollBack();
+                throw $e;
+            }
+        });
     }
 
     public function render()

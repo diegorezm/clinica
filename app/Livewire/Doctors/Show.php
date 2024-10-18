@@ -5,6 +5,7 @@ namespace App\Livewire\Doctors;
 use App\Models\Doctor;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use Livewire\Attributes\Computed;
 use Livewire\Component;
@@ -26,16 +27,25 @@ class Show extends Component
     public function delete()
     {
         if (Gate::allows('admin', Auth::user())) {
-            $this->doctor->user->delete();
-            $this->doctor->delete();
+            DB::transaction(function () {
+                try {
+                    $this->doctor->user->delete();
+                    $this->doctor->delete();
+                    $this->success('Doutor excluído com sucesso!');
+                    $this->showModal = false;
+                    sleep(1);
+                    return redirect('/dashboard/doctors');
+                } catch (\Exception $e) {
+                    $this->error($e->getMessage());
+                    DB::rollBack();
+                    throw $e;
+                }
+            });
+        } else {
             $this->showModal = false;
-            $this->success('Doutor excluído com sucesso!');
-            sleep(1);
-            return redirect('/dashboard/doctors');
+            $this->error('Voce não tem permissão para realizar essa ação!');
+            return;
         }
-        $this->showModal = false;
-        $this->error('Voce não tem permissão para realizar essa ação!');
-        return;
     }
 
     #[Computed()]

@@ -4,6 +4,7 @@ namespace App\Livewire\Appointments;
 
 use App\Models\Appointment;
 use DateTime;
+use Illuminate\Support\Facades\DB;
 
 class Update extends Form
 {
@@ -25,17 +26,26 @@ class Update extends Form
 
     public function submit()
     {
+        $this->validation();
         $dateTime = DateTime::createFromFormat('Y-m-d H:i', $this->date . ' ' . $this->time);
-        $this->appointment->update([
-            'date' => $dateTime,
-            'status' => $this->status,
-            'doctor_id' => $this->doctor_id,
-            'patient_id' => $this->patient_id,
-            'obs' => $this->obs,
-        ]);
-        $this->success('Consulta marcada.');
-        sleep(1);
-        return redirect('/dashboard/appointments/show/' . $this->appointment->id);
+        DB::transaction(function () use ($dateTime) {
+            try {
+                $this->appointment->update([
+                    'date' => $dateTime,
+                    'status' => $this->status,
+                    'doctor_id' => $this->doctor_id,
+                    'patient_id' => $this->patient_id,
+                    'obs' => $this->obs,
+                ]);
+                $this->success('Consulta marcada.');
+                sleep(1);
+                return redirect('/dashboard/appointments/show/' . $this->appointment->id);
+            } catch (\Exception $e) {
+                $this->error($e->getMessage());
+                DB::rollBack();
+                throw $e;
+            }
+        });
     }
 
     public function render()

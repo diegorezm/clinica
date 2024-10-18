@@ -20,8 +20,14 @@ class Update extends Form
             return redirect('/dashboard/doctors');
         }
         DB::transaction(function () {
-            $this->submitUser();
-            $this->submitDoctor();
+            try {
+                $this->submitUser();
+                $this->submitDoctor();
+            } catch (\Exception $e) {
+                $this->error($e->getMessage());
+                DB::rollBack();
+                throw $e;
+            }
         });
         return redirect('/dashboard/doctors/show/' . $this->doctor_id);
     }

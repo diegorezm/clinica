@@ -6,6 +6,7 @@ use App\Models\Appointment;
 use App\Models\Doctor;
 use Carbon\Carbon;
 use DateTime;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 
 class Create extends Form
@@ -35,16 +36,25 @@ class Create extends Form
                 'date' => 'Este médico não trabalha no dia selecionado.',
             ]);
         }
-        $appointment = Appointment::create([
-            'date' => $dateTime,
-            'status' => $this->status,
-            'doctor_id' => $this->doctor_id,
-            'patient_id' => $this->patient_id,
-            'obs' => $this->obs,
-        ]);
-        $this->success('Consulta marcada.');
-        sleep(1);
-        return redirect('/dashboard/appointments/show/' . $appointment->id);
+        DB::transaction(function () use ($dateTime) {
+            try {
+                $appointment = Appointment::create([
+                    'date' => $dateTime,
+                    'status' => $this->status,
+                    'doctor_id' => $this->doctor_id,
+                    'patient_id' => $this->patient_id,
+                    'obs' => $this->obs,
+                ]);
+
+                $this->success('Consulta marcada.');
+                sleep(1);
+                return redirect('/dashboard/appointments/show/' . $appointment->id);
+            } catch (\Exception $e) {
+                $this->error($e->getMessage());
+                DB::rollBack();
+                throw $e;
+            }
+        });
     }
 
     public function render()

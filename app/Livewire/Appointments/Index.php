@@ -8,6 +8,7 @@ use Livewire\Component;
 use Livewire\WithPagination;
 use App\Enums\AppointmentStatus;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 use Mary\Traits\Toast;
 
 class Index extends Component
@@ -174,10 +175,20 @@ class Index extends Component
             $this->showModal = false;
             return;
         }
-        Appointment::destroy($this->selected);
-        $this->success('Agendamentos removidos com sucesso.', position: 'toast-bottom');
-        $this->selected = [];
-        $this->showModal = false;
+        DB::transaction(function () {
+            try {
+                Appointment::destroy($this->selected);
+                $this->success('Agendamentos removidos com sucesso.', position: 'toast-bottom');
+            } catch (\Exception $e) {
+                $this->error($e->getMessage());
+                DB::rollBack();
+                throw $e;
+            } finally {
+
+                $this->selected = [];
+                $this->showModal = false;
+            }
+        });
     }
 
     public function mount(int $patient_id = null, int $doctor_id = null)

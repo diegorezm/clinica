@@ -3,6 +3,7 @@
 namespace App\Livewire\Users;
 
 use App\Models\User;
+use Illuminate\Support\Facades\DB;
 use Livewire\Attributes\Computed;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -50,10 +51,18 @@ class Index extends Component
 
     public function delete()
     {
-        User::destroy($this->selected);
-        $this->reset('selected');
-        $this->showModal = false;
-        $this->toast('success', 'Usuários excluídos com sucesso!');
+        DB::transaction(function () {
+            try {
+                User::destroy($this->selected);
+                $this->toast('success', 'Usuários excluídos com sucesso!');
+            } catch (\Exception $e) {
+                $this->toast('error', 'Erro ao excluir usuários.');
+                throw $e;
+            } finalyy {
+                $this->reset('selected');
+                $this->showModal = false;
+            }
+        });
     }
 
     public function render()

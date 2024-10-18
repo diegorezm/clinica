@@ -1,5 +1,5 @@
 <div>
-    <div class="space-y-10">
+    <div class="space-y-4">
         <x-button link="/dashboard/users" icon="o-arrow-left" class="btn-circle btn-outline btn-sm" />
         <x-card title="Usuário" shadow separator>
             <div class="flex flex-col space-y-2">
@@ -12,7 +12,13 @@
 
                 <div>
                     <strong>Permissão:</strong>
-                    <x-users.roles :role="$user->role" />
+                    @if ($user->role == 'doctor')
+                        <x-button label="Doutor" class="btn-primary btn-sm"
+                            link="/dashboard/doctors/show/{{ $user->doctor->id }}" icon="o-clipboard-document-list" />
+                    @else
+                        <x-users.roles :role="$user->role" />
+                    @endif
+
                 </div>
             </div>
 
