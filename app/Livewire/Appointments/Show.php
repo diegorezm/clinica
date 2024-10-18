@@ -33,7 +33,7 @@ class Show extends Component
                 $this->showModal = false;
                 return redirect("/dashboard/appointments");
             } catch (\Exception $e) {
-                $this->error($e->getMessage());
+                $this->error('Erro ao remover consulta.', position: 'toast-bottom');
                 DB::rollBack();
                 throw $e;
             }

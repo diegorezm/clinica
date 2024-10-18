@@ -7,6 +7,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Log;
 use Livewire\Attributes\Computed;
 use Livewire\Component;
 use Mary\Traits\Toast;
@@ -36,6 +37,7 @@ class Show extends Component
                     sleep(1);
                     return redirect('/dashboard/doctors');
                 } catch (\Exception $e) {
+                    Log::error($e->getMessage());
                     $this->error($e->getMessage());
                     DB::rollBack();
                     throw $e;

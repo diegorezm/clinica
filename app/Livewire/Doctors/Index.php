@@ -6,6 +6,7 @@ use App\Models\Doctor;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Log;
 use Livewire\Attributes\Computed;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -60,9 +61,7 @@ class Index extends Component
         if (Gate::allows('admin', Auth::user())) {
             DB::transaction(function () {
                 try {
-
                     $doctors = Doctor::whereIn('id', $this->selected)->get();
-
                     foreach ($doctors as $doctor) {
                         $user = $doctor->user;
                         if ($user) {
@@ -72,7 +71,8 @@ class Index extends Component
                     }
                     $this->success('Médico removido com sucesso.', position: 'toast-bottom');
                 } catch (\Exception $e) {
-                    $this->error($e->getMessage(), position: 'toast-bottom');
+                    Log::error($e->getMessage());
+                    $this->error('Erro ao remover registro.', position: 'toast-bottom');
                     throw $e;
                 } finally {
                     $this->selected = [];

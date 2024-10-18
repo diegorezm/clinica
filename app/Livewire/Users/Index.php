@@ -55,12 +55,11 @@ class Index extends Component
             try {
                 User::destroy($this->selected);
                 $this->toast('success', 'Usuários excluídos com sucesso!');
-            } catch (\Exception $e) {
-                $this->toast('error', 'Erro ao excluir usuários.');
-                throw $e;
-            } finalyy {
-                $this->reset('selected');
+                $this->reset();
                 $this->showModal = false;
+            } catch (\Exception $e) {
+                $this->error('Erro ao excluir usuários.');
+                throw $e;
             }
         });
     }

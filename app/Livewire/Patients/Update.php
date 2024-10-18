@@ -37,7 +37,7 @@ class Update extends Form
                 $this->success('Paciente atualizado com sucesso!');
                 return redirect("/dashboard/patients/show/{$patient->id}");
             } catch (\Exception $e) {
-                $this->error($e->getMessage());
+                $this->error('Erro ao atualizar paciente.');
                 DB::rollBack();
                 throw $e;
             }

@@ -26,6 +26,7 @@ class Update extends Form
                     'email' => $this->email,
                     'role' => $this->role,
                 ]);
+                return redirect('/dashboard/users/show/' . $this->user->id);
             } catch (\Exception $e) {
                 DB::rollBack();
                 $this->error($e->getMessage());

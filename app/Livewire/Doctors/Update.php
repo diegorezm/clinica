@@ -7,6 +7,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Log;
 
 class Update extends Form
 {
@@ -23,13 +24,14 @@ class Update extends Form
             try {
                 $this->submitUser();
                 $this->submitDoctor();
+                return redirect('/dashboard/doctors/show/' . $this->doctor_id);
             } catch (\Exception $e) {
-                $this->error($e->getMessage());
+                Log::error($e->getMessage());
+                $this->error('Erro ao atualizar registro.');
                 DB::rollBack();
                 throw $e;
             }
         });
-        return redirect('/dashboard/doctors/show/' . $this->doctor_id);
     }
 
     protected function submitUser()

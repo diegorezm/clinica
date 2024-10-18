@@ -5,6 +5,7 @@ namespace App\Livewire\Appointments;
 use App\Models\Appointment;
 use DateTime;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class Update extends Form
 {
@@ -41,6 +42,7 @@ class Update extends Form
                 sleep(1);
                 return redirect('/dashboard/appointments/show/' . $this->appointment->id);
             } catch (\Exception $e) {
+                Log::error($e->getMessage());
                 $this->error($e->getMessage());
                 DB::rollBack();
                 throw $e;

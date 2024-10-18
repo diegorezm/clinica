@@ -9,6 +9,7 @@ use Livewire\WithPagination;
 use App\Enums\AppointmentStatus;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Mary\Traits\Toast;
 
 class Index extends Component
@@ -180,11 +181,11 @@ class Index extends Component
                 Appointment::destroy($this->selected);
                 $this->success('Agendamentos removidos com sucesso.', position: 'toast-bottom');
             } catch (\Exception $e) {
-                $this->error($e->getMessage());
+                Log::error($e->getMessage());
+                $this->error('Erro ao remover consultas.');
                 DB::rollBack();
                 throw $e;
             } finally {
-
                 $this->selected = [];
                 $this->showModal = false;
             }

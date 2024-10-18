@@ -82,6 +82,8 @@ class BulkCreate extends Form
             }
         } catch (\Exception $e) {
             DB::rollBack();
+            Log::error($e->getMessage());
+            $this->error("Erro ao marcar consultas.");
             throw $e;
         }
 

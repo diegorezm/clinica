@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 
 class Create extends Form
 {
@@ -22,14 +23,20 @@ class Create extends Form
             return redirect('/dashboard/doctors');
         }
         DB::transaction(function () {
-            $this->submitUser();
-
-            if (is_null($this->user_id)) {
-                throw new \Exception('Algo deu errado');
+            try {
+                $this->submitUser();
+                if (is_null($this->user_id)) {
+                    throw new \Exception('Algo deu errado');
+                }
+                $this->submitDoctor();
+                return redirect('/dashboard/doctors');
+            } catch (\Exception $e) {
+                Log::error($e->getMessage());
+                $this->error('Erro ao criar registro.');
+                DB::rollBack();
+                throw $e;
             }
-            $this->submitDoctor();
         });
-        return redirect('/dashboard/doctors');
     }
 
     protected function submitUser()

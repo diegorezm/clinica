@@ -26,7 +26,7 @@ class Show extends Component
                 return redirect('/dashboard/users');
             } catch (\Exception $e) {
                 DB::rollBack();
-                $this->toast('error', $e->getMessage());
+                $this->error($e->getMessage());
                 throw $e;
             }
         });

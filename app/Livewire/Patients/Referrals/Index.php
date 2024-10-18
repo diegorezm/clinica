@@ -4,6 +4,7 @@ namespace App\Livewire\Patients\Referrals;
 
 use App\Models\Patient;
 use App\Models\PatientReferral;
+use Illuminate\Support\Facades\DB;
 use Livewire\Attributes\Computed;
 use Livewire\Component;
 use Mary\Traits\Toast;
@@ -60,7 +61,9 @@ class Index extends Component
             $this->showModal = false;
             return;
         }
-        PatientReferral::destroy($this->selected);
+        DB::transaction(function () {
+            PatientReferral::destroy($this->selected);
+        });
         $this->success('Encaminhamento removido com sucesso.', position: 'toast-bottom');
         $this->showModal = false;
         $this->selected = [];

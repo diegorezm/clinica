@@ -4,6 +4,7 @@ namespace App\Livewire\Patients\Referrals;
 
 use App\Models\Patient;
 use App\Models\PatientReferral;
+use Illuminate\Support\Facades\DB;
 
 class Update extends Form
 {
@@ -27,13 +28,22 @@ class Update extends Form
     {
         $this->validation();
 
-        $this->referral->update([
-            'cid' => $this->cid,
-            'crm' => $this->crm,
-            'doctor_specialty' => $this->doctor_specialty,
-        ]);
-        $id = $this->referral->patient_id;
-        return redirect("/dashboard/patients/show/{$id}");
+        DB::transaction(function () {
+
+            try {
+                $this->referral->update([
+                    'cid' => $this->cid,
+                    'crm' => $this->crm,
+                    'doctor_specialty' => $this->doctor_specialty,
+                ]);
+                $id = $this->referral->patient_id;
+                return redirect("/dashboard/patients/show/{$id}");
+            } catch (\Exception $e) {
+                $this->error('Erro ao atualizar registro.');
+                DB::rollBack();
+                throw $e;
+            }
+        });
     }
 
     public function render()

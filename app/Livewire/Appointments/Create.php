@@ -7,6 +7,7 @@ use App\Models\Doctor;
 use Carbon\Carbon;
 use DateTime;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
 
 class Create extends Form
@@ -50,7 +51,8 @@ class Create extends Form
                 sleep(1);
                 return redirect('/dashboard/appointments/show/' . $appointment->id);
             } catch (\Exception $e) {
-                $this->error($e->getMessage());
+                Log::error($e->getMessage());
+                $this->error('Erro ao marcar consulta.');
                 DB::rollBack();
                 throw $e;
             }

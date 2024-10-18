@@ -24,7 +24,7 @@ class Create extends Form
                 return redirect('/dashboard/users');
             } catch (\Exception $e) {
                 DB::rollBack();
-                $this->error($e->getMessage());
+                $this->error('Erro ao criar registro.');
                 throw $e;
             }
         });
