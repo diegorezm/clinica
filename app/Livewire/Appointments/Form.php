@@ -27,9 +27,9 @@ abstract class Form extends Component
     public Collection $patients;
     public Collection $doctors;
 
-    protected function validation()
+    protected function validation(bool $forUpdate = false)
     {
-        $this->validate($this->rules(), [
+        $this->validate($this->appointmentRules($forUpdate), [
             'date.required' => 'A data é obrigatória.',
             'date.date' => 'A data deve ser uma data válida.',
             'date.after' => 'A data deve ser uma data futura.',

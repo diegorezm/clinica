@@ -27,7 +27,7 @@ class Update extends Form
 
     public function submit()
     {
-        $this->validation();
+        $this->validation(true);
         $dateTime = DateTime::createFromFormat('Y-m-d H:i', $this->date . ' ' . $this->time);
         DB::transaction(function () use ($dateTime) {
             try {

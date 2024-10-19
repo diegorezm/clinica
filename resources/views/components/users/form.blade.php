@@ -1,7 +1,8 @@
 @props([
     'showPassword' => true,
+    'title' => 'Novo usuário',
 ])
-<x-card title="{{ $title ?? 'Novo usuário' }}">
+<x-card title="{{ $title }}">
     <x-form wire:submit.prevent="submit">
         <x-button link="/dashboard/users" icon="o-arrow-left" class="btn-circle btn-outline btn-sm" />
         <x-input label="Nome" wire:model="name" error-field="name" icon="o-user" clearable />

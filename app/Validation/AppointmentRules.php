@@ -4,14 +4,20 @@ namespace App\Validation;
 
 trait AppointmentRules
 {
-    public function appointmentRules()
+    public function appointmentRules(bool $forUpdate = false): array
     {
-        return [
+        $rules = [
             'status' => 'required|string',
-            'date' => 'required|date|after:today',
             'doctor_id' => 'required|exists:doctors,id',
             'patient_id' => 'required|exists:patients,id',
+            'time' => 'required|date_format:H:i',
             'obs' => 'nullable|string|max:1000',
         ];
+        if (!$forUpdate) {
+            $rules['date'] = 'required|date|after:today';
+        } else {
+            $rules['date'] = 'required|date';
+        }
+        return $rules;
     }
 }

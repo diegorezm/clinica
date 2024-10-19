@@ -50,6 +50,7 @@ class Index extends Component
     {
         $patients = Patient::query();
         if ($this->search) {
+            $this->setPage(1);
             $patients = $patients->where('name', 'like', "%{$this->search}%")
                 ->orWhere('rg', 'like', "%{$this->search}%");
         }

@@ -21,7 +21,7 @@ abstract class Form extends Component
     public string $role = 'doctor';
     public array $work_days = [];
     public array $work_periods = [];
-    public ?int $user_id;
+    public ?int $user_id = -1;
 
     public function validateUser()
     {

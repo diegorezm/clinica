@@ -1,3 +1,3 @@
 <div>
-    <x-users.form :showPassword="false" />
+    <x-users.form :showPassword="false" :title="'Atualizar perfil | ' . $name" />
 </div>

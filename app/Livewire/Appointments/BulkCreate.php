@@ -27,7 +27,7 @@ class BulkCreate extends Form
 
     public function submit()
     {
-        $rules = array_diff_key($this->rules(), array_flip(['date']));
+        $rules = array_diff_key($this->appointmentRules(), array_flip(['date']));
         $this->validate(array_merge($rules, [
             'startDate' => 'required|date|afterOrEqual:today',
             'endDate' => 'required|date|after:today|after:startDate',
@@ -40,7 +40,11 @@ class BulkCreate extends Form
             'endDate.required' => 'O campo de data de término é obrigatório.',
             'endDate.date' => 'O campo de data de término deve ser uma data válida.',
             'endDate.after' => 'A data de término deve ser após a data de início.',
-            'endDate.after' => 'A data de término deve ser após hoje.',
+
+            'patient_id.required' => 'O paciente é obrigatório.',
+            'doctor_id.required' => 'O médico é obrigatório.',
+
+            'time.required' => 'O horário é obrigatório.',
         ]);
 
         $startDate = DateTime::createFromFormat('Y-m-d', $this->startDate);

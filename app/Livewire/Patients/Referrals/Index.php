@@ -35,7 +35,7 @@ class Index extends Component
         $referrals = $this->patient->referrals();
 
         if ($this->search) {
-            $referrals = $referrals->where('doctor_fn', 'like', "%{$this->search}%")
+            $referrals = $referrals->where('doctor_specialty', 'like', "%{$this->search}%")
                 ->orWhere('cid', 'like', "%{$this->search}%")
                 ->orWhere('crm', 'like', "%{$this->search}%");
         }

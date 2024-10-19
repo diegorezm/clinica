@@ -46,6 +46,7 @@ class Index extends Component
             ->select('id', 'user_id', 'crm', 'specialty');
 
         if ($this->search) {
+            $this->setPage(1);
             $query->whereHas('user', function ($q) {
                 $q->where('name', 'like', "%{$this->search}%");
             })

@@ -27,7 +27,7 @@
             </x-slot:actions>
         </x-card>
         <x-tabs wire:model="selectedTab">
-            <x-tab name="referrals" label="Referências" icon="o-users">
+            <x-tab name="referrals" label="Encaminamentos" icon="o-users">
                 <livewire:patients.referrals.index :$patient />
             </x-tab>
             <x-tab name="appointments" label="Consultas" icon="o-calendar">

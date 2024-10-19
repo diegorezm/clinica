@@ -11,6 +11,7 @@ use App\Http\Middleware\AdminMiddleware;
 use Illuminate\Http\Request;
 
 Route::get("/", fn () => redirect('/dashboard/patients'));
+Route::get("/dashboard", fn () => redirect('/dashboard/patients'));
 
 
 Route::view('/login', 'pages.login');

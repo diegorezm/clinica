@@ -25,7 +25,7 @@ class Create extends Form
         DB::transaction(function () {
             try {
                 $this->submitUser();
-                if (is_null($this->user_id)) {
+                if (is_null($this->user_id) || $this->user_id < 0) {
                     throw new \Exception('Algo deu errado');
                 }
                 $this->submitDoctor();
@@ -53,7 +53,6 @@ class Create extends Form
 
     protected function submitDoctor()
     {
-
         if (is_null($this->user_id)) {
             $this->error('User must be created before creating a doctor.');
             return;

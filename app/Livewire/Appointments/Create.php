@@ -37,6 +37,17 @@ class Create extends Form
                 'date' => 'Este médico não trabalha no dia selecionado.',
             ]);
         }
+
+        $conflictingAppointment = Appointment::where('doctor_id', $this->doctor_id)
+            ->where('date', $dateTime)
+            ->exists();
+
+        if ($conflictingAppointment) {
+            throw ValidationException::withMessages([
+                'date' => 'Já existe uma consulta marcada para este médico no mesmo horário.',
+            ]);
+        }
+
         DB::transaction(function () use ($dateTime) {
             try {
                 $appointment = Appointment::create([
