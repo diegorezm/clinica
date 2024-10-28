@@ -26,7 +26,7 @@ class Create extends Form
             try {
                 $this->submitUser();
                 if (is_null($this->user_id) || $this->user_id < 0) {
-                    throw new \Exception('Algo deu errado');
+                    throw new \Exception('User id is not available. Please check the logs.');
                 }
                 $this->submitDoctor();
                 if ($this->doctor_id < 0) {
