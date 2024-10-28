@@ -118,11 +118,9 @@ class Index extends Component
                 $query->where('status', $this->filters['status']);
             })
             ->when($this->filters['time'], function ($query) {
-                if ($this->isValidTimeFormat($this->filters['time'])) {
-                    $this->setPage(1);
-                    $t = Carbon::createFromFormat('H:m', $this->filters['time'])->format('H:m:s');
-                    $query->whereTime('date', $t);
-                }
+                $this->setPage(1);
+                $t = Carbon::createFromFormat('H:i', $this->filters['time'])->format('H:i:s');
+                $query->whereTime('date', $t);
             })
             ->when($this->filters['doctor'], function ($query) {
                 $query->where('doctor_id', $this->filters['doctor']);
