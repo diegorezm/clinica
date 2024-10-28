@@ -85,6 +85,9 @@ class BulkCreate extends Form
                 $currentDate->modify("+{$this->interval} days");
             }
         } catch (\Exception $e) {
+            if ($e instanceof ValidationException) {
+                throw $e;
+            }
             DB::rollBack();
             Log::error($e->getMessage());
             $this->error("Erro ao marcar consultas.");
