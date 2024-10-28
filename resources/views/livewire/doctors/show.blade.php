@@ -25,12 +25,7 @@
                 </div>
 
                 <div>
-                    <strong>Periodos: </strong>
-                    @foreach ($this->showWorkPeriods() as $period)
-                        {{ $period }}@if (!$loop->last)
-                            ,
-                        @endif
-                    @endforeach
+                    <strong>Periodos: </strong> {{ $doctor->period }}
                 </div>
             </div>
             <div>

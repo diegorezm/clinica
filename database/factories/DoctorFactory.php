@@ -20,6 +20,7 @@ class DoctorFactory extends Factory
         return [
             'crm' => (string) fake()->numberBetween(100000, 999999),
             'specialty' => fake()->jobTitle(),
+            'period' => fake()->text(10),
             'user_id' => User::class
         ];
     }

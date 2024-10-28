@@ -30,7 +30,6 @@ class Update extends Form
             } catch (\Exception $e) {
                 DB::rollBack();
                 $this->error($e->getMessage());
-                throw $e;
             }
         });
     }

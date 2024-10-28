@@ -1,3 +1,3 @@
-<x-layouts.app title="DASHBOARD | CONSULTAS">
+<x-layouts.app title="CONSULTAS">
     <livewire:appointments.index />
 </x-layouts.app>

@@ -39,7 +39,6 @@ class Update extends Form
             } catch (\Exception $e) {
                 $this->error('Erro ao atualizar paciente.');
                 DB::rollBack();
-                throw $e;
             }
         });
     }

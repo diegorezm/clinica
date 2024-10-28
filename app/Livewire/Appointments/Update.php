@@ -43,9 +43,8 @@ class Update extends Form
                 return redirect('/dashboard/appointments/show/' . $this->appointment->id);
             } catch (\Exception $e) {
                 Log::error($e->getMessage());
-                $this->error($e->getMessage());
+                $this->error('Erro ao atualizar consulta.');
                 DB::rollBack();
-                throw $e;
             }
         });
     }

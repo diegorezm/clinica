@@ -4,12 +4,14 @@
         <x-card title="Consulta" shadow separator>
             <div class="flex flex-col space-y-2">
                 <div>
-                    <strong>Doutor:</strong> <x-button label="{{ $appointment->doctor->user->name }}"
-                        link="/dashboard/doctors/show/{{ $appointment->doctor->id }}" class="btn-sm btn-ghost" />
+                    <strong>Doutor:</strong>
+                    <x-button label="{{ $user->name }}" link="/dashboard/doctors/show/{{ $doctor->id }}"
+                        class="btn-sm btn-ghost" />
                 </div>
                 <div>
-                    <strong>Paciente:</strong> <x-button label="{{ $appointment->patient->name }}"
-                        link="/dashboard/patients/show/{{ $appointment->patient->id }}" class="btn-sm btn-ghost" />
+                    <strong>Paciente:</strong>
+                    <x-button label="{{ $patient->name }}" link="/dashboard/patients/show/{{ $patient->id }}"
+                        class="btn-sm btn-ghost" />
                 </div>
                 <div>
                     <strong>Data:</strong> {{ $appointment->date->format('d/m/Y') }}
@@ -26,8 +28,6 @@
                 <div>
                     <x-appointments.status :status="$appointment->status" />
                 </div>
-                <div>
-                </div>
                 @if (Auth::user()->role == 'admin')
                     <x-slot:actions>
                         <x-button icon="o-pencil" label="Editar" class="btn-primary"
@@ -35,6 +35,7 @@
                         <x-button label="Deletar" icon="o-trash" @click="$wire.showModal = true" class="btn-error" />
                     </x-slot:actions>
                 @endif
+            </div>
         </x-card>
     </div>
     <x-modal.delete />

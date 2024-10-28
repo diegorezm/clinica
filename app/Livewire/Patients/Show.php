@@ -33,7 +33,6 @@ class Show extends Component
             } catch (\Exception $e) {
                 $this->error($e->getMessage());
                 DB::rollBack();
-                throw $e;
             }
         });
     }

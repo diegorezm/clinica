@@ -184,7 +184,6 @@ class Index extends Component
                 Log::error($e->getMessage());
                 $this->error('Erro ao remover consultas.');
                 DB::rollBack();
-                throw $e;
             } finally {
                 $this->selected = [];
                 $this->showModal = false;

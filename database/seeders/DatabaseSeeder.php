@@ -47,9 +47,6 @@ class DatabaseSeeder extends Seeder
 
         Doctor::query()->inRandomOrder()->get()
             ->each(function (Doctor $doctor) {
-                DoctorWorkPeriod::factory()->count(2)->create([
-                    'doctor_id' => $doctor->id
-                ]);
                 DoctorWorkDays::factory()->count(3)->create([
                     'doctor_id' => $doctor->id
                 ]);

@@ -65,7 +65,6 @@ class Create extends Form
                 Log::error($e->getMessage());
                 $this->error('Erro ao marcar consulta.');
                 DB::rollBack();
-                throw $e;
             }
         });
     }

@@ -68,7 +68,9 @@ class Index extends Component
             } catch (\Exception $e) {
                 $this->error($e->getMessage());
                 DB::rollBack();
-                throw $e;
+            } finally {
+                $this->selected = [];
+                $this->showModal = false;
             }
         });
     }

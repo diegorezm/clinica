@@ -41,7 +41,6 @@ class Update extends Form
             } catch (\Exception $e) {
                 $this->error('Erro ao atualizar registro.');
                 DB::rollBack();
-                throw $e;
             }
         });
     }

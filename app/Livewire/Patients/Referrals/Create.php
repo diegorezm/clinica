@@ -25,7 +25,6 @@ class Create extends Form
             } catch (\Exception $e) {
                 $this->error($e->getMessage());
                 DB::rollBack();
-                throw $e;
             }
         });
     }

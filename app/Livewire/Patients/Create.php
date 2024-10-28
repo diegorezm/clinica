@@ -12,7 +12,7 @@ class Create extends Form
         $this->validation();
         DB::transaction(function () {
             try {
-                Patient::create([
+                $patient = Patient::create([
                     'name' => $this->name,
                     'phone' => $this->phone,
                     'rg' => $this->rg ?: null,
@@ -22,11 +22,10 @@ class Create extends Form
                 $this->reset();
                 $this->success('Registro criado com sucesso.', position: 'toast-bottom');
                 sleep(1);
-                return redirect('/dashboard/patients');
+                return redirect('/dashboard/patients/show/' . $patient->id);
             } catch (\Exception $e) {
                 $this->error($e->getMessage());
                 DB::rollBack();
-                throw $e;
             }
         });
     }

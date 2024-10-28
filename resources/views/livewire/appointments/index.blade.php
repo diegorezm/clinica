@@ -1,5 +1,4 @@
 <div>
-    <!-- HEADER -->
     <x-header title="Consultas" separator progress-indicator>
         <x-slot:middle class="!justify-end">
             <x-input placeholder="Procure por nome/rg..." wire:model.live.debounce.300ms="search"

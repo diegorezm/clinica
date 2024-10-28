@@ -25,7 +25,6 @@ class Create extends Form
             } catch (\Exception $e) {
                 DB::rollBack();
                 $this->error('Erro ao criar registro.');
-                throw $e;
             }
         });
     }

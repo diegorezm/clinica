@@ -8,7 +8,6 @@ use Livewire\Attributes\Computed;
 use Livewire\Component;
 use Mary\Traits\Toast;
 use App\Enums\DaysOfTheWeek;
-use App\Enums\Periods;
 
 abstract class Form extends Component
 {
@@ -19,8 +18,8 @@ abstract class Form extends Component
     public string $specialty = '';
     public string $crm = '';
     public string $role = 'doctor';
+    public string $period = '';
     public array $work_days = [];
-    public array $work_periods = [];
     public ?int $user_id = -1;
 
     public function validateUser()
@@ -37,6 +36,7 @@ abstract class Form extends Component
         $this->validate($this->doctorRules(), [
             'specialty.required' => 'A especialidade é obrigatória.',
             'crm.required' => 'O CRM é obrigatório.',
+            'period.required' => 'O período é obrigatório.',
         ]);
     }
 
@@ -54,16 +54,6 @@ abstract class Form extends Component
             ['id' => DaysOfTheWeek::Quinta->value, 'name' => DaysOfTheWeek::Quinta->getName()],
             ['id' => DaysOfTheWeek::Sexta->value, 'name' => DaysOfTheWeek::Sexta->getName()],
             ['id' => DaysOfTheWeek::Sábado->value, 'name' => DaysOfTheWeek::Sábado->getName()],
-        ];
-    }
-
-    #[Computed()]
-    public function workPeriodsOpts()
-    {
-        return [
-            ['id' => Periods::Morning->value, 'name' => Periods::Morning->getName()],
-            ['id' => Periods::Afternoon->value, 'name' => Periods::Afternoon->getName()],
-            ['id' => Periods::Night->value, 'name' => Periods::Night->getName()],
         ];
     }
 }

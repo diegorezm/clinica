@@ -74,7 +74,6 @@ class Index extends Component
                 } catch (\Exception $e) {
                     Log::error($e->getMessage());
                     $this->error('Erro ao remover registro.', position: 'toast-bottom');
-                    throw $e;
                 } finally {
                     $this->selected = [];
                     $this->showModal = false;

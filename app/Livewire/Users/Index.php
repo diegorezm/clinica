@@ -4,6 +4,7 @@ namespace App\Livewire\Users;
 
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Livewire\Attributes\Computed;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -58,8 +59,12 @@ class Index extends Component
                 $this->reset();
                 $this->showModal = false;
             } catch (\Exception $e) {
+                Log::error($e->getMessage());
+                DB::rollBack();
                 $this->error('Erro ao excluir usuários.');
-                throw $e;
+            } finally {
+                $this->selected = [];
+                $this->showModal = false;
             }
         });
     }

@@ -38,6 +38,7 @@ abstract class Form extends Component
             'doctor_id.required' => 'O médico é obrigatório.',
 
             'time.required' => 'O horário é obrigatório.',
+            'date.after_or_equal' => 'A data deve ser hoje ou uma data futura.',
         ]);
     }
 

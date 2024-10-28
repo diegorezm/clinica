@@ -13,8 +13,7 @@
         <x-choices label="Dias de trabalho" allow-all allow-all-text="Selecionar todos" remove-all-text="Remover todos"
             wire:model="work_days" :options="$this->workDaysOpts" multiple />
 
-        <x-choices label="Periodos" allow-all allow-all-text="Selecionar todos" remove-all-text="Remover todos"
-            wire:model="work_periods" :options="$this->workPeriodsOpts" multiple />
+        <x-input label="Periodos" wire:model="period" error-field="period" icon="o-clock" clearable />
 
         <x-slot:actions>
             <x-button link="{{ url()->previous() }}" label="Cancelar" icon="o-x-mark" class="btn-outline" />

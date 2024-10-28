@@ -40,7 +40,6 @@ class Show extends Component
                     Log::error($e->getMessage());
                     $this->error($e->getMessage());
                     DB::rollBack();
-                    throw $e;
                 }
             });
         } else {
@@ -55,13 +54,6 @@ class Show extends Component
     {
         $sortedWorkDays = $this->doctor->workDays()->orderBy('day')->get();
         return $sortedWorkDays->map(fn ($workDay) => $workDay->day_name)->toArray();
-    }
-
-    #[Computed()]
-    public function showWorkPeriods()
-    {
-        $sortedWorkPeriods = $this->doctor->workPeriods()->orderBy('period')->get();
-        return $sortedWorkPeriods->map(fn ($workPeriod) => $workPeriod->period_name)->toArray();
     }
 
     public function render()

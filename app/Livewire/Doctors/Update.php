@@ -29,7 +29,6 @@ class Update extends Form
                 Log::error($e->getMessage());
                 $this->error('Erro ao atualizar registro.');
                 DB::rollBack();
-                throw $e;
             }
         });
     }
@@ -49,20 +48,15 @@ class Update extends Form
     {
         $this->validate($this->doctorRules());
         $doctor = Doctor::find($this->doctor_id);
-        $doctor->update([
-            'specialty' => $this->specialty,
-            'crm' => $this->crm,
-        ]);
+        $doctor->specialty = $this->specialty;
+        $doctor->crm = $this->crm;
+        $doctor->period = $this->period;
+        $doctor->save();
 
         // there has to be a better way to do this
         $doctor->workDays()->delete();
-        $doctor->workPeriods()->delete();
-
         $workDayData = array_map(fn ($day) => ['doctor_id' => $doctor->id, 'day' => $day], $this->work_days);
         $doctor->workDays()->insert($workDayData);
-
-        $workPeriodData = array_map(fn ($period) => ['doctor_id' => $doctor->id, 'period' => $period], $this->work_periods);
-        $doctor->workPeriods()->insert($workPeriodData);
     }
 
     public function mount(Doctor $doctor)
@@ -80,8 +74,8 @@ class Update extends Form
         $this->specialty = $doctor->specialty;
         $this->crm = $doctor->crm;
         $this->user_id = $doctor->user_id;
+        $this->period = $doctor->period;
         $this->work_days = $doctor->workDays()->select('day')->pluck('day')->toArray();
-        $this->work_periods = $doctor->workPeriods()->select('period')->pluck('period')->toArray();
     }
 
     public function render()

@@ -14,7 +14,7 @@ trait AppointmentRules
             'obs' => 'nullable|string|max:1000',
         ];
         if (!$forUpdate) {
-            $rules['date'] = 'required|date|after:today';
+            $rules['date'] = 'required|date|after_or_equal:today';
         } else {
             $rules['date'] = 'required|date';
         }

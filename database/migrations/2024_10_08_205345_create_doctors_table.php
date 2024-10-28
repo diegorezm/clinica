@@ -16,6 +16,7 @@ return new class extends Migration
             $table->id();
             $table->string('crm');
             $table->string('specialty');
+            $table->string('period');
             $table->foreignIdFor(User::class)->constrained()->unique()->onDelete('cascade');
             $table->timestamps();
         });
