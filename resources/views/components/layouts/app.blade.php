@@ -24,12 +24,16 @@
         <x-slot:sidebar drawer="main-drawer" class="bg-base-100 lg:bg-inherit">
             <x-menu activate-by-route class="h-full">
                 <x-menu-item title="Pacientes" icon="o-users" link="/dashboard/patients" />
-                <x-menu-item title="Doutores" icon="o-clipboard-document-list" link="/dashboard/doctors" />
-                <x-menu-sub title="Consultas" icon="o-calendar">
-                    <x-menu-item title="Todas as consultas" icon="o-list-bullet" link="/dashboard/appointments" />
-                    <x-menu-item title="Horarios disponiveis" icon="o-check-badge"
-                        link="/dashboard/appointments/available" />
-                </x-menu-sub>
+                @if (auth()->user()->role == 'doctor' && auth()->user()->doctor)
+                    <x-menu-item title="Minhas consultas" icon="o-calendar" :link="route('doctors.show', ['doctor' => auth()->user()->doctor->id])" />
+                @else
+                    <x-menu-item title="Doutores" icon="o-clipboard-document-list" link="/dashboard/doctors" />
+                    <x-menu-sub title="Consultas" icon="o-calendar">
+                        <x-menu-item title="Todas as consultas" icon="o-list-bullet" link="/dashboard/appointments" />
+                        <x-menu-item title="Horarios disponiveis" icon="o-check-badge"
+                            link="/dashboard/appointments/available" />
+                    </x-menu-sub>
+                @endif
                 @if (auth()->user()->role == 'admin')
                     <x-menu-item title="Usuários" icon="o-users" link="/dashboard/users" />
                 @endif

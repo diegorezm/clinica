@@ -8,6 +8,7 @@ use App\Http\Controllers\PatientController;
 use App\Http\Controllers\PatientReferralController;
 use App\Http\Controllers\UserController;
 use App\Http\Middleware\AdminMiddleware;
+use App\Http\Middleware\NoDoctorAllowed;
 use Illuminate\Http\Request;
 
 Route::get("/", fn () => redirect('/dashboard/patients'));
@@ -40,11 +41,11 @@ Route::group(['prefix' => 'dashboard', 'middleware' => AuthMiddleware::class], f
         Route::get("/", [DoctorController::class, 'index']);
         Route::get("/create", [DoctorController::class, 'create'])->middleware(AdminMiddleware::class);
         Route::get("/update/{doctor}", [DoctorController::class, 'update'])->middleware(AdminMiddleware::class);
-        Route::get("/show/{doctor}", [DoctorController::class, 'show']);
+        Route::get("/show/{doctor}", [DoctorController::class, 'show'])->name('doctors.show');
     });
 
     Route::group(['prefix' => 'appointments'], function () {
-        Route::get("/", [AppointmentController::class, 'index']);
+        Route::get("/", [AppointmentController::class, 'index'])->middleware(NoDoctorAllowed::class);
         Route::get("/available", [AppointmentController::class, 'available']);
         Route::get("/create", [AppointmentController::class, 'create'])->name('appointments.create');
         Route::get("/update/{appointment}", [AppointmentController::class, 'update']);

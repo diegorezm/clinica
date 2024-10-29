@@ -44,23 +44,29 @@
                 <livewire:appointments.available :doctor_id="$doctor->id" />
             </x-tab>
             <x-tab name="2" label="Horarios">
-                <x-card>
+                <x-card class="w-full flex items-center">
                     <div class="grid place-items-center grid-cols-1 md:grid-cols-2 gap-4 w-full">
-                        @foreach ($workHours as $day => $hours)
-                            <x-card title="{{ $this->getDayName($day) }}" class="w-full" shadow separator>
-                                <div class="mt-2 space-y-2">
-                                    @foreach ($hours as $slot)
-                                        <div class="flex flex-row justify-center items-center gap-4">
-                                            <p><strong>Começa às:</strong>
-                                                {{ \Carbon\Carbon::parse($slot['start_time'])->format('H:i') }}</p>
-                                            <p><strong>Termina às:</strong>
-                                                {{ \Carbon\Carbon::parse($slot['end_time'])->format('H:i') }}</p>
-                                            <p><strong>Intervalo:</strong> {{ $slot['interval'] }} minutos</p>
-                                        </div>
-                                    @endforeach
-                                </div>
-                            </x-card>
-                        @endforeach
+                        @if (count($workHours) > 0)
+                            @foreach ($workHours as $day => $hours)
+                                <x-card title="{{ $this->getDayName($day) }}" class="w-full" shadow separator>
+                                    <div class="mt-2 space-y-6">
+                                        @foreach ($hours as $index => $slot)
+                                            <div class="flex flex-row justify-center items-center gap-4">
+                                                <p><strong>Slot #{{ $index + 1 }}</strong></p>
+                                                <p><strong>Começa às:</strong>
+                                                    {{ \Carbon\Carbon::parse($slot['start_time'])->format('H:i') }}</p>
+                                                <p><strong>Termina às:</strong>
+                                                    {{ \Carbon\Carbon::parse($slot['end_time'])->format('H:i') }}</p>
+                                                <p><strong>Intervalo entre as consultas:</strong>
+                                                    {{ $slot['interval'] }} minutos</p>
+                                            </div>
+                                        @endforeach
+                                    </div>
+                                </x-card>
+                            @endforeach
+                        @else
+                            <x-icon name="o-cube" label="Nenhum horário cadastrado." />
+                        @endif
                     </div>
                 </x-card>
             </x-tab>
