@@ -17,10 +17,10 @@ abstract class Form extends Component
     use Toast, AppointmentRules;
 
     #[Url(as: 'date')]
-    public string $date;
+    public ?string $date = null;
 
     #[Url(as: 'time')]
-    public string $time;
+    public ?string $time = null;
 
     public string $status = AppointmentStatus::P->value;
     public ?string $obs = null;
