@@ -5,11 +5,10 @@ namespace Database\Seeders;
 use App\Models\Appointment;
 use App\Models\Doctor;
 use App\Models\DoctorWorkDays;
-use App\Models\DoctorWorkPeriod;
+use App\Models\DoctorWorkingHour;
 use App\Models\Patient;
 use App\Models\PatientReferral;
 use App\Models\User;
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 
@@ -48,6 +47,9 @@ class DatabaseSeeder extends Seeder
         Doctor::query()->inRandomOrder()->get()
             ->each(function (Doctor $doctor) {
                 DoctorWorkDays::factory()->count(3)->create([
+                    'doctor_id' => $doctor->id
+                ]);
+                DoctorWorkingHour::factory()->count(3)->create([
                     'doctor_id' => $doctor->id
                 ]);
             });

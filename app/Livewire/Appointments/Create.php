@@ -17,8 +17,12 @@ class Create extends Form
         $this->doctorSearch();
         $this->patientSearch();
 
-        $this->date = now()->format('Y-m-d');
-        $this->time = '00:00';
+        if ($this->date == null) {
+            $this->date = now()->format('Y-m-d');
+        }
+        if ($this->time == null) {
+            $this->time = now()->format('H:i');
+        }
     }
 
     public function submit()

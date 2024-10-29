@@ -29,4 +29,9 @@ class AppointmentController extends Controller
             'appointment' => $appointment
         ]);
     }
+
+    public function available()
+    {
+        return view('pages.appointments.available');
+    }
 }

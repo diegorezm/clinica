@@ -12,10 +12,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('doctor_work_periods', function (Blueprint $table) {
+        Schema::create('doctor_working_hours', function (Blueprint $table) {
             $table->id();
-            // 0 - morning, 1 - afternoon, 2 - night
-            $table->enum('period', [0, 1, 2]);
+            $table->enum('day', ['1', '2', '3', '4', '5', '6']);
+            $table->unsignedSmallInteger('interval')->default(40);
+            $table->time('start_time');
+            $table->time('end_time');
             $table->foreignIdFor(Doctor::class);
             $table->timestamps();
         });
@@ -26,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('doctor_work_periods');
+        Schema::dropIfExists('doctor_working_hours');
     }
 };

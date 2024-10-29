@@ -5,6 +5,7 @@ namespace App\Livewire\Doctors;
 use App\Models\Doctor;
 use App\Models\DoctorWorkDays;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
@@ -14,6 +15,7 @@ use Illuminate\Support\Facades\Log;
 class Create extends Form
 {
     public int $doctor_id = -1;
+
     public function submit()
     {
         if (!Gate::allows('admin', Auth::user())) {
@@ -56,7 +58,8 @@ class Create extends Form
     protected function submitDoctor()
     {
         if (is_null($this->user_id)) {
-            $this->error('User must be created before creating a doctor.');
+            $this->error('Algo deu errado!');
+            throw new \InvalidArgumentException('User must be created before creating a doctor.');
             return;
         }
         $this->validateDoctor();
@@ -67,13 +70,30 @@ class Create extends Form
         $doctor->user_id = $this->user_id;
         $doctor->specialty = $this->specialty;
         $doctor->crm = $this->crm;
-        $doctor->period = $this->period;
         $doctor->save();
 
         $this->doctor_id = $doctor->id;
 
         $workDayData = array_map(fn ($day) => ['doctor_id' => $doctor->id, 'day' => $day], $this->work_days);
         DoctorWorkDays::insert($workDayData);
+
+        foreach ($this->workingHours as $day => $hours) {
+            if (empty($hours)) continue;
+            foreach ($hours as $hour) {
+
+                $this->validateWorkingHours($hour['start_time'], $hour['end_time'], $day);
+
+                $startDate = Carbon::createFromFormat('H:i', $hour['start_time']);
+                $endDate = Carbon::createFromFormat('H:i', $hour['end_time']);
+                $doctor->workHours()->create([
+                    'day' => $day,
+                    'start_time' => $startDate->format('H:i:s'),
+                    'end_time' => $endDate->format('H:i:s'),
+                    'interval' => $hour['interval'],
+                    'doctor_id' => $doctor->id
+                ]);
+            }
+        }
     }
 
     public function render()

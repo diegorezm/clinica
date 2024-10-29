@@ -15,8 +15,13 @@ use Mary\Traits\Toast;
 abstract class Form extends Component
 {
     use Toast, AppointmentRules;
+
+    #[Url(as: 'date')]
     public string $date;
+
+    #[Url(as: 'time')]
     public string $time;
+
     public string $status = AppointmentStatus::P->value;
     public ?string $obs = null;
     #[Url(as: 'doctorId')]

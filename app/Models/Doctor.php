@@ -32,9 +32,9 @@ class Doctor extends Model
         return $this->hasMany(DoctorWorkDays::class);
     }
 
-    public function workPeriods()
+    public function workHours()
     {
-        return $this->hasMany(DoctorWorkPeriod::class);
+        return $this->hasMany(DoctorWorkingHour::class);
     }
 
     public function casts()

@@ -4,6 +4,7 @@ namespace App\Livewire\Doctors;
 
 use App\Models\Doctor;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
@@ -50,13 +51,30 @@ class Update extends Form
         $doctor = Doctor::find($this->doctor_id);
         $doctor->specialty = $this->specialty;
         $doctor->crm = $this->crm;
-        $doctor->period = $this->period;
         $doctor->save();
 
         // there has to be a better way to do this
         $doctor->workDays()->delete();
         $workDayData = array_map(fn ($day) => ['doctor_id' => $doctor->id, 'day' => $day], $this->work_days);
         $doctor->workDays()->insert($workDayData);
+
+        $doctor->workHours()->delete();
+
+        foreach ($this->workingHours as $day => $hours) {
+            if (!in_array($day, $this->work_days) || empty($hours)) continue;
+            foreach ($hours as $hour) {
+                $this->validateWorkingHours($hour['start_time'], $hour['end_time'], $day);
+                $startTime = Carbon::createFromFormat('H:i', $hour['start_time']);
+                $endTime = Carbon::createFromFormat('H:i', $hour['end_time']);
+                $doctor->workHours()->create([
+                    'day' => $day,
+                    'start_time' => $startTime->format('H:i:s'),
+                    'end_time' => $endTime->format('H:i:s'),
+                    'interval' => $hour['interval'],
+                    'doctor_id' => $doctor->id
+                ]);
+            }
+        }
     }
 
     public function mount(Doctor $doctor)
@@ -74,8 +92,21 @@ class Update extends Form
         $this->specialty = $doctor->specialty;
         $this->crm = $doctor->crm;
         $this->user_id = $doctor->user_id;
-        $this->period = $doctor->period;
         $this->work_days = $doctor->workDays()->select('day')->pluck('day')->toArray();
+
+        foreach ($doctor->workHours as $hour) {
+            $day = $hour->day;
+            if (!isset($this->workingHours[$day])) {
+                $this->workingHours[$day] = [];
+            }
+            $startTime = Carbon::createFromFormat('H:i:s', $hour->start_time);
+            $endTime = Carbon::createFromFormat('H:i:s', $hour->end_time);
+            $this->workingHours[$day][] = [
+                'start_time' => $startTime->format('H:i'),
+                'end_time' => $endTime->format('H:i'),
+                'interval' => $hour->interval,
+            ];
+        }
     }
 
     public function render()
