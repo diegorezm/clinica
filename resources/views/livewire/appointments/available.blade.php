@@ -12,11 +12,18 @@
         </x-slot:middle>
 
     </x-header>
+    <div class="space-y-2">
+        <h2>Filtrando por: </h2>
+        <div class="flex gap-2">
+            <x-badge value="Ano: {{ $filters['year'] ?? 'Todos' }}" class="badge-primary" />
+            <x-badge value="Mês: {{ $this->getMonthName($filters['month']) }}" class="badge-primary" />
+            <x-badge value="Dia: {{ $this->getDayName($filters['day_of_the_week']) }}" class="badge-primary" />
+        </div>
+    </div>
 
-    <x-card>
+    <x-card class="mt-4">
         <x-table :headers="$this->headers" :rows="$this->availableTimes"
             link="/dashboard/appointments/create?time={time}&date={date}&doctorId={doctor_id}">
-
             <x-slot:empty>
                 <x-icon name="o-cube" label="A tabela esta vazia." />
             </x-slot:empty>

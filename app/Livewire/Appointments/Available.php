@@ -91,7 +91,7 @@ class Available extends Component
                             'doctor_id' => $doctor->id,
                             'name' => $doctor->user->name,
                             'crm' => $doctor->crm,
-                            'date' => $availableDateTime->format('Y-m-d'),
+                            'date' => $availableDateTime->format('d-m-Y'),
                             'month' => $this->getMonthName($this->filters['month']),
                             'year' => $this->filters['year'],
                             'day' => $this->getDayName($dayOfWeek),
@@ -106,7 +106,6 @@ class Available extends Component
                 $currentDate->addDay();
             }
         }
-
         return $availableTimes;
     }
 
@@ -120,6 +119,7 @@ class Available extends Component
             DaysOfTheWeek::Quinta->value => DaysOfTheWeek::Quinta->getName(),
             DaysOfTheWeek::Sexta->value => DaysOfTheWeek::Sexta->getName(),
             DaysOfTheWeek::Sábado->value => DaysOfTheWeek::Sábado->getName(),
+            "" => "Todos",
         ][$day_id];
     }
 
@@ -141,6 +141,7 @@ class Available extends Component
             12 => 'Dezembro',
         ][$month_id];
     }
+
 
     public function clear(): void
     {
