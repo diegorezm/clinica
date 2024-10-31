@@ -6,7 +6,7 @@
                 icon="o-magnifying-glass" />
         </x-slot:middle>
         <x-slot:actions>
-            <x-button label="Novo" icon="o-plus" class="btn-primary" link="/dashboard/users/create" />
+            <x-button label="Novo" icon="o-plus" class="btn-primary" link="/dashboard/users/create" responsive />
             <x-buttons.bulkdelete />
         </x-slot:actions>
     </x-header>

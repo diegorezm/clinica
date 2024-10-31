@@ -12,7 +12,8 @@
         </x-slot:middle>
 
     </x-header>
-    <div class="space-y-2">
+
+    <div class="hidden md:flex flex-col gap-2">
         <h2>Filtrando por: </h2>
         <div class="flex gap-2">
             <x-badge value="Ano: {{ $filters['year'] ?? 'Todos' }}" class="badge-primary" />

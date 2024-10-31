@@ -18,8 +18,18 @@
         </x-slot:actions>
     </x-header>
 
+    <div class="hidden md:flex flex-col gap-2">
+        <h2>Filtrando por: </h2>
+        <div class="flex gap-2">
+            <x-badge value="Ano: {{ $filters['year'] ?? 'Todos' }}" class="badge-primary" />
+            <x-badge value="Mês: {{ $this->getMonthName($filters['month']) }}" class="badge-primary" />
+            @if ($filters['status'])
+                <x-badge value="Status: {{ $this->getStatusName($filters['status']) }}" class="badge-primary" />
+            @endif
+        </div>
+    </div>
     <!-- TABLE  -->
-    <x-card>
+    <x-card class="mt-4">
         <x-table :headers="$this->headers" selectable wire:model="selected" :rows="$this->appointments" :sort-by="$sortBy"
             link="/dashboard/appointments/show/{id}" with-pagination>
             <x-slot:empty>

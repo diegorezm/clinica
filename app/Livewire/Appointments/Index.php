@@ -7,6 +7,7 @@ use Livewire\Attributes\Computed;
 use Livewire\Component;
 use Livewire\WithPagination;
 use App\Enums\AppointmentStatus;
+use App\Utils\DateUtils;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -148,25 +149,6 @@ class Index extends Component
         ];
     }
 
-    #[Computed()]
-    protected function monthOpts()
-    {
-        return [
-            ['id' => '01', 'name' => 'Janeiro'],
-            ['id' => '02', 'name' => 'Fevereiro'],
-            ['id' => '03', 'name' => 'Março'],
-            ['id' => '04', 'name' => 'Abril'],
-            ['id' => '05', 'name' => 'Maio'],
-            ['id' => '06', 'name' => 'Junho'],
-            ['id' => '07', 'name' => 'Julho'],
-            ['id' => '08', 'name' => 'Agosto'],
-            ['id' => '09', 'name' => 'Setembro'],
-            ['id' => '10', 'name' => 'Outubro'],
-            ['id' => '11', 'name' => 'Novembro'],
-            ['id' => '12', 'name' => 'Dezembro'],
-        ];
-    }
-
     public function delete()
     {
         if (count($this->selected) == 0) {
@@ -188,6 +170,43 @@ class Index extends Component
             }
         });
     }
+
+    #[Computed()]
+    protected function monthOpts()
+    {
+        return DateUtils::monthOpts();
+    }
+
+    #[Computed()]
+    protected function workDaysOpts()
+    {
+        return DateUtils::workDaysOpts();
+    }
+
+    #[Computed()]
+    protected function getDayName($day_id)
+    {
+        return DateUtils::getDayName($day_id);
+    }
+
+    #[Computed()]
+    protected function getMonthName($month_id)
+    {
+        return DateUtils::getMonthName($month_id);
+    }
+
+    #[Computed()]
+    protected function getStatusName($status_id)
+    {
+        return [
+            AppointmentStatus::P->value => AppointmentStatus::P->getName(),
+            AppointmentStatus::F->value => AppointmentStatus::F->getName(),
+            AppointmentStatus::FJ->value => AppointmentStatus::FJ->getName(),
+            AppointmentStatus::FM->value => AppointmentStatus::FM->getName(),
+            AppointmentStatus::OK->value => AppointmentStatus::OK->getName(),
+        ][$status_id];
+    }
+
 
     public function mount(int $patient_id = null, int $doctor_id = null)
     {

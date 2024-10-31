@@ -3,6 +3,7 @@
 namespace App\Livewire\Doctors;
 
 use App\Models\Doctor;
+use App\Utils\DateUtils;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
@@ -17,15 +18,31 @@ class Index extends Component
 
     use Toast, WithPagination;
 
-    public string $search = '';
-
     public int $perPage = 10;
 
     public array $selected = [];
 
     public bool $showModal = false;
 
+    public bool $showDrawer = false;
+
+    public array $filters = [
+        "search" => null,
+        "workDay" => null
+    ];
+
     public array $sortBy = ['column' => 'id', 'direction' => 'asc'];
+
+    public function clear()
+    {
+        $this->filters = [
+            "search" => null,
+            "workDay" => null
+        ];
+
+        $this->reset();
+        $this->resetPage();
+    }
 
     #[Computed()]
     public function headers()
@@ -40,19 +57,37 @@ class Index extends Component
     }
 
     #[Computed()]
+    protected function workDaysOpts()
+    {
+        return DateUtils::workDaysOpts();
+    }
+
+    #[Computed()]
+    protected function getDayName($day_id)
+    {
+        return DateUtils::getDayName($day_id);
+    }
+
+    #[Computed()]
     public function doctors()
     {
         $query = Doctor::with('user:id,name,email')
-            ->select('id', 'user_id', 'crm', 'specialty');
-
-        if ($this->search) {
-            $this->setPage(1);
-            $query->whereHas('user', function ($q) {
-                $q->where('name', 'like', "%{$this->search}%");
+            ->select('id', 'user_id', 'crm', 'specialty')
+            ->when($this->filters['search'], function ($query) {
+                $this->setPage(1);
+                $query->whereHas('user', function ($q) {
+                    $q->where('name', 'like', "%{$this->filters['search']}%")
+                        ->orWhere('email', 'like', "%{$this->filters['search']}%");
+                })->orWhere('crm', 'like', "%{$this->filters['search']}%")
+                    ->orWhere('specialty', 'like', "%{$this->filters['search']}%");;
             })
-                ->orWhere('crm', 'like', "%{$this->search}%")
-                ->orWhere('cid', 'like', "%{$this->search}%");
-        }
+            ->when($this->filters['workDay'], function ($query) {
+                $this->setPage(1);
+                $query->whereHas('workDays', function ($q) {
+                    $q->where('day', $this->filters['workDay']);
+                });
+            });
+
         $query->orderBy($this->sortBy['column'], $this->sortBy['direction']);
         return $query->paginate($this->perPage);
     }
