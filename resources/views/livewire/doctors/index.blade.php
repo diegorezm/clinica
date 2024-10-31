@@ -17,10 +17,18 @@
                 <x-buttons.bulkdelete />
             </x-slot:actions>
         @endif
+
     </x-header>
 
+    <div class="hidden md:flex flex-col gap-2">
+        <h2>Filtrando por: </h2>
+        <div class="flex gap-2">
+            <x-badge value="Dia: {{ $this->getDayName($filters['workDay']) }}" class="badge-primary" />
+        </div>
+    </div>
+
     <!-- TABLE  -->
-    <x-card>
+    <x-card class="mt-4">
         @if (Auth::user()->role == 'admin')
             <x-table :headers="$this->headers" selectable wire:model="selected" :rows="$this->doctors" :sort-by="$sortBy"
                 link="/dashboard/doctors/show/{id}" with-pagination>
