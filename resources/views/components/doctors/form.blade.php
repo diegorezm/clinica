@@ -2,14 +2,12 @@
     <x-form wire:submit.prevent="submit">
         <x-button link="{{ url()->previous() }}" icon="o-arrow-left" class="btn-circle btn-outline btn-sm" />
 
-        <x-tabs wire:model="selectedTab">
-            <x-tab name="0" label="Informações" class="space-y-2">
+        <x-steps wire:model="selectedTab">
+            <x-step step="0" text="Informações" class="space-y-2">
                 <x-input label="Nome" wire:model="name" error-field="name" icon="o-user" clearable />
                 <x-input label="Email" wire:model="email" error-field="email" icon="o-envelope" clearable />
-                @if ($showPassword)
-                    <x-password autocomplete="new-password" label="Senha" wire:model="password" error-field="password"
-                        password-icon="o-lock-closed" password-visible-icon="o-lock-open" clearable />
-                @endif
+                <x-password autocomplete="new-password" label="Senha" wire:model="password" error-field="password"
+                    password-icon="o-lock-closed" password-visible-icon="o-lock-open" clearable />
                 <x-input label="CRM" wire:model="crm" error-field="crm" icon="s-identification" clearable />
                 <x-input label="Especialidade" wire:model="specialty" error-field="specialty" icon="o-clipboard"
                     clearable />
@@ -22,9 +20,9 @@
                     <x-button label="Próximo" class="btn-primary"
                         @click="$wire.selectedTab = '1'; $wire.loadWorkingDays()" />
                 </div>
-            </x-tab>
+            </x-step>
 
-            <x-tab name="1" label="Horarios" class="space-y-4">
+            <x-step step="1" text="Horários de trabalho" class="space-y-2">
                 <h4 class="font-bold">Dias de Trabalho Selecionados:</h4>
                 <div class="grid place-items-center grid-cols-1 md:grid-cols-2 gap-4 w-full">
                     @foreach ($this->work_days as $day)
@@ -52,12 +50,13 @@
                     @endforeach
                 </div>
 
-                <div class="mt-4 space-x-2">
+                <div class="mt-12 space-x-2">
                     <x-button label="Voltar" class="btn-outline" type="button" @click="$wire.selectedTab = '0'" />
                     <x-button label="Salvar" icon="o-check" class="btn-primary" type="submit" spinner="submit" />
                 </div>
-            </x-tab>
+            </x-step>
 
-        </x-tabs>
+        </x-steps>
+        <x-errors title="Oops!" description="Ocorreu um erro ao criar o doutor." icon="o-face-frown" />
     </x-form>
 </x-card>
