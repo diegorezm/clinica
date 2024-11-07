@@ -26,6 +26,8 @@ class Index extends Component
     public bool $showModal = false;
 
     public bool $showDrawer = false;
+    public $currentYear;
+    public $currentMonth;
 
     public array $filters = [
         'month' => null,
@@ -107,19 +109,15 @@ class Index extends Component
                         $subQuery->where('name', 'like', "%{$this->search}%")->orWhere('rg', 'like', "%{$this->search}%");
                     });
             })->when($this->filters['month'], function ($query) {
-                $this->setPage(1);
                 $query->whereMonth('date', $this->filters['month']);
             })
             ->when($this->filters['year'], function ($query) {
-                $this->setPage(1);
                 $query->whereYear('date', $this->filters['year']);
             })
             ->when($this->filters['status'], function ($query) {
-                $this->setPage(1);
                 $query->where('status', $this->filters['status']);
             })
             ->when($this->filters['time'], function ($query) {
-                $this->setPage(1);
                 $t = Carbon::createFromFormat('H:i', $this->filters['time'])->format('H:i:s');
                 $query->whereTime('date', $t);
             })
@@ -207,6 +205,12 @@ class Index extends Component
         ][$status_id];
     }
 
+    #[Computed()]
+    public function isCurrentYearAndMonth($date)
+    {
+        return $date->format('Y') == now()->year && $date->format('m') == now()->month;
+    }
+
 
     public function mount(int $patient_id = null, int $doctor_id = null)
     {
@@ -216,6 +220,9 @@ class Index extends Component
         if ($doctor_id) {
             $this->filters['doctor'] = $doctor_id;
         }
+
+        $this->currentYear = now()->year;
+        $this->currentMonth = now()->month;
     }
 
     public function render()
