@@ -22,11 +22,14 @@ class Available extends Component
         'day_of_the_week' => null,
     ];
 
-
+    // TODO: This feels very slow, but i don't know how to make it faster or even if its possible to
+    // make it faster. But i should think about improving it somehow.
+    // This method is used to generate the available work times for the current month
+    // and year. I don't think you should run it without a year and a month, it
+    // would take too long.
     #[Computed()]
     public function availableTimes()
     {
-
         // Fetch all doctors, apply filters if they exist
         $doctors = Doctor::with(['workHours', 'workDays'])
             ->when($this->filters['doctor_id'], function ($query) {
@@ -52,13 +55,15 @@ class Available extends Component
 
         // For each doctor
         foreach ($doctors as $doctor) {
-            // Get the appointments of this doctor
+            // Get the appointments of this doctor, might be unnecessary when i'm already filtering by doctor
+            // but i don't think it's a problem
             $doctorAppointments = $appointments->filter(fn ($appointment) => $appointment->doctor_id === $doctor->id);
             $workHoursByDay = $doctor->workHours->groupBy('day');
 
             $currentDate = Carbon::create($this->filters['year'], $this->filters['month'], 1);
             $endOfMonth = $currentDate->copy()->endOfMonth();
 
+            // Go through each day of the month
             while ($currentDate <= $endOfMonth) {
                 $dayOfWeek = $currentDate->dayOfWeekIso;
 
@@ -87,6 +92,7 @@ class Available extends Component
                     while ($startTime < $endTime) {
                         $availableDateTime = $currentDate->copy()->setTimeFrom($startTime);
 
+                        // If the time is in the past, skip it
                         if ($availableDateTime->isPast()) {
                             $startTime->addMinutes($interval);
                             continue;
@@ -114,6 +120,7 @@ class Available extends Component
                             'time' => $startTime->format('H:i'),
                         ];
 
+                        // Add the interval to the start time
                         $startTime->addMinutes($interval);
                     }
                 }
