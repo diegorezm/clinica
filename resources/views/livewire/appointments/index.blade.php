@@ -23,9 +23,13 @@
         <div class="flex gap-2">
             <x-badge value="Ano: {{ $filters['year'] ?? 'Todos' }}" class="badge-primary" />
             <x-badge value="Mês: {{ $this->getMonthName($filters['month']) }}" class="badge-primary" />
+            @if ($filters['day'])
+                <x-badge value="Dia: {{ $this->formatDate($filters['day']) }}" class="badge-primary" />
+            @endif
             @if ($filters['status'])
                 <x-badge value="Status: {{ $this->getStatusName($filters['status']) }}" class="badge-primary" />
             @endif
+
         </div>
     </div>
     <!-- TABLE  -->
@@ -53,6 +57,13 @@
                 :options="$this->yearOpts()" single searchable placeholder="Selecione..." />
             <x-choices-offline label="Mês" wire:model.live="filters.month" :options="$this->monthOpts()" single searchable
                 placeholder="Selecione..." />
+
+            <x-input label="Dia" wire:model.live="filters.day" type="date">
+                <x-slot:append>
+                    <x-button label="Hoje" class="btn-primary rounded-s-none" wire:click="setDayToCurrentDay" />
+                </x-slot:append>
+            </x-input>
+
             <x-input label="Horario" wire:model.live="filters.time" type="time" />
             <x-choices label="Status" wire:model.live="filters.status" :options="$this->statusOpts()" single />
             <x-button label="Limpar" class="btn-primary" wire:click="clear" icon="m-bars-3-bottom-left" />

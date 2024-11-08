@@ -34,6 +34,7 @@ class Index extends Component
         'year' => null,
         'status' => null,
         'doctor' => null,
+        'day' => null,
         'patient' => null,
         'time' => null
     ];
@@ -53,6 +54,8 @@ class Index extends Component
             $this->filters['patient'] = $patientId;
         }
     }
+
+
     #[Computed()]
     protected function yearOpts()
     {
@@ -113,6 +116,8 @@ class Index extends Component
             })
             ->when($this->filters['year'], function ($query) {
                 $query->whereYear('date', $this->filters['year']);
+            })->when($this->filters['day'], function ($query) {
+                $query->whereDay('date', $this->filters['day']);
             })
             ->when($this->filters['status'], function ($query) {
                 $query->where('status', $this->filters['status']);
@@ -188,6 +193,13 @@ class Index extends Component
     }
 
     #[Computed()]
+    public function formatDate($date)
+    {
+        $d = Carbon::createFromFormat('d/m/Y', $date);
+        return $d->format('d/m/Y');
+    }
+
+    #[Computed()]
     protected function getMonthName($month_id)
     {
         return DateUtils::getMonthName($month_id);
@@ -205,10 +217,9 @@ class Index extends Component
         ][$status_id];
     }
 
-    #[Computed()]
-    public function isCurrentYearAndMonth($date)
+    public function setDayToCurrentDay()
     {
-        return $date->format('Y') == now()->year && $date->format('m') == now()->month;
+        $this->filters['day'] = now()->format('d/m/Y');
     }
 
 
