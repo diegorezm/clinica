@@ -6,7 +6,6 @@ use App\Models\Doctor;
 use Carbon\Carbon;
 use Livewire\Attributes\Computed;
 use Livewire\Component;
-use App\Enums\DaysOfTheWeek;
 use App\Models\Appointment;
 use App\Utils\DateUtils;
 use Mary\Traits\Toast;
@@ -20,7 +19,7 @@ class Available extends Component
         'doctor_id' => null,
         'month' => null,
         'year' => null,
-        'day_of_the_week' => null
+        'day_of_the_week' => null,
     ];
 
 
@@ -28,7 +27,7 @@ class Available extends Component
     public function availableTimes()
     {
 
-        // Fetch all doctors
+        // Fetch all doctors, apply filters if they exist
         $doctors = Doctor::with(['workHours', 'workDays'])
             ->when($this->filters['doctor_id'], function ($query) {
                 $query->where('id', $this->filters['doctor_id']);
@@ -41,7 +40,20 @@ class Available extends Component
 
         $availableTimes = [];
 
+        // prefech appointments for current time range
+        $appointments = Appointment::query()
+            ->when($this->filters['doctor_id'], function ($query) {
+                $query->where('doctor_id', $this->filters['doctor_id']);
+            })->when($this->filters['year'], function ($query) {
+                $query->whereYear('date', $this->filters['year']);
+            })->when($this->filters['month'], function ($query) {
+                $query->whereMonth('date', $this->filters['month']);
+            })->get();
+
+        // For each doctor
         foreach ($doctors as $doctor) {
+            // Get the appointments of this doctor
+            $doctorAppointments = $appointments->filter(fn ($appointment) => $appointment->doctor_id === $doctor->id);
             $workHoursByDay = $doctor->workHours->groupBy('day');
 
             $currentDate = Carbon::create($this->filters['year'], $this->filters['month'], 1);
@@ -81,8 +93,11 @@ class Available extends Component
                         }
 
                         // Check for existing appointment at this time
-                        if (Appointment::where('doctor_id', $doctor->id)
-                            ->where('date', $availableDateTime->format('Y-m-d H:i:s'))->exists()
+                        if ($doctorAppointments
+                            ->contains(
+                                fn ($appointment) =>
+                                $appointment->date->format('Y-m-d H:i:s') === $availableDateTime->format('Y-m-d H:i:s')
+                            )
                         ) {
                             $startTime->addMinutes($interval);
                             continue;
@@ -110,7 +125,6 @@ class Available extends Component
         return $availableTimes;
     }
 
-
     public function clear(): void
     {
         $doctorId = $this->filters['doctor_id'];
@@ -129,10 +143,9 @@ class Available extends Component
         return [
             ['key' => 'day', 'label' => 'Dia', 'sortable' => false],
             ['key' => 'date', 'label' => 'Data', 'sortable' => false],
+            ['key' => 'time', 'label' => 'Horario', 'sortable' => false],
             ['key' => 'month', 'label' => 'Mês', 'sortable' => false],
             ['key' => 'name', 'label' => 'Doutor', 'sortable' => false],
-            ['key' => 'crm', 'label' => 'Crm', 'sortable' => false],
-            ['key' => 'time', 'label' => 'Horario', 'sortable' => false],
         ];
     }
 
