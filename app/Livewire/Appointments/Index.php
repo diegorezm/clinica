@@ -117,7 +117,8 @@ class Index extends Component
             ->when($this->filters['year'], function ($query) {
                 $query->whereYear('date', $this->filters['year']);
             })->when($this->filters['day'], function ($query) {
-                $query->whereDay('date', $this->filters['day']);
+                $this->filters['day'] = Carbon::createFromFormat('d/m/Y', $this->filters['day'])->format('Y-m-d');
+                $query->whereDate('date', $this->filters['day']);
             })
             ->when($this->filters['status'], function ($query) {
                 $query->where('status', $this->filters['status']);
