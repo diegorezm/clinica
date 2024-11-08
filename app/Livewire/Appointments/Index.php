@@ -90,9 +90,12 @@ class Index extends Component
     #[Computed()]
     public function headers(): array
     {
+        // Keep in mind that the key "hour" is a placeholder, you should replace it with the real hour (format the date field)
+        // on the template.
         return [
             ['key' => 'id', 'label' => '#', 'class' => 'text-primary'],
             ['key' => 'date', 'label' => 'Data'],
+            ['key' => 'hour', 'label' => 'Horario', 'sortable' => false],
             ['key' => 'doctor.user.name', 'label' => 'Doutor', 'sortable' => false],
             ['key' => 'patient.name', 'label' => 'Paciente', 'sortable' => false],
             ['key' => 'status', 'label' => 'Status', 'class' => 'hidden md:flex', 'sortable' => false],
@@ -137,10 +140,12 @@ class Index extends Component
         return $appointments->orderBy(...array_values($this->sortBy))
             ->paginate($this->perPage);
     }
+
     protected function isValidTimeFormat($time)
     {
         return \DateTime::createFromFormat('H:i', $time) !== false;
     }
+
     #[Computed()]
     protected function statusOpts()
     {

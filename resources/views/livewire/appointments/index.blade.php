@@ -40,7 +40,10 @@
                 <x-icon name="o-cube" label="A tabela esta vazia." />
             </x-slot:empty>
             @scope('cell_date', $appointment)
-                {{ $appointment->date->format('d/m/Y, H:i') }}
+                {{ $appointment->date->format('d/m/Y') }}
+            @endscope
+            @scope('cell_hour', $appointment)
+                {{ $appointment->date->format('H:i') }}
             @endscope
             @scope('cell_status', $appointment)
                 <x-appointments.status :status="$appointment->status" />
