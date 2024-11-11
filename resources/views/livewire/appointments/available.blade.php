@@ -21,10 +21,10 @@
             <x-badge value="Dia: {{ $this->getDayName($filters['day_of_the_week']) }}" class="badge-primary" />
         </div>
     </div>
-    <x-card class=" mt-4 py-4 px-0">
-        <x-table :headers="$this->headers" :rows="$this->availableTimes"
-            link="/dashboard/appointments/create?time={time}&date={date}&doctorId={doctor_id}"
-            class="text-center w-full">
+    <x-card class="mt-4">
+        <x-table :headers="$this->headers" :rows="$this->paginatedAvailableTimes"
+            link="/dashboard/appointments/create?time={time}&date={date}&doctorId={doctor_id}" class=""
+            with-pagination>
             <x-slot:empty>
                 <x-icon name="o-cube" label="A tabela esta vazia." />
             </x-slot:empty>

@@ -3,16 +3,20 @@
 namespace App\Livewire\Appointments;
 
 use App\Models\Doctor;
+use Livewire\WithPagination;
 use Carbon\Carbon;
 use Livewire\Attributes\Computed;
 use Livewire\Component;
 use App\Models\Appointment;
 use App\Utils\DateUtils;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Pagination\Paginator;
+use Illuminate\Support\Collection;
 use Mary\Traits\Toast;
 
 class Available extends Component
 {
-    use Toast;
+    use Toast, WithPagination;
     public bool $showDrawer = false;
     public array $filters = [
         'search' => null,
@@ -130,6 +134,15 @@ class Available extends Component
             }
         }
         return $availableTimes;
+    }
+
+    #[Computed()]
+    public function paginatedAvailableTimes(int $perPage = 20, array $options = [], ?int $page = null)
+    {
+        $page = $page ?: (Paginator::resolveCurrentPage() ?? 1);
+        $availableTimes = $this->availableTimes();
+        $items = $availableTimes instanceof Collection ?  $availableTimes : collect($availableTimes);
+        return new LengthAwarePaginator($items->forPage($page, $perPage), $items->count(), $perPage, $page, $options);
     }
 
     public function clear(): void
