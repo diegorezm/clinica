@@ -120,8 +120,10 @@ class Index extends Component
             ->when($this->filters['year'], function ($query) {
                 $query->whereYear('date', $this->filters['year']);
             })->when($this->filters['day'], function ($query) {
-                $this->filters['day'] = Carbon::createFromFormat('d/m/Y', $this->filters['day'])->format('Y-m-d');
-                $query->whereDate('date', $this->filters['day']);
+                $d = Carbon::createFromFormat('Y-m-d', $this->filters['day']);
+                $this->filters['month'] =  $d->format('m');
+                $this->filters['year'] =   $d->format('Y');
+                $query->whereDate('date', $d);
             })
             ->when($this->filters['status'], function ($query) {
                 $query->where('status', $this->filters['status']);
@@ -136,7 +138,6 @@ class Index extends Component
             ->when($this->filters['patient'], function ($query) {
                 $query->where('patient_id', $this->filters['patient']);
             });
-
         return $appointments->orderBy(...array_values($this->sortBy))
             ->paginate($this->perPage);
     }
@@ -201,7 +202,7 @@ class Index extends Component
     #[Computed()]
     public function formatDate($date)
     {
-        $d = Carbon::createFromFormat('d/m/Y', $date);
+        $d = Carbon::createFromFormat('Y-m-d', $date);
         return $d->format('d/m/Y');
     }
 
@@ -225,7 +226,7 @@ class Index extends Component
 
     public function setDayToCurrentDay()
     {
-        $this->filters['day'] = now()->format('d/m/Y');
+        $this->filters['day'] = now()->format('Y-m-d');
     }
 
 
