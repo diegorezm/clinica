@@ -36,6 +36,7 @@
                 @endif
                 @if (auth()->user()->role == 'admin')
                     <x-menu-item title="Usuários" icon="o-users" link="/dashboard/users" />
+                    <x-menu-item title="Backups" icon="o-document-arrow-down" link="/dashboard/backups" />
                 @endif
 
                 {{-- User --}}

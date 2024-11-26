@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AppointmentController;
+use App\Http\Controllers\BackupController;
 use App\Http\Controllers\DoctorController;
 use App\Http\Middleware\AuthMiddleware;
 use Illuminate\Support\Facades\Route;
@@ -57,5 +58,8 @@ Route::group(['prefix' => 'dashboard', 'middleware' => AuthMiddleware::class], f
         Route::get("/create", [UserController::class, 'create']);
         Route::get("/update/{user}", [UserController::class, 'update']);
         Route::get("/show/{user}", [UserController::class, 'show']);
+    });
+    Route::group(['prefix' => 'backups', 'middleware' => AdminMiddleware::class], function () {
+        Route::get("/", [BackupController::class, 'index']);
     });
 });
