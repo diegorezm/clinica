@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Patients;
 
+use App\Models\Appointment;
 use App\Models\Patient;
 use Illuminate\Support\Facades\DB;
 use Livewire\Attributes\Computed;
@@ -48,7 +49,16 @@ class Index extends Component
     #[Computed()]
     public function patients()
     {
+        $patientIds = [];
+        if (auth()->user()->role == 'doctor') {
+            $patientIds = Appointment::query()->where('doctor_id', auth()->user()->doctor->id)
+                ->pluck('patient_id')->toArray();
+        }
         $patients = Patient::query();
+
+        if (count($patientIds) > 0) {
+            $patients->whereIn('id', $patientIds);
+        }
         if ($this->search) {
             $patients = $patients->where('name', 'like', "%{$this->search}%")
                 ->orWhere('rg', 'like', "%{$this->search}%");

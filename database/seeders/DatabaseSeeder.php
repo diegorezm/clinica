@@ -33,6 +33,17 @@ class DatabaseSeeder extends Seeder
             'password' => Hash::make('regular'),
         ]);
 
+        $regularDoctor = User::factory()->create([
+            'name' => 'doctorguy',
+            'email' => 'doctorguy@admin.com',
+            'role' => 'doctor',
+            'password' => Hash::make('regular'),
+        ]);
+
+        Doctor::factory()->create([
+            'user_id' => $regularDoctor->id
+        ]);
+
         User::factory()->count(50)->create();
         User::query()->inRandomOrder()->limit(30)->get()
             ->each(function (User $user) {
