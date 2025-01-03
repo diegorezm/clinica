@@ -30,7 +30,7 @@ class Show extends Component
 
         $this->workDays = $doctor->workDays()->select('day')->pluck('day')->toArray();
 
-        foreach ($doctor->workHours as $hour) {
+        foreach ($doctor->workHours->sortBy('day') as $hour) {
             $day = $hour->day;
             if (!isset($this->workHours[$day])) {
                 $this->workHours[$day] = [];
