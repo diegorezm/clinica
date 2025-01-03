@@ -207,7 +207,7 @@ class Index extends Component
     }
 
     #[Computed()]
-    protected function getMonthName($month_id)
+    protected function getMonthName($month_id = '')
     {
         return DateUtils::getMonthName($month_id);
     }
